@@ -31,7 +31,7 @@
                                 </div>
                                 <div class="col-md-8">
                                     <h6 class="text-muted font-semibold">Alumni</h6>
-                                    <h6 class="font-extrabold mb-0">{{ $jumlahAlumni }}</h6>
+                                    <h6 class="font-extrabold mb-0">1</h6>
                                 </div>
                             </div>
                         </div>
@@ -48,7 +48,7 @@
                                 </div>
                                 <div class="col-md-8">
                                     <h6 class="text-muted font-semibold">Perusahaan</h6>
-                                    <h6 class="font-extrabold mb-0">{{ $jumlahPerusahaan }}</h6>
+                                    <h6 class="font-extrabold mb-0">1</h6>
                                 </div>
                             </div>
                         </div>
@@ -65,7 +65,7 @@
                                 </div>
                                 <div class="col-md-8">
                                     <h6 class="text-muted font-semibold">Bekerja</h6>
-                                    <h6 class="font-extrabold mb-0">{{$alumniBekerja}}</h6>
+                                    <h6 class="font-extrabold mb-0">1</h6>
                                 </div>
                             </div>
                         </div>
@@ -82,7 +82,7 @@
                                 </div>
                                 <div class="col-md-8">
                                     <h6 class="text-muted font-semibold">Belum Bekerja</h6>
-                                    <h6 class="font-extrabold mb-0">{{$alumniBelumBekerja}}</h6>
+                                    <h6 class="font-extrabold mb-0">1</h6>
                                 </div>
                             </div>
                         </div>
@@ -96,14 +96,13 @@
                             <h4>Profile Visit</h4>
                         </div>
                         <div class="card-body">
-                            <canvas id="barChart"></canvas>
+                            <div id="chart-profile-visit"></div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Recent Messages Column -->
         <div class="col-12 col-lg-3">
             <div class="card">
                 <div class="card-header">
@@ -146,7 +145,6 @@
     </section>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <script>
     @if (session('success'))
@@ -161,65 +159,5 @@
         }).showToast();
     @endif
 </script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var ctx = document.getElementById('barChart').getContext('2d');
-        var myBarChart = new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: @json($labels), // Mengirimkan data label dari controller
-                datasets: [{
-                    label: 'Alumni Masuk Perusahaan',
-                    backgroundColor: 'rgba(23, 125, 255, 0.7)',
-                    borderColor: 'rgb(23, 125, 255)',
-                    borderWidth: 2,
-                    data: @json($values) // Mengirimkan data nilai dari controller
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero: true,
-                            min: 0,
-                            stepSize: 1
-                        }
-                    }],
-                    xAxes: [{
-                        gridLines: {
-                            display: false
-                        }
-                    }]
-                },
-                legend: {
-                    display: true,
-                    position: 'top'
-                },
-                tooltips: {
-                    enabled: true
-                },
-                animation: {
-                    duration: 500,
-                    easing: 'linear',
-                }
-            }
-        });
 
-        // Fungsi untuk memperbarui data grafik berdasarkan tahun yang dipilih
-        function updateChartData(year) {
-            // Implementasikan logika jika Anda perlu mengubah data saat tahun dipilih
-        }
-
-        // Event listener untuk dropdown tahun
-        document.getElementById('yearSelect').addEventListener('change', function(event) {
-            var selectedYear = event.target.value;
-            updateChartData(selectedYear);
-        });
-
-        // Initial load
-        updateChartData(document.getElementById('yearSelect').value);
-    });
-    </script>
 @endsection

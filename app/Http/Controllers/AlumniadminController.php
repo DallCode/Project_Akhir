@@ -11,7 +11,7 @@ class AlumniadminController extends Controller
     public function index()
     {
         $alumni = Alumni::all();
-        return view('alumniadmin', compact('alumni'));
+        return view('Alumniadmin', compact('alumni'));
     }
 
      // Fungsi update untuk mengupdate data alumni
@@ -19,15 +19,15 @@ class AlumniadminController extends Controller
      {
          $alumni = Alumni::findOrFail($nik);
 
-         // Validasi data jika diperlukan
-         $validatedData = $request->validate([
-            //  'nik' => 'required|string|max:255',
-             'nama' => 'required|string|max:255',
-             'jurusan' => 'required|string|max:255',
-             'tahun_lulus' => 'required|integer',
-             'deskripsi' => 'nullable|text',
-             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-         ]);
+        //  // Validasi data jika diperlukan
+        //  $validatedData = $request->validate([
+        //     //  'nik' => 'required|string|max:255',
+        //      'nama' => 'required|string|max:255',
+        //      'jurusan' => 'required|string|max:255',
+        //      'tahun_lulus' => 'required|integer',
+        //      'deskripsi' => 'nullable|text',
+        //      'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        //  ]);
 
          // Update data alumni
          $alumni->nik = $request->nik;

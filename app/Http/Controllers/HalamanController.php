@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Auth;
 
 class HalamanController extends Controller
 {
-    public function index() {
+    public function index()
+    {
 
         if (Auth::user()) {
             $role = Auth::user()->role;
@@ -23,6 +24,6 @@ class HalamanController extends Controller
                 return redirect()->route('dashboardalumni');
             }
         }
-        return redirect()->route('login');
+        return redirect()->route('login', compact('role'))->with('success', 'Login berhasil');
     }
 }
