@@ -153,7 +153,7 @@
             gravity: "top", // 'top' or 'bottom'
             position: 'right', // 'left', 'center' or 'right'
             backgroundColor: "#4CAF50",
-            stopOnFocus: true, // Prevents dismissing of toast on hover
+            stopOnFocus: true, // Prevents dismissing of toast on hover 
         }).showToast();
     @endif
 </script>
