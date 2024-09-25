@@ -31,8 +31,9 @@
                             {{ $item->tanggal_akhir }}<br>
                         </p>
                         <p class="card-text">{{ $item->deskripsi }}</p>
-                        <a href="#"
-                            class="btn btn-primary">Detail</a>
+                        <a href="{{ route('detailloker', $item->id_lowongan_pekerjaan) }}" class="btn btn-primary">Lihat Detail</a>
+
+
                         <button class="btn btn-outline-primary ml-2" data-bs-toggle="modal"
                             data-bs-target="#lamarModal{{ $item->id_lowongan_pekerjaan }}">Lamar</button>
                     </div>

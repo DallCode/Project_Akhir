@@ -16,21 +16,21 @@
 
                 <li class="sidebar-item ">
                     <a href="{{ route('dashboardperusahaan') }}" class='sidebar-link'>
-                        <i class="bi bi-grid-fill"></i>
+                        <i class="bi bi-search"></i>
                         <span>Cari lowongan</span>
                     </a>
                 </li>
 
                 <li class="sidebar-item ">
-                    <a href="{{ route('dataloker') }}" class='sidebar-link'>
-                        <i class="bi bi-briefcase-fill"></i>
+                    <a href="{{ route('lamaransaya') }}" class='sidebar-link'>
+                        <i class="bi bi-file-earmark-text-fill"></i>
                         <span>Lamaran Saya</span>
                     </a>
                 </li>
 
                 <li class="sidebar-item ">
                     <a href="index.html" class='sidebar-link'>
-                        <i class="bi bi-file-earmark-text-fill"></i>
+                        <i class="bi bi-person-circle"></i>
                         <span>Profile</span>
                     </a>
                 </li>

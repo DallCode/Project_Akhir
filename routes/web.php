@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\TambahDataPerusahaanController;
 use App\Http\Controllers\DatalokerController;
+use App\Http\Controllers\DetaillokerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -74,7 +75,14 @@ Route::get('/dashboardalumni', [App\Http\Controllers\DashboardalumniController::
 // // Route untuk halaman detail pekerjaan
 // Route::get('/job-detail/{id}', [App\Http\Controllers\JobDetailController::class, 'show'])->name('job.detail');
 // web.php
+
+// Route for search Job
 Route::get('/search', [App\Http\Controllers\DashboardalumniController::class, 'index'])->name('job.search');
+//Route for Lamar
 Route::post('/lamar', [App\Http\Controllers\DashboardalumniController::class, 'store'])->name('lamar.store');
+//Route for Lamaran Saya
+Route::get('/lamaransaya', [App\Http\Controllers\LamaranSayaController::class, 'index'])->name('lamaransaya');
+//Route for Detail Job
+Route::get('/detailloker/{id_lowongan_pekerjaan}', [DetailLokerController::class, 'show'])->name('detailloker');
 
 
