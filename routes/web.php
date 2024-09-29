@@ -6,6 +6,7 @@ use App\Http\Controllers\ImportController;
 use App\Http\Controllers\TambahDataPerusahaanController;
 use App\Http\Controllers\DatalokerController;
 use App\Http\Controllers\DetaillokerController;
+use App\Http\Controllers\FileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,6 +43,8 @@ Route::get('/dashboardadmin', [App\Http\Controllers\DashboardadminController::cl
 Route::get('/importdata', [ImportController::class, 'index'])->name('importdata');
 Route::post('/upload-file', [ImportController::class, 'uploadFile'])->name('upload.file');
 Route::post('/import', [ImportController::class, 'import'])->name('import');
+Route::get('/download-excel', [FileController::class, 'downloadTemplate'])->name('download.template');
+
 // Alumni in Admin Route
 Route::get('/alumniadmin', [App\Http\Controllers\AlumniadminController::class, 'index'])->name('alumniadmin');
 Route::put('/alumni/{nik}', [App\Http\Controllers\AlumniadminController::class, 'update'])->name('alumni.update');
@@ -84,5 +87,7 @@ Route::post('/lamar', [App\Http\Controllers\DashboardalumniController::class, 's
 Route::get('/lamaransaya', [App\Http\Controllers\LamaranSayaController::class, 'index'])->name('lamaransaya');
 //Route for Detail Job
 Route::get('/detailloker/{id_lowongan_pekerjaan}', [DetailLokerController::class, 'show'])->name('detailloker');
+//Route for Profile
+Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'index'])->name('profile');
 
 

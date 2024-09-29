@@ -17,6 +17,21 @@
 <div class="col-12 col-md-12">
     <div class="card">
         <div class="card-header">
+            <h5 class="card-title">Template Format File</h5>
+        </div>
+        <div class="card-content">
+            <div class="card-body">
+                <div id="alert-container"></div>
+               <h6>Upload file berupa xlsx yang berisi data alumni, gunakan format template yang telah kami sediakan</h6>
+               <a href="{{ route('download.template') }}" class="btn btn-primary mt-3">Download</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-12 col-md-12">
+    <div class="card">
+        <div class="card-header">
             <h5 class="card-title">Upload Alumni Data</h5>
         </div>
         <div class="card-content">
@@ -31,6 +46,8 @@
         </div>
     </div>
 </div>
+
+
 
 <!-- Include necessary scripts -->
 <script src="{{ asset('bkk/dist/assets/vendors/toastify/toastify.js') }}"></script>
