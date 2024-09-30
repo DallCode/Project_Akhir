@@ -8,6 +8,8 @@ use App\Models\FileLamaran;
 use App\Models\Lamaran;
 use App\Models\Loker;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class DashboardalumniController extends Controller
 {
@@ -37,6 +39,7 @@ class DashboardalumniController extends Controller
 
     public function store(Request $request)
     {
+        return $request;
         $alumniLogin = Alumni::where('username', Auth::user()->username)->first();
 
         // Ambil loker berdasarkan id_lowongan_pekerjaan dari request
@@ -68,5 +71,37 @@ class DashboardalumniController extends Controller
         }
 
         return redirect()->back()->with('success', 'Lamaran berhasil dikirim');
+    }
+
+
+    public function uploadFile(Request $request)
+    {
+        // Validasi file input
+        if (!$request->hasFile('file')) {
+            return response()->json(['message' => 'Tidak ada file yang diunggah.', 'type' => 'danger'], 400);
+        }
+
+        $file = $request->file('file');
+        // Gunakan Str::uuid() untuk membuat nama file yang unik
+        $fileName = Str::uuid() . '.' . $file->getClientOriginalExtension();
+
+        // Simpan file ke folder storage/app/public/lamaran
+        $filePath = $file->storeAs('public/lamaran', $fileName);
+
+        return response()->json(['fileName' => $fileName, 'filePath' => $filePath]);
+    }
+
+    public function import(Request $request)
+    {
+        $fileNames = $request->input('files');
+
+        if (empty($fileNames)) {
+            return response()->json(['message' => 'Tidak ada file yang diimpor.', 'type' => 'danger'], 400);
+        }
+
+        // Proses file yang telah diunggah di sini...
+        // Sebagai contoh, Anda bisa memasukkan data lamaran berdasarkan file yang diunggah.
+
+        return response()->json(['message' => 'File berhasil diimpor.', 'type' => 'success']);
     }
 }

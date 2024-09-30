@@ -22,7 +22,7 @@ class PendidikanFormal extends Model
         parent::boot();
 
         static::creating(function ($Model) {
-            $prefix = 'RPF';
+            $prefix = 'RPF-';
             $lastRecord = self::orderBy('id_riwayat_pendidikan_formal', 'desc')->first();
 
             $lastNumber = $lastRecord ? intval(substr($lastRecord->id_riwayat_pendidikan_formal, strlen($prefix))) : 0;

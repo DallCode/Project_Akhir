@@ -20,7 +20,7 @@ class ImportController extends Controller
     {
         try {
             $request->validate([
-                'file' => 'required|mimes:xlsx,csv|max:10240', // Maksimal 10MB
+                'file' => 'required|mimes:xlsx|max:10240', // Maksimal 10MB
             ]);
 
             if ($request->hasFile('file')) {

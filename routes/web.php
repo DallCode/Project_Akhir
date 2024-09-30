@@ -83,11 +83,17 @@ Route::get('/dashboardalumni', [App\Http\Controllers\DashboardalumniController::
 Route::get('/search', [App\Http\Controllers\DashboardalumniController::class, 'index'])->name('job.search');
 //Route for Lamar
 Route::post('/lamar', [App\Http\Controllers\DashboardalumniController::class, 'store'])->name('lamar.store');
+Route::post('/upload-file', [App\Http\Controllers\DashboardalumniController::class, 'uploadFile'])->name('upload.file');
+Route::post('/import', [App\Http\Controllers\DashboardalumniController::class, 'import'])->name('import');
 //Route for Lamaran Saya
 Route::get('/lamaransaya', [App\Http\Controllers\LamaranSayaController::class, 'index'])->name('lamaransaya');
 //Route for Detail Job
 Route::get('/detailloker/{id_lowongan_pekerjaan}', [DetailLokerController::class, 'show'])->name('detailloker');
 //Route for Profile
-Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'index'])->name('profile');
+Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'index'])->middleware('auth')->name('profile');
+Route::post('/update-about', [App\Http\Controllers\ProfileController::class, 'updateAbout'])->name('update.about');
+Route::put('/profile/update', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+
+
 
 

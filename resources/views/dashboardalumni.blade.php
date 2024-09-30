@@ -3,6 +3,8 @@
 @section('content')
 
 <link rel="stylesheet" href="https://unpkg.com/filepond/dist/filepond.css">
+<!-- Include FilePond JS -->
+<script src="https://unpkg.com/filepond/dist/filepond.js"></script>
 
 <div class="container mt-4">
     <h2>Informasi Lowongan Pekerjaan</h2>
@@ -51,15 +53,15 @@
                                 aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <p>Jika anda tidak menambahkan file tambahan maka kami akan mengambil informasi dari
-                                profil anda</p>
-                                <form id="importForm" enctype="multipart/form-data">
-                                    @csrf
-                                    <input type="file" name="file" id="file" class="filepond" />
-                                    <button type="submit" class="btn btn-primary mt-3">Upload and Import</button>
-                                </form>
+                            <p>Jika Anda tidak menambahkan file tambahan, maka kami akan mengambil informasi dari profil Anda.</p>
+                            <div id="alert-container"></div>
+                            <form action="{{ route('lamar.store') }}" id="importForm" enctype="multipart/form-data">
+                                @csrf
+                                <input type="file" name="file" id="file" multiple class="filepond" />
+                                <button type="submit" class="btn btn-primary mt-3">Upload and Import</button>
+                            </form>
                         </div>
-                    </div>
+                    </div> 
                 </div>
             </div>
 
@@ -111,27 +113,27 @@
 
 <script src="{{ asset('bkk/dist/assets/vendors/toastify/toastify.js') }}"></script>
 <script src="{{ asset('bkk/dist/assets/js/main.js') }}"></script>
-<script src="https://unpkg.com/filepond/dist/filepond.js"></script>
 
 
 <script>
-    // Register FilePond instance
+    // Inisialisasi FilePond
     const pond = FilePond.create(document.querySelector('input[id="file"]'), {
         server: {
             process: {
-                url: '{{ route('upload.file') }}',
+                url: '{{ route('upload.file') }}',  // Route untuk upload file
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
                 onload: (response) => {
-                    // This function will be called when the file is successfully uploaded
-                    return JSON.parse(response).fileName;
+                    // Fungsi dipanggil jika upload berhasil
+                    const data = JSON.parse(response);
+                    return data.fileName;
                 },
                 onerror: (response) => {
-                    // This function will be called when there's an error during upload
+                    // Fungsi dipanggil jika terjadi kesalahan upload
                     const error = JSON.parse(response);
-                    showAlert(error.error || 'An error occurred during file upload', 'danger');
+                    showAlert(error.message || 'Terjadi kesalahan saat mengunggah file.', 'danger');
                 }
             },
             revert: null,
@@ -139,7 +141,7 @@
             load: null,
             fetch: null,
         },
-        allowMultiple: false,
+        allowMultiple: true,  // Izinkan multiple file upload
         credits: false
     });
 
@@ -147,33 +149,32 @@
     document.getElementById('importForm').addEventListener('submit', function(e) {
         e.preventDefault();
 
-        // Get the file name from FilePond
+        // Ambil nama file dari FilePond
         const files = pond.getFiles();
         if (files.length === 0) {
-            showAlert('Please select a file to import.', 'danger');
+            showAlert('Silakan pilih file untuk diunggah.', 'danger');
             return;
         }
-        const fileName = files[0].serverId;
 
-        // Send import request
+        // Kirim permintaan import setelah file diunggah
         fetch('{{ route('import') }}', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
-            body: JSON.stringify({ file: fileName })
+            body: JSON.stringify({ files: files.map(file => file.serverId) })
         })
         .then(response => response.json())
         .then(data => {
-            showAlert(data.alert, data.alert_type);
-            if (data.alert_type === 'success') {
-                pond.removeFile();
+            showAlert(data.message, data.type);
+            if (data.type === 'success') {
+                pond.removeFiles();
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            showAlert('An error occurred during import. Please check the console for more details.', 'danger');
+            showAlert('Terjadi kesalahan saat impor. Periksa konsol untuk detail lebih lanjut.', 'danger');
         });
     });
 

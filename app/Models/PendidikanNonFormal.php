@@ -22,7 +22,7 @@ class PendidikanNonFormal extends Model
         parent::boot();
 
         static::creating(function ($Model) {
-            $prefix = 'RPNF';
+            $prefix = 'RPNF-';
             $lastRecord = self::orderBy('id_riwayat_pendidikan_non_formal', 'desc')->first();
 
             $lastNumber = $lastRecord ? intval(substr($lastRecord->id_riwayat_pendidikan_non_formal, strlen($prefix))) : 0;
