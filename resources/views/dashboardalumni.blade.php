@@ -57,7 +57,7 @@
                             <div id="alert-container"></div>
                             <form action="{{ route('lamar.store') }}" id="importForm" enctype="multipart/form-data">
                                 @csrf
-                                <input type="file" name="file" id="file" multiple class="filepond" />
+                                <input type="file" name="file" id="file_{{ $item->id_lowongan_pekerjaan }}" multiple class="filepond" />
                                 <button type="submit" class="btn btn-primary mt-3">Upload and Import</button>
                             </form>
                         </div>
@@ -116,70 +116,74 @@
 
 
 <script>
-    // Inisialisasi FilePond
-    const pond = FilePond.create(document.querySelector('input[id="file"]'), {
-        server: {
-            process: {
-                url: '{{ route('upload.file') }}',  // Route untuk upload file
+    // Inisialisasi FilePond untuk setiap elemen input dengan kelas "filepond"
+    document.querySelectorAll('input[class="filepond"]').forEach(inputElement => {
+        const pond = FilePond.create(inputElement, {
+            server: {
+                process: {
+                    url: '{{ route('upload.file') }}',  // Route untuk upload file
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    onload: (response) => {
+                        // Fungsi dipanggil jika upload berhasil
+                        const data = JSON.parse(response);
+                        return data.fileName;
+                    },
+                    onerror: (response) => {
+                        // Fungsi dipanggil jika terjadi kesalahan upload
+                        const error = JSON.parse(response);
+                        showAlert(error.message || 'Terjadi kesalahan saat mengunggah file.', 'danger');
+                    }
+                },
+                revert: null,
+                restore: null,
+                load: null,
+                fetch: null,
+            },
+            allowMultiple: true,  // Izinkan multiple file upload
+            credits: false
+        });
+
+        // Handle form submission per modal
+        const form = inputElement.closest('form');  // Cari form terdekat dari input file
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Ambil nama file dari FilePond
+            const files = pond.getFiles();
+            if (files.length === 0) {
+                showAlert('Silakan pilih file untuk diunggah.', 'danger', form);
+                return;
+            }
+
+            // Kirim permintaan import setelah file diunggah
+            fetch('{{ route('import') }}', {
                 method: 'POST',
                 headers: {
+                    'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
-                onload: (response) => {
-                    // Fungsi dipanggil jika upload berhasil
-                    const data = JSON.parse(response);
-                    return data.fileName;
-                },
-                onerror: (response) => {
-                    // Fungsi dipanggil jika terjadi kesalahan upload
-                    const error = JSON.parse(response);
-                    showAlert(error.message || 'Terjadi kesalahan saat mengunggah file.', 'danger');
+                body: JSON.stringify({ files: files.map(file => file.serverId) })
+            })
+            .then(response => response.json())
+            .then(data => {
+                showAlert(data.message, data.type, form);
+                if (data.type === 'success') {
+                    pond.removeFiles();
                 }
-            },
-            revert: null,
-            restore: null,
-            load: null,
-            fetch: null,
-        },
-        allowMultiple: true,  // Izinkan multiple file upload
-        credits: false
-    });
-
-    // Handle form submission
-    document.getElementById('importForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        // Ambil nama file dari FilePond
-        const files = pond.getFiles();
-        if (files.length === 0) {
-            showAlert('Silakan pilih file untuk diunggah.', 'danger');
-            return;
-        }
-
-        // Kirim permintaan import setelah file diunggah
-        fetch('{{ route('import') }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({ files: files.map(file => file.serverId) })
-        })
-        .then(response => response.json())
-        .then(data => {
-            showAlert(data.message, data.type);
-            if (data.type === 'success') {
-                pond.removeFiles();
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showAlert('Terjadi kesalahan saat impor. Periksa konsol untuk detail lebih lanjut.', 'danger');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('Terjadi kesalahan saat impor. Periksa konsol untuk detail lebih lanjut.', 'danger', form);
+            });
         });
     });
 
-    function showAlert(message, type) {
-        const alertContainer = document.getElementById('alert-container');
+    // Fungsi untuk menampilkan alert di dalam form modal terkait
+    function showAlert(message, type, form) {
+        const alertContainer = form.querySelector('#alert-container'); // Cari alert container di dalam form terkait
         alertContainer.innerHTML = `
             <div class="alert alert-${type} alert-dismissible fade show" role="alert">
                 ${message}
@@ -188,4 +192,5 @@
         `;
     }
 </script>
+
 @endsection

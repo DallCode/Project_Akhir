@@ -9,12 +9,13 @@
             <div class="container mt-5">
                 <div class="row">
                     <div class="col-md-2 text-center">
-                        <img src="{{ asset('bkk/dist/assets/images/faces/1.jpg') }}" class="rounded-circle"
-                            alt="Profile Image" style="width: 200px; height: 200px;">
+                        <img src="{{ asset('bkk/dist/assets/images/faces/intan.jpg') }}" class="rounded-circle"
+                             alt="Profile Image" style="width: 200px; height: 200px; object-fit: cover;">
                     </div>
+                    
                     <div class="col-md-8">
                         <h2><strong>{{ $user->nama }}</strong> <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#editModal">
-                            <i class="bi bi-pencil-fill"></i> Edit
+                            <i class="bi bi-pencil-fill"></i>
                         </a> </h2>
                         <div class="row">
                             <div class="col-md-6">
@@ -22,7 +23,7 @@
                                 <p class="text-muted">{{ $user->kontak }}</p>
 
                                 <p><strong>LOKASI</strong></p>
-                                <p class="text-muted"></p>
+                                <p class="text-muted">{{ $user->lokasi }}</p>
 
                                 <p><strong>JENIS KELAMIN</strong></p>
                                 <p class="text-muted">{{ $user->jenis_kelamin }}</p>
@@ -46,9 +47,24 @@
 
     <div class="card">
         <div class="card-header">
+            <h5 class="card-title">Pendidikan Formal
+                <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#editFormalModal">
+                    <i class="bi bi-pencil-fill"></i>
+                </a>
+            </h5>
+            @foreach ($formal as $f)
+    
+            <p>{{ $f->nama_sekolah }}</p>
+
+            @endforeach
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
             <h5 class="card-title">Tentang Saya
                 <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#editAboutModal">
-                    <i class="bi bi-pencil-fill"></i> Edit
+                    <i class="bi bi-pencil-fill"></i>
                 </a>
             </h5>
             <p>{{ $user->deskripsi }}</p>
@@ -107,7 +123,11 @@
                                 value="{{ $user->kontak }}" required>
                         </div>
                         <div class="form-group">
-                            <label for="alamat">Alamat</label>
+                            <label for="lokasi">Lokasi</label>
+                            <textarea class="form-control" id="lokasi" name="lokasi" placeholder="kota, provinsi">{{ $user->lokasi }}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="alamat">Alamat Lengkap</label>
                             <textarea class="form-control" id="alamat" name="alamat" required>{{ $user->alamat }}</textarea>
                         </div>
                     <div class="modal-footer">

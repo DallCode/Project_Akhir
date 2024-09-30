@@ -18,8 +18,9 @@ class Lamaran extends Model
         return $this->belongsTo(Loker::class, 'id_lowongan_pekerjaan');
     }
 
-    public function alumni () : BelongsTo {
-        return $this->belongsTo(Alumni::class,);
+    public function alumni(): BelongsTo 
+    {
+        return $this->belongsTo(Alumni::class, 'nik', 'nik');
     }
 
 

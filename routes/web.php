@@ -7,6 +7,7 @@ use App\Http\Controllers\TambahDataPerusahaanController;
 use App\Http\Controllers\DatalokerController;
 use App\Http\Controllers\DetaillokerController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\LamaranPerusahaanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -70,6 +71,9 @@ Route::get('/lowongan/{id_lowongan_pekerjaan}', [DatalokerController::class, 'sh
 Route::post('/lowongan/store', [DatalokerController::class, 'store'])->name('lowongan.store');
 Route::get('/lowongan', [DatalokerController::class, 'index'])->name('lowongan.index');
 Route::put('/lowongan/{id_lowongan_pekerjaan}', [DatalokerController::class, 'update'])->name('lowongan.update');
+
+Route::get('/lamaran', [LamaranPerusahaanController::class, 'index'])->name('lamaran');
+
 
 
 // Route for Alumni Role

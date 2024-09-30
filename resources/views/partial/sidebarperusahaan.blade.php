@@ -29,7 +29,7 @@
                 </li>
 
                 <li class="sidebar-item ">
-                    <a href="index.html" class='sidebar-link'>
+                    <a href="{{ route('lamaran') }}" class='sidebar-link'>
                         <i class="bi bi-file-earmark-text-fill"></i>
                         <span>Data Lamaran</span>
                     </a>

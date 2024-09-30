@@ -26,7 +26,7 @@
                     1. File yang diimpor bertipe <strong>xlsx</strong>
                     <br>2. File harus diisi sesuai format yang ada
                     <br>3. Gunakan template format file yang sudah disediakan
-                    <br>4. Download template: <a href="{{ route('download.template') }}" class="text-primary">file.xlsx</a>
+                    <br>4. Download template: <a href="{{ route('download.template') }}" class="text-primary">data_siswa.xlsx</a>
                 </h6>
             </div>
         </div>

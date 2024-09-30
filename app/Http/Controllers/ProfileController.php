@@ -3,17 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\Alumni;
+use App\Models\PendidikanFormal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ProfileController extends Controller
 {
     public function index()
-    {
+{
+    $user = Auth::user()->alumni;
+    $formal = PendidikanFormal::where('nik', $user->nik)->get();
 
-        $user = Alumni::where('nik', Auth::user()->alumni->nik)->first();
-        return view('profile', compact('user'));
-    }
+    // Mengembalikan data ke view profile
+    return view('profile', compact('user', 'formal'));
+}
+
 
     public function updateAbout(Request $request)
     {
@@ -45,6 +49,7 @@ class ProfileController extends Controller
             'nama' => 'required|string|max:255',
             'kontak' => 'required|string|max:15',
             'alamat' => 'required|string|max:255',
+            'lokasi' => 'required|string|max:225',
         ]);
 
         // Ambil pengguna berdasarkan nik
@@ -59,6 +64,7 @@ class ProfileController extends Controller
         $user->nama = $request->nama;
         $user->kontak = $request->kontak;
         $user->alamat = $request->alamat;
+        $user->lokasi = $request->lokasi;
         $user->save();
 
         return redirect()->back()->with('success', 'Profile berhasil diperbarui.');
