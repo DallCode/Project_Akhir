@@ -20,14 +20,14 @@ class LamaranPerusahaanController extends Controller
         //  if (!$perusahaanLogin) {
         //      return redirect()->back()->with('error', 'Perusahaan tidak ditemukan.');
         //  }
- 
+
          // Memfilter data lamaran berdasarkan id_data_perusahaan dari perusahaan yang sedang login
          $lamaran = Lamaran::with(['alumni', 'loker'])
          ->whereHas('loker', function($query) use ($perusahaanLogin) {
              $query->where('id_data_perusahaan', $perusahaanLogin->id_data_perusahaan);
          })
          ->get();
- 
+
          // Mengirimkan data perusahaan yang login dan lamaran yang difilter ke view
          return view('lamaranperusahaan', compact('perusahaanLogin', 'lamaran'));
     }

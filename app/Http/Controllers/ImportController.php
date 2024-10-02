@@ -34,7 +34,7 @@ class ImportController extends Controller
             return response()->json(['error' => 'No file uploaded'], 400);
         } catch (\Exception $e) {
             Log::error('File upload error: ' . $e->getMessage());
-            return response()->json(['error' => 'File upload failed: ' . $e->getMessage()], 500);
+            return response()->json(['error' =>  $e->getMessage()], 500);
         }
     }
 

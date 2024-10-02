@@ -3,7 +3,7 @@
 @section('content')
 
 <link rel="stylesheet" href="https://unpkg.com/filepond/dist/filepond.css">
-<!-- Include FilePond JS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.css">
 <script src="https://unpkg.com/filepond/dist/filepond.js"></script>
 
 <div class="container mt-4">
@@ -12,8 +12,7 @@
     <!-- Search Form -->
     <form method="GET" action="{{ route('job.search') }}" class="mb-5">
         <div class="input-group">
-            <input type="text" name="search" class="form-control" placeholder="Cari lowongan..."
-                value="{{ request()->query('search') }}">
+            <input type="text" name="search" class="form-control" placeholder="Cari lowongan..." value="{{ request()->query('search') }}">
             <button class="btn btn-primary" type="submit">Cari</button>
         </div>
     </form>
@@ -35,36 +34,31 @@
                         <p class="card-text">{{ $item->deskripsi }}</p>
                         <a href="{{ route('detailloker', $item->id_lowongan_pekerjaan) }}" class="btn btn-primary">Lihat Detail</a>
 
-
-                        <button class="btn btn-outline-primary ml-2" data-bs-toggle="modal"
-                            data-bs-target="#lamarModal{{ $item->id_lowongan_pekerjaan }}">Lamar</button>
+                        <button class="btn btn-outline-primary ml-2" data-bs-toggle="modal" data-bs-target="#lamarModal{{ $item->id_lowongan_pekerjaan }}">Lamar</button>
                     </div>
                 </div>
             </div>
 
             <!-- Lamar Modal -->
-            <div class="modal fade" id="lamarModal{{ $item->id_lowongan_pekerjaan }}" tabindex="-1"
-                aria-labelledby="lamarModalLabel" aria-hidden="true" data-bs-backdrop="false">
+            <div class="modal fade" id="lamarModal{{ $item->id_lowongan_pekerjaan }}" tabindex="-1" aria-labelledby="lamarModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="lamarModalLabel">File Tambahan</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             <p>Jika Anda tidak menambahkan file tambahan, maka kami akan mengambil informasi dari profil Anda.</p>
                             <div id="alert-container"></div>
-                            <form action="{{ route('lamar.store') }}" id="importForm" enctype="multipart/form-data">
+                            <form action="{{ route('lamar.store') }}" method="POST" id="importForm" enctype="multipart/form-data">
                                 @csrf
                                 <input type="file" name="file" id="file_{{ $item->id_lowongan_pekerjaan }}" multiple class="filepond" />
                                 <button type="submit" class="btn btn-primary mt-3">Upload and Import</button>
                             </form>
                         </div>
-                    </div> 
+                    </div>
                 </div>
             </div>
-
         @empty
             <div class="col-12">
                 <div class="alert alert-info">
@@ -73,13 +67,26 @@
             </div>
         @endforelse
 
-        <!-- Pagination Links -->
         <div class="d-flex justify-content-center">
             {{ $Loker->links() }}
         </div>
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script>
+    @if (session('success'))
+        Toastify({
+            text: "{{ session('success') }}",
+            duration: 3000,
+            close: true,
+            gravity: "top", // 'top' or 'bottom'
+            position: 'right', // 'left', 'center' or 'right'
+            backgroundColor: "#4CAF50",
+            stopOnFocus: true, // Prevents dismissing of toast on hover
+        }).showToast();
+    @endif
+</script>
 <style>
     .card {
         height: 100%;
@@ -114,83 +121,19 @@
 <script src="{{ asset('bkk/dist/assets/vendors/toastify/toastify.js') }}"></script>
 <script src="{{ asset('bkk/dist/assets/js/main.js') }}"></script>
 
-
 <script>
-    // Inisialisasi FilePond untuk setiap elemen input dengan kelas "filepond"
     document.querySelectorAll('input[class="filepond"]').forEach(inputElement => {
-        const pond = FilePond.create(inputElement, {
-            server: {
-                process: {
-                    url: '{{ route('upload.file') }}',  // Route untuk upload file
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    onload: (response) => {
-                        // Fungsi dipanggil jika upload berhasil
-                        const data = JSON.parse(response);
-                        return data.fileName;
-                    },
-                    onerror: (response) => {
-                        // Fungsi dipanggil jika terjadi kesalahan upload
-                        const error = JSON.parse(response);
-                        showAlert(error.message || 'Terjadi kesalahan saat mengunggah file.', 'danger');
-                    }
-                },
-                revert: null,
-                restore: null,
-                load: null,
-                fetch: null,
-            },
-            allowMultiple: true,  // Izinkan multiple file upload
-            credits: false
-        });
-
-        // Handle form submission per modal
-        const form = inputElement.closest('form');  // Cari form terdekat dari input file
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            // Ambil nama file dari FilePond
-            const files = pond.getFiles();
-            if (files.length === 0) {
-                showAlert('Silakan pilih file untuk diunggah.', 'danger', form);
-                return;
-            }
-
-            // Kirim permintaan import setelah file diunggah
-            fetch('{{ route('import') }}', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({ files: files.map(file => file.serverId) })
-            })
-            .then(response => response.json())
-            .then(data => {
-                showAlert(data.message, data.type, form);
-                if (data.type === 'success') {
-                    pond.removeFiles();
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                showAlert('Terjadi kesalahan saat impor. Periksa konsol untuk detail lebih lanjut.', 'danger', form);
-            });
-        });
+        FilePond.create(inputElement);
     });
 
-    // Fungsi untuk menampilkan alert di dalam form modal terkait
-    function showAlert(message, type, form) {
-        const alertContainer = form.querySelector('#alert-container'); // Cari alert container di dalam form terkait
-        alertContainer.innerHTML = `
-            <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-                ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        `;
-    }
+    FilePond.setOptions({
+        server: {
+            url: '/upload-file',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            }
+        }
+    });
 </script>
 
 @endsection

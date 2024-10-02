@@ -11,10 +11,9 @@ class PendidikanFormal extends Model
     use HasFactory;
 
     protected $table = 'riwayat_pendidikan_formal';
-    protected $primarykey = 'id_riwayat_pendidikan_formal';
+    protected $primaryKey = 'id_riwayat_pendidikan_formal';
     public $timestamps = false;
-    protected $keyType = 'string';
-    public $incrementing = false;
+    protected $keyType = 'string'; 
     protected $guarded = [];
 
     public static function boot()
@@ -32,7 +31,7 @@ class PendidikanFormal extends Model
         });
     }
 
-    public function alumni () : BelongsTo {
+    public function alumni() : BelongsTo {
         return $this->belongsTo(Alumni::class, 'nik');
     }
 }

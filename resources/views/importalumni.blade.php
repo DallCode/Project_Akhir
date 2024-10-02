@@ -21,7 +21,7 @@
         </div>
         <div class="card-content">
             <div class="card-body">
-                <div id="alert-container"></div>
+                <div ></div>
                 <h6>
                     1. File yang diimpor bertipe <strong>xlsx</strong>
                     <br>2. File harus diisi sesuai format yang ada
@@ -63,7 +63,7 @@
     const pond = FilePond.create(document.querySelector('input[id="file"]'), {
         server: {
             process: {
-                url: '{{ route('upload.file') }}',
+                url: '{{ route('upload.excel') }}',
                 method: 'POST',
                 headers: {
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
@@ -94,7 +94,7 @@
         // Get the file name from FilePond
         const files = pond.getFiles();
         if (files.length === 0) {
-            showAlert('Please select a file to import.', 'danger');
+            showAlert('Silahkan pilih file untuk diimpor.', 'danger');
             return;
         }
         const fileName = files[0].serverId;

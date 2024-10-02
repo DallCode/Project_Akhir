@@ -31,21 +31,17 @@ class DashboardalumniController extends Controller
             })
             ->with('perusahaan') // Eager load perusahaan untuk menghindari N+1 query
             ->paginate(10);
-        // ->get();
-
 
         return view('dashboardAlumni', compact('alumniLogin', 'Loker'));
     }
 
     public function store(Request $request)
     {
-        return $request;
         $alumniLogin = Alumni::where('username', Auth::user()->username)->first();
 
         // Ambil loker berdasarkan id_lowongan_pekerjaan dari request
         $loker = Loker::where('id_lowongan_pekerjaan', $request->id_lowongan_pekerjaan)->first();
 
-        // Pastikan bahwa $loker ditemukan sebelum melanjutkan
         if (!$loker) {
             return redirect()->back()->with('error', 'Lowongan pekerjaan tidak ditemukan');
         }
@@ -73,19 +69,14 @@ class DashboardalumniController extends Controller
         return redirect()->back()->with('success', 'Lamaran berhasil dikirim');
     }
 
-
-    public function uploadFile(Request $request)
+    public function uploadLamaran(Request $request)
     {
-        // Validasi file input
         if (!$request->hasFile('file')) {
             return response()->json(['message' => 'Tidak ada file yang diunggah.', 'type' => 'danger'], 400);
         }
 
         $file = $request->file('file');
-        // Gunakan Str::uuid() untuk membuat nama file yang unik
         $fileName = Str::uuid() . '.' . $file->getClientOriginalExtension();
-
-        // Simpan file ke folder storage/app/public/lamaran
         $filePath = $file->storeAs('public/lamaran', $fileName);
 
         return response()->json(['fileName' => $fileName, 'filePath' => $filePath]);
@@ -98,9 +89,6 @@ class DashboardalumniController extends Controller
         if (empty($fileNames)) {
             return response()->json(['message' => 'Tidak ada file yang diimpor.', 'type' => 'danger'], 400);
         }
-
-        // Proses file yang telah diunggah di sini...
-        // Sebagai contoh, Anda bisa memasukkan data lamaran berdasarkan file yang diunggah.
 
         return response()->json(['message' => 'File berhasil diimpor.', 'type' => 'success']);
     }

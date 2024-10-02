@@ -42,7 +42,7 @@ Auth::routes();
 Route::get('/dashboardadmin', [App\Http\Controllers\DashboardadminController::class, 'index'])->name('dashboardadmin');
 /// Route untuk menampilkan form upload
 Route::get('/importdata', [ImportController::class, 'index'])->name('importdata');
-Route::post('/upload-file', [ImportController::class, 'uploadFile'])->name('upload.file');
+Route::post('/upload-file', [ImportController::class, 'uploadFile'])->name('upload.excel');
 Route::post('/import', [ImportController::class, 'import'])->name('import');
 Route::get('/download-excel', [FileController::class, 'downloadTemplate'])->name('download.template');
 
@@ -87,8 +87,8 @@ Route::get('/dashboardalumni', [App\Http\Controllers\DashboardalumniController::
 Route::get('/search', [App\Http\Controllers\DashboardalumniController::class, 'index'])->name('job.search');
 //Route for Lamar
 Route::post('/lamar', [App\Http\Controllers\DashboardalumniController::class, 'store'])->name('lamar.store');
-Route::post('/upload-file', [App\Http\Controllers\DashboardalumniController::class, 'uploadFile'])->name('upload.file');
-Route::post('/import', [App\Http\Controllers\DashboardalumniController::class, 'import'])->name('import');
+Route::post('/upload-lamaran', [App\Http\Controllers\DashboardalumniController::class, 'uploadLamaran'])->name('upload.lamaran');
+// Route::post('/import', [App\Http\Controllers\DashboardalumniController::class, 'import'])->name('import');
 //Route for Lamaran Saya
 Route::get('/lamaransaya', [App\Http\Controllers\LamaranSayaController::class, 'index'])->name('lamaransaya');
 //Route for Detail Job
@@ -97,6 +97,46 @@ Route::get('/detailloker/{id_lowongan_pekerjaan}', [DetailLokerController::class
 Route::get('/profile', [App\Http\Controllers\ProfileController::class, 'index'])->middleware('auth')->name('profile');
 Route::post('/update-about', [App\Http\Controllers\ProfileController::class, 'updateAbout'])->name('update.about');
 Route::put('/profile/update', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
+
+Route::middleware(['auth'])->group(function () {
+    // Store a new education record
+    Route::post('/store-pendidikan-formal', [App\Http\Controllers\ProfileController::class, 'storePendidikanFormal'])
+         ->name('store.pendidikan.formal');
+
+    // Update an existing education record
+    Route::put('/update-pendidikan-formal/{id}', [App\Http\Controllers\ProfileController::class, 'updatePendidikanFormal'])
+         ->name('update.pendidikan.formal');
+
+    // Delete an education record
+    Route::delete('/delete-pendidikan-formal/{id}', [App\Http\Controllers\ProfileController::class, 'deletePendidikanFormal'])
+         ->name('delete.pendidikan.formal');
+
+
+    Route::get('/get-pendidikan-formal/{id}', [App\Http\Controllers\ProfileController::class, 'getPendidikanFormal'])->name('get.pendidikan.formal');
+
+});
+
+Route::middleware(['auth'])->group(function () {
+    // Store a new non-formal education record
+    Route::post('/store-pendidikan-nonformal', [App\Http\Controllers\ProfileController::class, 'storePendidikanNonFormal'])
+         ->name('store.pendidikan.nonformal');
+
+    // Update an existing non-formal education record
+    Route::put('/update-pendidikan-nonformal/{id}', [App\Http\Controllers\ProfileController::class, 'updatePendidikanNonFormal'])
+         ->name('update.pendidikan.nonformal');
+
+    // Delete a non-formal education record
+    Route::delete('/delete-pendidikan-nonformal/{id}', [App\Http\Controllers\ProfileController::class, 'deletePendidikanNonFormal'])
+         ->name('delete.pendidikan.nonformal');
+
+    // Get a specific non-formal education record by ID
+    Route::get('/get-pendidikan-nonformal/{id}', [App\Http\Controllers\ProfileController::class, 'getPendidikanNonFormal'])
+         ->name('get.pendidikan.nonformal');
+});
+
+
+Route::post('/update-kegiatan-sekarang', [App\Http\Controllers\KegiatanController::class, 'updateKegiatan'])->name('updateKegiatanSekarang');
+
 
 
 

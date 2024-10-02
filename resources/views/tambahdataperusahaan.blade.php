@@ -7,11 +7,11 @@
 <div class="container">
     <h2>Tambah Data Perusahaan</h2>
 
-    @if (session('success'))
+    {{-- @if (session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
         </div>
-    @endif
+    @endif --}}
 
     <div class="card mt-4">
         <div class="card-header">
@@ -56,4 +56,19 @@
         </div>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script>
+    @if (session('success'))
+        Toastify({
+            text: "{{ session('success') }}",
+            duration: 3000,
+            close: true,
+            gravity: "top", // 'top' or 'bottom'
+            position: 'right', // 'left', 'center' or 'right'
+            backgroundColor: "#4CAF50",
+            stopOnFocus: true, // Prevents dismissing of toast on hover
+        }).showToast();
+    @endif
+</script>
 @endsection
