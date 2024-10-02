@@ -99,42 +99,34 @@ Route::post('/update-about', [App\Http\Controllers\ProfileController::class, 'up
 Route::put('/profile/update', [App\Http\Controllers\ProfileController::class, 'update'])->name('profile.update');
 
 Route::middleware(['auth'])->group(function () {
-    // Store a new education record
-    Route::post('/store-pendidikan-formal', [App\Http\Controllers\ProfileController::class, 'storePendidikanFormal'])
-         ->name('store.pendidikan.formal');
-
-    // Update an existing education record
-    Route::put('/update-pendidikan-formal/{id}', [App\Http\Controllers\ProfileController::class, 'updatePendidikanFormal'])
-         ->name('update.pendidikan.formal');
-
-    // Delete an education record
-    Route::delete('/delete-pendidikan-formal/{id}', [App\Http\Controllers\ProfileController::class, 'deletePendidikanFormal'])
-         ->name('delete.pendidikan.formal');
-
-
+    Route::post('/store-pendidikan-formal', [App\Http\Controllers\ProfileController::class, 'storePendidikanFormal'])->name('store.pendidikan.formal');
+    Route::put('/update-pendidikan-formal/{id}', [App\Http\Controllers\ProfileController::class, 'updatePendidikanFormal'])->name('update.pendidikan.formal');
+    Route::delete('/delete-pendidikan-formal/{id}', [App\Http\Controllers\ProfileController::class, 'deletePendidikanFormal'])->name('delete.pendidikan.formal');
     Route::get('/get-pendidikan-formal/{id}', [App\Http\Controllers\ProfileController::class, 'getPendidikanFormal'])->name('get.pendidikan.formal');
-
 });
 
 Route::middleware(['auth'])->group(function () {
-    // Store a new non-formal education record
-    Route::post('/store-pendidikan-nonformal', [App\Http\Controllers\ProfileController::class, 'storePendidikanNonFormal'])
-         ->name('store.pendidikan.nonformal');
-
-    // Update an existing non-formal education record
-    Route::put('/update-pendidikan-nonformal/{id}', [App\Http\Controllers\ProfileController::class, 'updatePendidikanNonFormal'])
-         ->name('update.pendidikan.nonformal');
-
-    // Delete a non-formal education record
-    Route::delete('/delete-pendidikan-nonformal/{id}', [App\Http\Controllers\ProfileController::class, 'deletePendidikanNonFormal'])
-         ->name('delete.pendidikan.nonformal');
-
-    // Get a specific non-formal education record by ID
-    Route::get('/get-pendidikan-nonformal/{id}', [App\Http\Controllers\ProfileController::class, 'getPendidikanNonFormal'])
-         ->name('get.pendidikan.nonformal');
+    Route::post('/store-pendidikan-nonformal', [App\Http\Controllers\ProfileController::class, 'storePendidikanNonFormal'])->name('store.pendidikan.nonformal');
+    Route::put('/update-pendidikan-nonformal/{id}', [App\Http\Controllers\ProfileController::class, 'updatePendidikanNonFormal'])->name('update.pendidikan.nonformal');
+    Route::delete('/delete-pendidikan-nonformal/{id}', [App\Http\Controllers\ProfileController::class, 'deletePendidikanNonFormal'])->name('delete.pendidikan.nonformal');
+    Route::get('/get-pendidikan-nonformal/{id}', [App\Http\Controllers\ProfileController::class, 'getPendidikanNonFormal'])->name('get.pendidikan.nonformal');
 });
 
+Route::middleware(['auth'])->group(function () {
+     Route::post('/store-skill', [App\Http\Controllers\ProfileController::class, 'storeSkill'])->name('store.skill');
+     Route::put('/update-skill/{id}', [App\Http\Controllers\ProfileController::class, 'updateSkill'])->name('update.skill');
+     Route::delete('/delete-skill/{id}', [App\Http\Controllers\ProfileController::class, 'deleteSkill'])->name('delete.skill');
+     Route::get('/get-skill/{id}', [App\Http\Controllers\ProfileController::class, 'getSkill'])->name('get.skill');
+ });
 
+ Route::middleware(['auth'])->group(function () {
+     Route::post('/store-pengalaman-kerja', [App\Http\Controllers\ProfileController::class, 'storePengalamanKerja'])->name('store.pengalaman.kerja');
+     Route::put('/update-pengalaman-kerja/{id}', [App\Http\Controllers\ProfileController::class, 'updatePengalamanKerja'])->name('update.pengalaman.kerja');
+     Route::delete('/delete-pengalaman-kerja/{id}', [App\Http\Controllers\ProfileController::class, 'deletePengalamanKerja'])->name('delete.pengalaman.kerja');
+     Route::get('/get-pengalaman-kerja/{id}', [App\Http\Controllers\ProfileController::class, 'getPengalamanKerja'])->name('get.pengalaman.kerja');
+ });
+ 
+ 
 Route::post('/update-kegiatan-sekarang', [App\Http\Controllers\KegiatanController::class, 'updateKegiatan'])->name('updateKegiatanSekarang');
 
 

@@ -3,13 +3,14 @@
 @section('content')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.css">
 
+    {{-- Untuk menampilkan data Profile --}}
     <div class="card">
         <div class="card-header">
             <h5 class="card-title">Profile</h5>
             <div class="container mt-5">
                 <div class="row">
                     <div class="col-md-2 text-center">
-                        <img src="{{ asset('bkk/dist/assets/images/faces/intan.jpg') }}" class="rounded-circle"
+                        <img src="{{ asset('bkk/dist/assets/images/faces/apdal.jpg') }}" class="rounded-circle"
                             alt="Profile Image" style="width: 200px; height: 200px; object-fit: cover;">
                     </div>
 
@@ -28,9 +29,6 @@
 
                                 <p><strong>JENIS KELAMIN</strong></p>
                                 <p class="text-muted">{{ $user->jenis_kelamin }}</p>
-
-                                <p><strong>STATUS</strong></p>
-                                <p class="text-muted">{{ $user->status }}</p>
                             </div>
                             <div class="col-md-6">
                                 <p><strong>USERNAME</strong></p>
@@ -39,8 +37,8 @@
                                 <p><strong>ALAMAT LENGKAP</strong></p>
                                 <p class="text-muted">{{ $user->alamat }}</p>
 
-                                <p><strong>PENGALAMAN KERJA</strong></p>
-                                <p class="text-muted">{{ $user->pengalaman_kerja ?? 'Belum ada pengalaman kerja' }}</p>
+                                <p><strong>STATUS</strong></p>
+                                <p class="text-muted">{{ $user->status }}</p>
                             </div>
                         </div>
                     </div>
@@ -49,6 +47,7 @@
         </div>
     </div>
 
+    {{-- Untuk menampilkan About --}}
     <div class="card">
         <div class="card-header">
             <h5 class="card-title">Tentang Saya
@@ -60,12 +59,12 @@
         </div>
     </div>
 
-
+    {{-- Untuk menampilkan Pendidikan Formal --}}
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="card-title mb-0">Pendidikan Formal</h5>
             <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#editFormalModal">
-                <i class="bi bi-plus-circle-fill"></i> Tambah Pendidikan
+                <i class="bi bi-plus-circle-fill"></i> Tambah Pendidikan Formal
             </a>
         </div>
         <div class="card-body">
@@ -104,11 +103,12 @@
         }
     </script>
 
+    {{-- Untuk menampilkan Pendidikan Non Formal --}}
     <div class="card">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="card-title mb-0">Pendidikan Non-Formal</h5>
             <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#editNonFormalModal">
-                <i class="bi bi-plus-circle-fill"></i> Tambah Pendidikan
+                <i class="bi bi-plus-circle-fill"></i> Tambah Pendidikan Non Formal
             </a>
         </div>
         <div class="card-body">
@@ -147,17 +147,98 @@
         }
     </script>
 
-
+    {{-- Section untuk Menampilkan Keahlian --}}
     <div class="card">
-        <div class="card-header">
-            <h5 class="card-title">Keahlian
-                <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#editSkillModal">
-                    <i class="bi bi-pencil-fill"></i>
-                </a>
-            </h5>
-            <p>{{ $user->keahlian }}</p>
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">Keahlian</h5>
+            <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#editSkillModal">
+                <i class="bi bi-plus-circle-fill"></i> Tambah Keahlian
+            </a>
+        </div>
+        <div class="card-body">
+            @foreach ($skill as $s)
+                <div class="education-item position-relative mb-3">
+                    <h6 class="mb-1">{{ $s->keahlian }}</h6>
+                    <div class="education-actions position-absolute top-0 end-0 d-none">
+                        <a href="#" class="text-primary me-2" data-bs-toggle="modal" data-bs-target="#editSkillModal"
+                            data-id="{{ $s->nik }}">
+                            <i class="bi bi-pencil-fill">Edit</i>
+                        </a>
+                        <a href="#" class="text-danger" onclick="deleteSkill({{ $s->nik }})">
+                            <i class="bi bi-trash-fill"> Hapus</i>
+                        </a>
+                    </div>
+                </div>
+            @endforeach
         </div>
     </div>
+
+    <style>
+        .education-item:hover .education-actions {
+            display: block !important;
+        }
+    </style>
+
+    <script>
+        function deleteSkill(id) {
+            if (confirm('Are you sure you want to delete this skill?')) {
+                fetch(`/delete-skill/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                }).then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    }
+                });
+            }
+        }
+    </script>
+
+    {{-- Untuk menampilkan Pengalaman Kerja --}}
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">Pengalaman Kerja</h5>
+            <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#editPengalamanModal">
+                <i class="bi bi-plus-circle-fill"></i> Tambah Pengalaman Kerja
+            </a>
+        </div>
+        <div class="card-body">
+            @foreach ($kerja as $k)
+                <div class="experience-item position-relative mb-3">
+                    <h6 class="mb-1">{{ $k->nama_perusahaan }}</h6>
+                    <p class="mb-1"><strong>{{ $k->jabatan }}</strong></p>
+                    <p class="mb-1">{{ $k->tahun_awal }} - {{ $k->tahun_akhir }}</p>
+                    <div class="k-actions position-absolute top-0 end-0 d-none">
+                        <a href="#" class="text-primary me-2" data-bs-toggle="modal" data-bs-target="#editkModal"
+                            data-id="{{ $k->id_pengalaman_kerja }}">
+                            <i class="bi bi-pencil-fill">Edit</i>
+                        </a>
+                        <a href="#" class="text-danger" onclick="deleteExperience({{ $k->id_pengalaman_kerja }})">
+                            <i class="bi bi-trash-fill"> Hapus</i>
+                        </a>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+
+    <style>
+        .experience-item:hover .experience-actions {
+            display: block !important;
+        }
+    </style>
+
+    <script>
+        function deleteExperience(id) {
+            if (confirm('Are you sure you want to delete this work experience record?')) {
+                // Implement delete functionality here
+            }
+        }
+    </script>
+
+
 
 
     <!-- Modal Edit Tentang Saya -->
@@ -228,8 +309,8 @@
     </div>
 
     {{-- Modal untuk Edit dan Tambah Pendidikan Formal --}}
-    <div class="modal fade" id="editFormalModal" tabindex="-1" aria-labelledby="editFormalModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="editFormalModal" tabindex="-1" data-bs-backdrop="static"
+        aria-labelledby="editFormalModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -389,9 +470,9 @@
         });
     </script>
 
-     {{-- Modal untuk Edit dan Tambah Pendidikan Non Formal --}}
-    <div class="modal fade" id="editNonFormalModal" tabindex="-1" aria-labelledby="editNonFormalModalLabel"
-        aria-hidden="true">
+    {{-- Modal untuk Edit dan Tambah Pendidikan Non Formal --}}
+    <div class="modal fade" id="editNonFormalModal" tabindex="-1" data-bs-backdrop="static"
+        aria-labelledby="editNonFormalModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -489,6 +570,237 @@
         });
     </script>
 
+    {{-- Modal untuk Edit dan Tambah Keahlian --}}
+    <div class="modal fade" id="editSkillModal" tabindex="-1" data-bs-backdrop="static"
+        aria-labelledby="editSkillModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editSkillModalLabel">
+                        {{ isset($editMode) ? 'Edit Keahlian' : 'Tambah Keahlian' }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="skillForm" method="POST"
+                        action="{{ isset($editMode) ? route('update.skill', $skill->nik) : route('store.skill') }}">
+                        @csrf
+                        @if (isset($editMode))
+                            @method('PUT')
+                        @endif
+
+                        <div class="mb-3">
+                            <label for="keahlian" class="form-label">Keahlian</label>
+                            <input type="text" class="form-control" id="keahlian" name="keahlian" required>
+                        </div>
+
+                        <div class="text-end mt-3">
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('editSkillModal');
+            const keahlianInput = document.getElementById('keahlian');
+
+            modal.addEventListener('show.bs.modal', function(event) {
+                const button = event.relatedTarget;
+                const id = button.getAttribute('data-id');
+                const form = this.querySelector('#skillForm');
+                const title = this.querySelector('.modal-title');
+
+                const existingMethodField = form.querySelector('input[name="_method"]');
+                if (existingMethodField) {
+                    existingMethodField.remove();
+                }
+
+                if (id) {
+                    title.textContent = 'Edit Keahlian';
+                    form.action = `/update-skill/${id}`;
+                    form.method = 'POST';
+
+                    const methodField = document.createElement('input');
+                    methodField.type = 'hidden';
+                    methodField.name = '_method';
+                    methodField.value = 'PUT';
+                    form.appendChild(methodField);
+
+                    fetchSkillData(id);
+                } else {
+                    title.textContent = 'Tambah Keahlian';
+                    form.action = '/store-skill';
+                    form.method = 'POST';
+                    form.reset();
+                }
+            });
+
+            function fetchSkillData(id) {
+                fetch(`/get-skill/${id}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        keahlianInput.value = data.keahlian;
+                    })
+                    .catch(error => console.error('Error fetching skill data:', error));
+            }
+        });
+    </script>
+
+    {{-- Modal untuk Edit dan Tambah Pengalaman Kerja --}}
+    <div class="modal fade" id="editPengalamanModal" tabindex="-1" data-bs-backdrop="static"
+        aria-labelledby="editPengalamanModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editPengalamanModalLabel">
+                        {{ isset($editMode) ? 'Edit Pengalaman Kerja' : 'Tambah Pengalaman Kerja' }}
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="pengalamanKerjaForm" method="POST"
+                        action="{{ isset($editMode) ? route('update.pengalaman.kerja', $pengalamanKerja->id_pengalaman_kerja) : route('store.pengalaman.kerja') }}">
+                        @csrf
+                        @if (isset($editMode))
+                            @method('PUT')
+                        @endif
+
+                        <div class="mb-3">
+                            <label for="jabatan" class="form-label">Jabatan</label>
+                            <input type="text" class="form-control" id="jabatan" name="jabatan" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="jenis_waktu_pekerjaan" class="form-label">Jenis Waktu Pekerjaan</label>
+                            <select class="form-select" id="jenis_waktu_pekerjaan" name="jenis_waktu_pekerjaan" required>
+                                <option value="">Pilih Jenis Waktu Pekerjaan</option>
+                                <option value="Waktu Kerja Standar (Full-Time)">Waktu Kerja Standar (Full-Time)</option>
+                                <option value="Waktu Kerja Paruh Waktu (Part-Time)">Waktu Kerja Paruh Waktu (Part-Time)
+                                </option>
+                                <option value="Waktu Kerja Fleksibel (Flexible Hours)">Waktu Kerja Fleksibel (Flexible
+                                    Hours)</option>
+                                <option value="Shift Kerja (Shift Work)">Shift Kerja (Shift Work)</option>
+                                <option value="Waktu Kerja Bergilir (Rotating Shifts)">Waktu Kerja Bergilir (Rotating
+                                    Shifts)</option>
+                                <option value="Waktu Kerja Jarak Jauh (Remote Work)">Waktu Kerja Jarak Jauh (Remote Work)
+                                </option>
+                                <option value="Waktu Kerja Kontrak (Contract Work)">Waktu Kerja Kontrak (Contract Work)
+                                </option>
+                                <option value="Waktu Kerja Proyek (Project-Based Work)">Waktu Kerja Proyek (Project-Based
+                                    Work)</option>
+                                <option value="Waktu Kerja Tidak Teratur (Irregular Hours)">Waktu Kerja Tidak Teratur
+                                    (Irregular Hours)</option>
+                                <option value="Waktu Kerja Sementara (Temporary Work)">Waktu Kerja Sementara (Temporary
+                                    Work)</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="nama_perusahaan" class="form-label">Nama Perusahaan</label>
+                            <input type="text" class="form-control" id="nama_perusahaan" name="nama_perusahaan"
+                                required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="alamat" class="form-label">Alamat Perusahaan</label>
+                            <input type="text" class="form-control" id="alamat" name="alamat" required>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="tahun_awal" class="form-label">Tahun Mulai</label>
+                                <input type="number" class="form-control" id="tahun_awal" name="tahun_awal" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="tahun_akhir" class="form-label">Tahun Selesai</label>
+                                <input type="number" class="form-control" id="tahun_akhir" name="tahun_akhir" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="deskripsi" class="form-label">Deskripsi Pekerjaan (Opsional)</label>
+                            <textarea class="form-control" id="deskripsi" name="deskripsi" rows="3"></textarea>
+                        </div>
+
+                        <div class="text-end mt-3">
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('editPengalamanModal');
+            const jabatanInput = document.getElementById('jabatan');
+            const jenisWaktuInput = document.getElementById('jenis_waktu_pekerjaan');
+            const namaPerusahaanInput = document.getElementById('nama_perusahaan');
+            const alamatInput = document.getElementById('alamat');
+            const tahunAwalInput = document.getElementById('tahun_awal');
+            const tahunAkhirInput = document.getElementById('tahun_akhir');
+            const deskripsiInput = document.getElementById('deskripsi');
+
+            modal.addEventListener('show.bs.modal', function(event) {
+                const button = event.relatedTarget;
+                const id = button.getAttribute('data-id'); // Get ID from the button data attribute
+                const form = this.querySelector('#pengalamanKerjaForm');
+                const title = this.querySelector('.modal-title');
+
+                // Clear previous hidden method input if it exists
+                const existingMethodField = form.querySelector('input[name="_method"]');
+                if (existingMethodField) {
+                    existingMethodField.remove();
+                }
+
+                if (id) {
+                    // Edit mode
+                    title.textContent = 'Edit Pengalaman Kerja';
+                    form.action = `/update-pengalaman-kerja/${id}`; // Correct route for update
+                    form.method = 'POST'; // Form method should be POST
+
+                    // Add hidden input for PUT method
+                    const methodField = document.createElement('input');
+                    methodField.type = 'hidden';
+                    methodField.name = '_method';
+                    methodField.value = 'PUT'; // Indicate that it is a PUT request
+                    form.appendChild(methodField);
+
+                    // Fetch and populate data
+                    fetchPengalamanData(id);
+                } else {
+                    // Add mode
+                    title.textContent = 'Tambah Pengalaman Kerja';
+                    form.action = '/store-pengalaman-kerja'; // Correct route for store
+                    form.method = 'POST'; // Use POST for new entries
+                    form.reset(); // Reset the form
+                }
+            });
+
+            function fetchPengalamanData(id) {
+                fetch(`/get-pengalaman-kerja/${id}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Populate form with fetched data
+                        jabatanInput.value = data.jabatan;
+                        jenisWaktuInput.value = data.jenis_waktu_pekerjaan;
+                        namaPerusahaanInput.value = data.nama_perusahaan;
+                        alamatInput.value = data.alamat;
+                        tahunAwalInput.value = data.tahun_awal;
+                        tahunAkhirInput.value = data.tahun_akhir;
+                        deskripsiInput.value = data.deskripsi;
+                    })
+                    .catch(error => console.error('Error fetching pengalaman data:', error));
+            }
+        });
+    </script>
+
+
+
 
 
 
@@ -503,10 +815,10 @@
                 text: "{{ session('success') }}",
                 duration: 3000,
                 close: true,
-                gravity: "top", // 'top' or 'bottom'
-                position: 'right', // 'left', 'center' or 'right'
+                gravity: "top",
+                position: 'right',
                 backgroundColor: "#4CAF50",
-                stopOnFocus: true, // Prevents dismissing of toast on hover
+                stopOnFocus: true,
             }).showToast();
         @endif
     </script>
