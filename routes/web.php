@@ -8,6 +8,7 @@ use App\Http\Controllers\DatalokerController;
 use App\Http\Controllers\DetaillokerController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\LamaranPerusahaanController;
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -113,23 +114,21 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-     Route::post('/store-skill', [App\Http\Controllers\ProfileController::class, 'storeSkill'])->name('store.skill');
-     Route::put('/update-skill/{id}', [App\Http\Controllers\ProfileController::class, 'updateSkill'])->name('update.skill');
-     Route::delete('/delete-skill/{id}', [App\Http\Controllers\ProfileController::class, 'deleteSkill'])->name('delete.skill');
-     Route::get('/get-skill/{id}', [App\Http\Controllers\ProfileController::class, 'getSkill'])->name('get.skill');
- });
+    Route::post('/store-skill', [App\Http\Controllers\ProfileController::class, 'storeSkill'])->name('store.skill');
+    Route::put('/update-skill/{id}', [App\Http\Controllers\ProfileController::class, 'updateSkill'])->name('update.skill');
+    Route::delete('/delete-skill/{id}', [App\Http\Controllers\ProfileController::class, 'deleteSkill'])->name('delete.skill');
+    Route::get('/get-skill/{id}', [App\Http\Controllers\ProfileController::class, 'getSkill'])->name('get.skill');
+});
 
- Route::middleware(['auth'])->group(function () {
-     Route::post('/store-pengalaman-kerja', [App\Http\Controllers\ProfileController::class, 'storePengalamanKerja'])->name('store.pengalaman.kerja');
-     Route::put('/update-pengalaman-kerja/{id}', [App\Http\Controllers\ProfileController::class, 'updatePengalamanKerja'])->name('update.pengalaman.kerja');
-     Route::delete('/delete-pengalaman-kerja/{id}', [App\Http\Controllers\ProfileController::class, 'deletePengalamanKerja'])->name('delete.pengalaman.kerja');
-     Route::get('/get-pengalaman-kerja/{id}', [App\Http\Controllers\ProfileController::class, 'getPengalamanKerja'])->name('get.pengalaman.kerja');
- });
- 
- 
+Route::middleware(['auth'])->group(function () {
+    Route::post('/store-pengalaman-kerja', [App\Http\Controllers\ProfileController::class, 'storePengalamanKerja'])->name('store.pengalaman.kerja');
+    Route::put('/update-pengalaman-kerja/{id}', [App\Http\Controllers\ProfileController::class, 'updatePengalamanKerja'])->name('update.pengalaman.kerja');
+    Route::delete('/delete-pengalaman-kerja/{id}', [App\Http\Controllers\ProfileController::class, 'deletePengalamanKerja'])->name('delete.pengalaman.kerja');
+    Route::get('/get-pengalaman-kerja/{id}', [App\Http\Controllers\ProfileController::class, 'getPengalamanKerja'])->name('get.pengalaman.kerja');
+
+    Route::get('/profile/{nik}', [ProfileController::class, 'show'])->name('profile.show');
+    Route::post('/profile/{nik}/update-photo', [ProfileController::class, 'updatePhoto'])->name('profile.updatePhoto');
+});
+
+
 Route::post('/update-kegiatan-sekarang', [App\Http\Controllers\KegiatanController::class, 'updateKegiatan'])->name('updateKegiatanSekarang');
-
-
-
-
-

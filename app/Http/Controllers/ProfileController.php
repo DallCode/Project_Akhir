@@ -9,6 +9,7 @@ use App\Models\PendidikanNonFormal;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -18,10 +19,11 @@ class ProfileController extends Controller
         $formal = PendidikanFormal::where('nik', $user->nik)->get();
         $nonFormal = PendidikanNonFormal::where('nik', $user->nik)->get();
         $skill = Alumni::where('nik', $user->nik)->get();
+        $alumni = Alumni::where('nik', $user->nik)->get();
         $kerja = Kerja::where('nik', $user->nik)->get();
 
 
-        return view('profile', compact('user', 'formal', 'nonFormal', 'skill', 'kerja'));
+        return view('profile', compact('user', 'formal', 'nonFormal', 'skill', 'kerja', 'alumni'));
     }
 
     // untuk Profile dasar
@@ -107,7 +109,7 @@ class ProfileController extends Controller
     public function updatePendidikanFormal(Request $request, $id_riwayat_pendidikan_formal)
     {
         $request->validate([
-            'tingkat_pendidikan' => 'required|string|in:SD,SMP,SMA/SMK,DDiploma (D1-D4),Sarjana (S1),Magister (S2),Doktor (S3)',
+            'tingkat_pendidikan' => 'required|string|in:SD,SMP,SMA/SMK,Diploma (D1-D4),Sarjana (S1),Magister (S2),Doktor (S3)',
             'nama_sekolah' => 'required|string|max:255',
             'alamat' => 'required|string|max:255',
             'gelar' => 'nullable|string|max:100',
@@ -138,16 +140,21 @@ class ProfileController extends Controller
     }
     public function deletePendidikanFormal($id_riwayat_pendidikan_formal)
     {
+        // Temukan data berdasarkan id riwayat pendidikan formal
         $formal = PendidikanFormal::find($id_riwayat_pendidikan_formal);
 
+        // Jika data tidak ditemukan, kembalikan respons 404
         if (!$formal) {
             return response()->json(['message' => 'Pendidikan formal tidak ditemukan.'], 404);
         }
 
+        // Hapus data pendidikan formal
         $formal->delete();
 
+        // Kembalikan respons sukses
         return response()->json(['message' => 'Pendidikan formal berhasil dihapus.']);
     }
+
     public function getPendidikanFormal($id_riwayat_pendidikan_formal)
     {
         $formal = PendidikanFormal::find($id_riwayat_pendidikan_formal);
@@ -308,7 +315,7 @@ class ProfileController extends Controller
             'tahun_akhir' => 'required|integer|digits:4|after_or_equal:tahun_awal',
             'deskripsi' => 'nullable|string|max:500',
         ]);
-       
+
         Kerja::create([
             'id_pengalaman_kerja' => Kerja::generateKodeUnik(),
             'nik' => Auth::user()->alumni->nik,
@@ -320,7 +327,7 @@ class ProfileController extends Controller
             'tahun_akhir' => $request->tahun_akhir,
             'deskripsi' => $request->deskripsi,
         ]);
-    
+
         return redirect()->back()->with('success', 'Pengalaman kerja berhasil ditambahkan.');
     }
     public function updatePengalamanKerja(Request $request, $id_pengalaman_kerja)
@@ -374,5 +381,41 @@ class ProfileController extends Controller
         }
 
         return response()->json($kerja);
+    }
+
+    // untul profil
+    public function show($nik)
+    {
+        $alumni = Alumni::findOrFail($nik);
+        return view('profile.show', compact('alumni'));
+    }
+    public function updatePhoto(Request $request, $nik)
+    {
+        $alumni = Alumni::findOrFail($nik);
+
+        // Validasi input
+        $request->validate([
+            'foto' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
+
+        // Hapus foto lama jika ada
+        if ($alumni->foto && Storage::exists('public/foto/' . $alumni->foto)) {
+            Storage::delete('public/foto/' . $alumni->foto);
+        }
+
+        // Simpan foto baru
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->storeAs('public/foto', $filename);
+
+            // Update kolom foto di database
+            $alumni->foto = $filename;
+            $alumni->save();
+
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['success' => false], 400);
     }
 }

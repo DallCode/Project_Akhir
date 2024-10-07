@@ -2,6 +2,10 @@
 
 @section('content')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+
+
 
     {{-- Untuk menampilkan data Profile --}}
     <div class="card">
@@ -10,35 +14,62 @@
             <div class="container mt-5">
                 <div class="row">
                     <div class="col-md-2 text-center">
-                        <img src="{{ asset('bkk/dist/assets/images/faces/apdal.jpg') }}" class="rounded-circle"
-                            alt="Profile Image" style="width: 200px; height: 200px; object-fit: cover;">
+                        <img src="{{ Auth::user()->alumni->foto
+                            ? asset('storage/foto/' . Auth::user()->alumni->foto)
+                            : (Auth::user()->alumni->jenis_kelamin == 'Laki Laki'
+                                ? asset('bkk/dist/assets/images/faces/4.jpg')
+                                : asset('bkk/dist/assets/images/faces/3.jpg')) }}"
+                            class="rounded-circle" alt="Profile Image"
+                            style="width: 200px; height: 200px; object-fit: cover;">
+                        <div class="mt-2">
+                            {{-- Tombol untuk mengubah foto --}}
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editPhotoModal">
+                                <i class="bi bi-pencil-fill"></i> Ganti Foto
+                            </button>
+
+                            {{-- Tombol untuk menghapus foto
+                            @if (Auth::user()->alumni->foto)
+                                <form action="{{ route('profile.deletePhoto', Auth::user()->alumni->nik) }}" method="POST"
+                                    class="d-inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class="bi bi-trash"></i> Hapus Foto
+                                    </button>
+                                </form>
+                            @endif --}}
+                        </div>
                     </div>
 
                     <div class="col-md-8">
-                        <h2><strong>{{ $user->nama }}</strong> <a href="#" class="text-primary"
-                                data-bs-toggle="modal" data-bs-target="#editModal">
+                        <h2>
+                            <strong>{{ Auth::user()->alumni->nama }}</strong>
+                            <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#editModal">
                                 <i class="bi bi-pencil-fill"></i>
-                            </a> </h2>
+                            </a>
+                        </h2>
                         <div class="row">
                             <div class="col-md-6">
                                 <p><strong>KONTAK</strong></p>
-                                <p class="text-muted">{{ $user->kontak }}</p>
+                                <p class="text-muted">{{ Auth::user()->alumni->kontak }}</p>
 
                                 <p><strong>LOKASI</strong></p>
-                                <p class="text-muted">{{ $user->lokasi }}</p>
+                                <p class="text-muted">{{ Auth::user()->alumni->lokasi }}</p>
+                                <!-- Perbaikan typo pada 'Lokasi' menjadi 'lokasi' -->
 
                                 <p><strong>JENIS KELAMIN</strong></p>
-                                <p class="text-muted">{{ $user->jenis_kelamin }}</p>
+                                <p class="text-muted">{{ Auth::user()->alumni->jenis_kelamin }}</p>
                             </div>
                             <div class="col-md-6">
                                 <p><strong>USERNAME</strong></p>
-                                <p class="text-muted">{{ $user->username }}</p>
+                                <p class="text-muted">{{ Auth::user()->username }}</p>
+                                <!-- Mengambil username langsung dari model 'User' -->
 
                                 <p><strong>ALAMAT LENGKAP</strong></p>
-                                <p class="text-muted">{{ $user->alamat }}</p>
+                                <p class="text-muted">{{ Auth::user()->alumni->alamat }}</p>
 
                                 <p><strong>STATUS</strong></p>
-                                <p class="text-muted">{{ $user->status }}</p>
+                                <p class="text-muted">{{ Auth::user()->alumni->status }}</p>
                             </div>
                         </div>
                     </div>
@@ -97,11 +128,25 @@
 
     <script>
         function deleteFormal(id) {
-            if (confirm('Are you sure you want to delete this education record?')) {
-                // Implement delete functionality here
+            if (confirm('Apakah anda yakin menghapus data ini?')) {
+                fetch(`/delete-pendidikan-formal/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                }).then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        alert('Gagal menghapus data.');
+                    }
+                }).catch(error => {
+                    alert('Terjadi kesalahan. Silakan coba lagi.');
+                });
             }
         }
     </script>
+
 
     {{-- Untuk menampilkan Pendidikan Non Formal --}}
     <div class="card">
@@ -160,8 +205,8 @@
                 <div class="education-item position-relative mb-3">
                     <h6 class="mb-1">{{ $s->keahlian }}</h6>
                     <div class="education-actions position-absolute top-0 end-0 d-none">
-                        <a href="#" class="text-primary me-2" data-bs-toggle="modal" data-bs-target="#editSkillModal"
-                            data-id="{{ $s->nik }}">
+                        <a href="#" class="text-primary me-2" data-bs-toggle="modal"
+                            data-bs-target="#editSkillModal" data-id="{{ $s->nik }}">
                             <i class="bi bi-pencil-fill">Edit</i>
                         </a>
                         <a href="#" class="text-danger" onclick="deleteSkill({{ $s->nik }})">
@@ -590,7 +635,7 @@
 
                         <div class="mb-3">
                             <label for="keahlian" class="form-label">Keahlian</label>
-                            <input type="text" class="form-control" id="keahlian" name="keahlian" required>
+                            <textarea class="form-control" id="keahlian" name="keahlian" rows="3" required></textarea>
                         </div>
 
                         <div class="text-end mt-3">
@@ -648,6 +693,7 @@
             }
         });
     </script>
+
 
     {{-- Modal untuk Edit dan Tambah Pengalaman Kerja --}}
     <div class="modal fade" id="editPengalamanModal" tabindex="-1" data-bs-backdrop="static"
@@ -798,6 +844,106 @@
             }
         });
     </script>
+
+    {{-- Modal untuk ganti foto --}}
+    <div class="modal fade" id="editPhotoModal" tabindex="-1" aria-labelledby="editPhotoModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form id="profile-picture-form" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editPhotoModalLabel">Ganti Foto Profil</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="foto" class="form-label">Pilih Foto</label>
+                            <input type="file" class="form-control" id="file-input" name="foto" accept="image/*"
+                                required>
+                        </div>
+                        <img id="image-preview" src="" alt="Preview" style="display: none; width: 100%;">
+                        <canvas id="canvas" style="display: none;"></canvas>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="button" id="crop-button" class="btn btn-primary">Simpan</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let cropper;
+        const fileInput = document.getElementById('file-input');
+        const imagePreview = document.getElementById('image-preview');
+        const cropButton = document.getElementById('crop-button');
+
+        fileInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    imagePreview.src = event.target.result;
+                    imagePreview.style.display = 'block';
+
+                    // Inisialisasi Cropper.js
+                    if (cropper) {
+                        cropper.destroy();
+                    }
+                    cropper = new Cropper(imagePreview, {
+                        aspectRatio: 1,
+                        viewMode: 1,
+                    });
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+
+        cropButton.addEventListener('click', function() {
+            if (cropper) {
+                // Ambil data yang telah di-crop
+                const canvasData = cropper.getCroppedCanvas();
+                canvasData.toBlob((blob) => {
+                    const formData = new FormData();
+                    formData.append('foto', blob, 'profile.jpg');
+
+                    // Kirim data ke server menggunakan Fetch API
+                    fetch("{{ route('profile.updatePhoto', Auth::user()->alumni->nik) }}", {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            }
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(
+                                'Gagal memperbarui foto.'); // Munculkan kesalahan jika status bukan 200-299
+                            }
+                            return response.json(); // Jika status OK, parse JSON
+                        })
+                        .then(data => {
+                            if (data.success) {
+                                $('#editPhotoModal').modal('hide');
+                                location
+                            .reload(); // Reload halaman untuk menampilkan foto yang diperbarui
+                            } else {
+                                alert('Gagal memperbarui foto.');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert(error.message); // Tampilkan pesan kesalahan yang tepat
+                        });
+                });
+            }
+        });
+    </script>
+
+
+
 
 
 
