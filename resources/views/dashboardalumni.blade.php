@@ -53,7 +53,7 @@
                             <form action="{{ route('lamar.store') }}" method="POST" id="importForm" enctype="multipart/form-data">
                                 @csrf
                                 <input type="file" name="file" id="file_{{ $item->id_lowongan_pekerjaan }}" multiple class="filepond" />
-                                <button type="submit" class="btn btn-primary mt-3">Upload and Import</button>
+                                <button type="submit" class="btn btn-primary mt-3">Lamar</button>
                             </form>
                         </div>
                     </div>

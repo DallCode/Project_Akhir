@@ -3,7 +3,11 @@
 @section('content')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <!-- Croppie CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css" />
+
+    <!-- Croppie JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
 
 
 
@@ -270,7 +274,7 @@
     </div>
 
     <style>
-        .experience-item:hover .experience-actions {
+        .education-item:hover .education-actions {
             display: block !important;
         }
     </style>
@@ -852,64 +856,199 @@
             <div class="modal-content">
                 <form id="profile-picture-form" enctype="multipart/form-data">
                     @csrf
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editPhotoModalLabel">Ganti Foto Profil</h5>
+                    <div class="modal-header bg-light">
+                        <h5 class="modal-title" id="editPhotoModalLabel">
+                            <i class="fas fa-camera me-2"></i>Ganti Foto Profil
+                        </h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="foto" class="form-label">Pilih Foto</label>
-                            <input type="file" class="form-control" id="file-input" name="foto" accept="image/*"
-                                required>
+                        <div class="row">
+                            <div class="col-md-12 mb-4">
+                                <div class="upload-container text-center p-3 border rounded bg-light">
+                                    <label for="file-input" class="form-label mb-0">
+                                        <div class="upload-prompt cursor-pointer">
+                                            <i class="fas fa-cloud-upload-alt fs-3 mb-2"></i>
+                                            <p class="mb-0">Klik atau seret foto ke sini</p>
+                                            <small class="text-muted">Format: JPG, PNG (Maks. 2MB)</small>
+                                        </div>
+                                    </label>
+                                    <input type="file" class="form-control d-none" id="file-input" name="foto"
+                                        accept="image/*" required>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="preview-container bg-light p-3 rounded" style="display: none;">
+                                    <h6 class="mb-3">Sesuaikan Foto</h6>
+                                    <div class="text-center">
+                                        <img id="image-preview" src="" alt="Preview"
+                                            style="display: none; max-width: 100%;">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <img id="image-preview" src="" alt="Preview" style="display: none; width: 100%;">
                         <canvas id="canvas" style="display: none;"></canvas>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="button" id="crop-button" class="btn btn-primary">Simpan</button>
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-1"></i>Batal
+                        </button>
+                        <button type="button" id="crop-button" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>Simpan
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
+    <style>
+        .upload-container {
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #dee2e6;
+            transition: all 0.3s ease;
+        }
+
+        .upload-container:hover {
+            border-color: #0d6efd;
+            background-color: #f8f9fa;
+        }
+
+        .upload-prompt {
+            cursor: pointer;
+        }
+
+        .preview-container {
+            min-height: 300px;
+            margin-top: 20px;
+        }
+
+        .cr-viewport {
+            box-shadow: 0 0 2000px 2000px rgba(0, 0, 0, 0.5);
+            border: 2px solid #fff;
+        }
+
+        .cr-boundary {
+            background-color: #f8f9fa;
+        }
+
+        .modal-content {
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .modal-footer {
+            border-top: 1px solid #dee2e6;
+        }
+    </style>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        let cropper;
+        let croppieInstance;
         const fileInput = document.getElementById('file-input');
         const imagePreview = document.getElementById('image-preview');
         const cropButton = document.getElementById('crop-button');
+        const previewContainer = document.querySelector('.preview-container');
 
+        // Ketika file dipilih
         fileInput.addEventListener('change', function() {
             const file = this.files[0];
             if (file) {
+                if (file.size > 2 * 1024 * 1024) { // 2MB dalam bytes
+                    alert('Ukuran file terlalu besar. Maksimal 2MB.');
+                    this.value = '';
+                    return;
+                }
+
                 const reader = new FileReader();
                 reader.onload = function(event) {
                     imagePreview.src = event.target.result;
-                    imagePreview.style.display = 'block';
+                    previewContainer.style.display = 'block';
 
-                    // Inisialisasi Cropper.js
-                    if (cropper) {
-                        cropper.destroy();
+                    // Inisialisasi Croppie
+                    if (croppieInstance) {
+                        croppieInstance.destroy();
                     }
-                    cropper = new Cropper(imagePreview, {
-                        aspectRatio: 1,
-                        viewMode: 1,
+
+                    croppieInstance = new Croppie(imagePreview, {
+                        viewport: {
+                            width: 200,
+                            height: 200,
+                            type: 'circle'
+                        },
+                        boundary: {
+                            width: 300,
+                            height: 300
+                        },
+                        enableExif: true,
+                        enableOrientation: true
                     });
                 }
                 reader.readAsDataURL(file);
             }
         });
 
+        // Drag and drop functionality
+        const uploadContainer = document.querySelector('.upload-container');
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadContainer.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadContainer.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadContainer.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+            uploadContainer.classList.add('border-primary');
+        }
+
+        function unhighlight(e) {
+            uploadContainer.classList.remove('border-primary');
+        }
+
+        uploadContainer.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            fileInput.files = files;
+            fileInput.dispatchEvent(new Event('change'));
+        }
+
+        // Ketika tombol "Simpan" ditekan
         cropButton.addEventListener('click', function() {
-            if (cropper) {
-                // Ambil data yang telah di-crop
-                const canvasData = cropper.getCroppedCanvas();
-                canvasData.toBlob((blob) => {
+            if (croppieInstance) {
+                cropButton.disabled = true;
+                cropButton.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Menyimpan...';
+
+                croppieInstance.result({
+                    type: 'blob',
+                    size: {
+                        width: 200,
+                        height: 200
+                    },
+                    format: 'jpeg'
+                }).then(function(blob) {
                     const formData = new FormData();
                     formData.append('foto', blob, 'profile.jpg');
 
-                    // Kirim data ke server menggunakan Fetch API
                     fetch("{{ route('profile.updatePhoto', Auth::user()->alumni->nik) }}", {
                             method: 'POST',
                             body: formData,
@@ -919,28 +1058,31 @@
                         })
                         .then(response => {
                             if (!response.ok) {
-                                throw new Error(
-                                'Gagal memperbarui foto.'); // Munculkan kesalahan jika status bukan 200-299
+                                throw new Error('Gagal memperbarui foto.');
                             }
-                            return response.json(); // Jika status OK, parse JSON
+                            return response.json();
                         })
                         .then(data => {
                             if (data.success) {
                                 $('#editPhotoModal').modal('hide');
-                                location
-                            .reload(); // Reload halaman untuk menampilkan foto yang diperbarui
+                                location.reload();
                             } else {
                                 alert('Gagal memperbarui foto.');
                             }
                         })
                         .catch(error => {
                             console.error('Error:', error);
-                            alert(error.message); // Tampilkan pesan kesalahan yang tepat
+                            alert(error.message);
+                        })
+                        .finally(() => {
+                            cropButton.disabled = false;
+                            cropButton.innerHTML = '<i class="fas fa-save me-1"></i>Simpan';
                         });
                 });
             }
         });
     </script>
+
 
 
 

@@ -289,6 +289,7 @@ class ProfileController extends Controller
             'keahlian' => null,
         ]);
 
+        session()->flash('success', 'Keahlian berhasil dihapus.');
         return response()->json(['message' => 'Keahlian berhasil dihapus.']);
     }
     public function getSkill($nik)
@@ -370,6 +371,7 @@ class ProfileController extends Controller
 
         $kerja->delete();
 
+        session()->flash('success', 'Pengalaman kerja berhasil dihapus.');
         return response()->json(['message' => 'Pengalaman kerja berhasil dihapus.']);
     }
     public function getPengalamanKerja($id_pengalaman_kerja)
@@ -413,6 +415,7 @@ class ProfileController extends Controller
             $alumni->foto = $filename;
             $alumni->save();
 
+            session()->flash('success', 'Foto berhasil diperbarui.');
             return response()->json(['success' => true]);
         }
 

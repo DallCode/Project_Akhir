@@ -102,7 +102,7 @@ Route::put('/profile/update', [App\Http\Controllers\ProfileController::class, 'u
 Route::middleware(['auth'])->group(function () {
     Route::post('/store-pendidikan-formal', [App\Http\Controllers\ProfileController::class, 'storePendidikanFormal'])->name('store.pendidikan.formal');
     Route::put('/update-pendidikan-formal/{id}', [App\Http\Controllers\ProfileController::class, 'updatePendidikanFormal'])->name('update.pendidikan.formal');
-    Route::delete('/delete-pendidikan-formal/{id}', [App\Http\Controllers\ProfileController::class, 'deletePendidikanFormal'])->name('delete.pendidikan.formal');
+    Route::delete('/delete-pendidikan-formal/{id}', [ProfileController::class, 'deletePendidikanFormal']);
     Route::get('/get-pendidikan-formal/{id}', [App\Http\Controllers\ProfileController::class, 'getPendidikanFormal'])->name('get.pendidikan.formal');
 });
 
