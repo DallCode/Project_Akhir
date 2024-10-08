@@ -10,6 +10,8 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 class ProfileController extends Controller
 {
@@ -421,4 +423,29 @@ class ProfileController extends Controller
 
         return response()->json(['success' => false], 400);
     }
+
+
+    // untuk export profile
+    public function exportProfile($nik)
+{
+    // Ambil data alumni berdasarkan NIK
+    $alumni = Alumni::with(['pendidikanformal', 'pendidikannonformal', 'kerja'])->where('nik', $nik)->firstOrFail();
+
+    // Set opsi untuk Dompdf
+    $options = new Options();
+    $options->set('defaultFont', 'Arial');
+    $dompdf = new Dompdf($options);
+
+    // Load view ke dalam Dompdf
+    $dompdf->loadHtml(view('profile_pdf', compact('alumni'))->render());
+
+    // Set ukuran kertas dan orientasi
+    $dompdf->setPaper('A4', 'portrait');
+
+    // Render PDF
+    $dompdf->render();
+
+    // Output ke browser
+    return $dompdf->stream('profile_' . $nik . '.pdf');
+}
 }

@@ -192,14 +192,14 @@
 <script src="{{ asset('bkk/dist/assets/vendors/simple-datatables/simple-datatables.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <script>
-    @if (session('success'))
+    @if (session('success') || session('error'))
         Toastify({
-            text: "{{ session('success') }}",
+            text: "{{ session('success') ? session('success') : session('error') }}",
             duration: 3000,
             close: true,
             gravity: "top", // 'top' or 'bottom'
             position: 'right', // 'left', 'center' or 'right'
-            backgroundColor: "#4CAF50",
+            backgroundColor: "{{ session('success') ? '#4CAF50' : '#F44336' }}", // Hijau untuk success, Merah untuk error
             stopOnFocus: true, // Prevents dismissing of toast on hover
         }).showToast();
     @endif

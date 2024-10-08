@@ -67,37 +67,7 @@ class DashboardalumniController extends Controller
         $lamaran->id_lowongan_pekerjaan = $loker->id_lowongan_pekerjaan;
         $lamaran->nik = $alumniLogin->nik;
         $lamaran->status = 'terkirim';
-        $lamaran->nama = $alumniLogin->nama;
-        $lamaran->jenis_kelamin = $alumniLogin->jenis_kelamin;
-        $lamaran->lokasi = $alumniLogin->lokasi;
-        $lamaran->alamat = $alumniLogin->alamat;
-        $lamaran->kontak = $alumniLogin->kontak;
-        $lamaran->keahlian = $alumniLogin->keahlian;
-        $lamaran->foto = $alumniLogin->foto;
-        $lamaran->deskripsi = $alumniLogin->deskripsi;
         $lamaran->save();
-
-        // Simpan riwayat pendidikan formal
-        foreach ($alumniLogin->pendidikanformal as $pendidikan) {
-            $pendidikanLamaran = new PendidikanLamaran();
-            $pendidikanLamaran->id_lamaran = $lamaran->id_lamaran;
-            $pendidikanLamaran->institusi = $pendidikan->institusi;
-            $pendidikanLamaran->jurusan = $pendidikan->jurusan;
-            $pendidikanLamaran->tahun_masuk = $pendidikan->tahun_masuk;
-            $pendidikanLamaran->tahun_lulus = $pendidikan->tahun_lulus;
-            $pendidikanLamaran->save();
-        }
-
-        // Simpan pengalaman kerja
-        foreach ($alumniLogin->kerja as $pengalaman) {
-            $kerjaLamaran = new KerjaLamaran();
-            $kerjaLamaran->id_lamaran = $lamaran->id_lamaran;
-            $kerjaLamaran->perusahaan = $pengalaman->perusahaan;
-            $kerjaLamaran->posisi = $pengalaman->posisi;
-            $kerjaLamaran->tahun_masuk = $pengalaman->tahun_masuk;
-            $kerjaLamaran->tahun_keluar = $pengalaman->tahun_keluar;
-            $kerjaLamaran->save();
-        }
 
         // Simpan file lamaran jika ada (opsional)
         if ($request->hasFile('file')) {

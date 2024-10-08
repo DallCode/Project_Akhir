@@ -9,23 +9,23 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Lamaran extends Model
 {
     use HasFactory;
+
     protected $table = 'lamaran';
     public $timestamps = false;
-    protected $primarykey ='id_lamaran';
-    protected $fillable = ['id_lamaran','id_lowongan_pekerjaan', 'nik', 'status'];
+
+    // Pastikan nama property ini benar
+    protected $primaryKey = 'id_lamaran'; // Ganti 'primarykey' menjadi 'primaryKey'
+    protected $keyType = 'string';
+    public $incrementing = false;
+    protected $fillable = ['id_lamaran', 'id_lowongan_pekerjaan', 'nik', 'status'];
 
     public function loker(): BelongsTo {
         return $this->belongsTo(Loker::class, 'id_lowongan_pekerjaan');
     }
 
-    public function alumni(): BelongsTo 
-    {
+    public function alumni(): BelongsTo {
         return $this->belongsTo(Alumni::class, 'nik', 'nik');
     }
-
-
-
-
 
     public static function generateKodeUnik()
     {

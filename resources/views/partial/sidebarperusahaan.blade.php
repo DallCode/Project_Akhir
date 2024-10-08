@@ -28,12 +28,21 @@
                     </a>
                 </li>
 
-                <li class="sidebar-item ">
-                    <a href="{{ route('lamaran') }}" class='sidebar-link'>
+                <li class="sidebar-item has-sub">
+                    <a href="#" class="sidebar-link" data-toggle="submenu">
                         <i class="bi bi-file-earmark-text-fill"></i>
                         <span>Data Lamaran</span>
                     </a>
+                    <ul class="submenu">
+                        <li class="sidebar-item">
+                            <a href="{{ route('lamaran') }}" class="sidebar-link">Lamaran</a>
+                        </li>
+                        <li class="sidebar-item">
+                            <a href="#" class="sidebar-link">Arsip</a>
+                        </li>
+                    </ul>
                 </li>
+
 
                 <li class="sidebar-item">
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">

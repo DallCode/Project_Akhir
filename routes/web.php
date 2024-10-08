@@ -74,6 +74,10 @@ Route::get('/lowongan', [DatalokerController::class, 'index'])->name('lowongan.i
 Route::put('/lowongan/{id_lowongan_pekerjaan}', [DatalokerController::class, 'update'])->name('lowongan.update');
 
 Route::get('/lamaran', [LamaranPerusahaanController::class, 'index'])->name('lamaran');
+Route::post('/lamaran/{id}/lolos', [LamaranPerusahaanController::class, 'lolos'])->name('lamaran.lolos');
+Route::post('/lamaran/{id}/diterima', [LamaranPerusahaanController::class, 'diterima'])->name('lamaran.diterima');
+Route::post('/lamaran/{id}/ditolak', [LamaranPerusahaanController::class, 'ditolak'])->name('lamaran.ditolak');
+
 
 
 
@@ -128,6 +132,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/profile/{nik}', [ProfileController::class, 'show'])->name('profile.show');
     Route::post('/profile/{nik}/update-photo', [ProfileController::class, 'updatePhoto'])->name('profile.updatePhoto');
+    Route::get('/alumni/{nik}/export-profile', [ProfileController::class, 'exportProfile'])->name('alumni.exportProfile');
+
 });
 
 

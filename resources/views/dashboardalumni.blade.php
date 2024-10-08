@@ -52,6 +52,7 @@
                             <div id="alert-container"></div>
                             <form action="{{ route('lamar.store') }}" method="POST" id="importForm" enctype="multipart/form-data">
                                 @csrf
+                                <input type="hidden" name="id_lowongan_pekerjaan" value="{{ $item->id_lowongan_pekerjaan }}">
                                 <input type="file" name="file" id="file_{{ $item->id_lowongan_pekerjaan }}" multiple class="filepond" />
                                 <button type="submit" class="btn btn-primary mt-3">Lamar</button>
                             </form>
@@ -75,14 +76,14 @@
 
 <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <script>
-    @if (session('success'))
+    @if (session('success') || session('error'))
         Toastify({
-            text: "{{ session('success') }}",
+            text: "{{ session('success') ? session('success') : session('error') }}",
             duration: 3000,
             close: true,
             gravity: "top", // 'top' or 'bottom'
             position: 'right', // 'left', 'center' or 'right'
-            backgroundColor: "#4CAF50",
+            backgroundColor: "{{ session('success') ? '#4CAF50' : '#F44336' }}", // Hijau untuk success, Merah untuk error
             stopOnFocus: true, // Prevents dismissing of toast on hover
         }).showToast();
     @endif

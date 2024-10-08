@@ -31,6 +31,9 @@
                                 <i class="bi bi-pencil-fill"></i> Ganti Foto
                             </button>
 
+
+
+
                             {{-- Tombol untuk menghapus foto
                             @if (Auth::user()->alumni->foto)
                                 <form action="{{ route('profile.deletePhoto', Auth::user()->alumni->nik) }}" method="POST"
@@ -45,13 +48,20 @@
                         </div>
                     </div>
 
-                    <div class="col-md-8">
+                    <div class="col-md-8 position-relative">
                         <h2>
                             <strong>{{ Auth::user()->alumni->nama }}</strong>
                             <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#editModal">
                                 <i class="bi bi-pencil-fill"></i>
                             </a>
                         </h2>
+
+                        <!-- Button Export PDF di pojok kanan atas -->
+                        <a href="{{ route('alumni.exportProfile', Auth::user()->alumni->nik) }}"
+                            class="btn btn-primary position-absolute top-0 end-0">
+                            Export PDF
+                        </a>
+
                         <div class="row">
                             <div class="col-md-6">
                                 <p><strong>KONTAK</strong></p>
@@ -1098,15 +1108,15 @@
 
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script>
-        @if (session('success'))
+        @if (session('success') || session('error'))
             Toastify({
-                text: "{{ session('success') }}",
+                text: "{{ session('success') ? session('success') : session('error') }}",
                 duration: 3000,
                 close: true,
-                gravity: "top",
-                position: 'right',
-                backgroundColor: "#4CAF50",
-                stopOnFocus: true,
+                gravity: "top", // 'top' or 'bottom'
+                position: 'right', // 'left', 'center' or 'right'
+                backgroundColor: "{{ session('success') ? '#4CAF50' : '#F44336' }}", // Hijau untuk success, Merah untuk error
+                stopOnFocus: true, // Prevents dismissing of toast on hover
             }).showToast();
         @endif
     </script>

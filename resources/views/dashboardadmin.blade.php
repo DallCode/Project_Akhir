@@ -222,4 +222,17 @@
         updateChartData(document.getElementById('yearSelect').value);
     });
     </script>
+    <script>
+        @if (session('success') || session('error'))
+            Toastify({
+                text: "{{ session('success') ? session('success') : session('error') }}",
+                duration: 3000,
+                close: true,
+                gravity: "top", // 'top' or 'bottom'
+                position: 'right', // 'left', 'center' or 'right'
+                backgroundColor: "{{ session('success') ? '#4CAF50' : '#F44336' }}", // Hijau untuk success, Merah untuk error
+                stopOnFocus: true, // Prevents dismissing of toast on hover
+            }).showToast();
+        @endif
+    </script>
 @endsection
