@@ -350,8 +350,17 @@
                                 value="{{ $user->kontak }}" required>
                         </div>
                         <div class="form-group">
-                            <label for="lokasi">Lokasi</label>
-                            <textarea class="form-control" id="lokasi" name="lokasi" placeholder="kota, provinsi">{{ $user->lokasi }}</textarea>
+                            <label for="province">Provinsi</label>
+                            <select id="province" name="province" class="form-control" required>
+                                <option value="">Pilih Provinsi</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="city">Kota/Kabupaten</label>
+                            <select id="city" name="city" class="form-control" required>
+                                <option value="">Pilih Kota/Kabupaten</option>
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="alamat">Alamat Lengkap</label>
@@ -366,6 +375,103 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Menyimpan data provinsi dan kota secara global
+        let provincesData = [];
+        let citiesData = [];
+
+        // Mengambil data provinsi saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchProvinces();
+        });
+
+        async function fetchProvinces() {
+            try {
+                const response = await fetch('/get-provinces');
+                provincesData = await response.json();
+
+                let provinceSelect = document.getElementById('province');
+                provinceSelect.innerHTML = '<option value="">Pilih Provinsi</option>';
+
+                provincesData.forEach(province => {
+                    let option = document.createElement('option');
+                    option.value = province.id;
+                    option.text = province.name;
+                    provinceSelect.add(option);
+                });
+
+                // Set nilai provinsi yang sudah ada (jika ada)
+                @if($user->alumni && $user->alumni->lokasi)
+                    const userLokasi = "{{ $user->alumni->lokasi }}";
+                    if (userLokasi) {
+                        const [cityName, provinceName] = userLokasi.split(', ').map(item => item.trim());
+
+                        // Cari ID provinsi berdasarkan nama
+                        const province = provincesData.find(p => p.name === provinceName);
+                        if (province) {
+                            provinceSelect.value = province.id;
+                            // Trigger change event untuk memuat kota
+                            const event = new Event('change');
+                            provinceSelect.dispatchEvent(event);
+                        }
+                    }
+                @endif
+            } catch (error) {
+                console.error('Error fetching provinces:', error);
+            }
+        }
+
+        // Event listener untuk perubahan provinsi
+        document.getElementById('province').addEventListener('change', async function() {
+            const provinceId = this.value;
+            if (!provinceId) return;
+
+            try {
+                const response = await fetch(`/get-cities/${provinceId}`);
+                citiesData = await response.json();
+
+                let citySelect = document.getElementById('city');
+                citySelect.innerHTML = '<option value="">Pilih Kota/Kabupaten</option>';
+
+                citiesData.forEach(city => {
+                    let option = document.createElement('option');
+                    option.value = city.id;
+                    option.text = city.name;
+                    citySelect.add(option);
+                });
+
+                // Set nilai kota yang sudah ada (jika ada)
+                @if($user->alumni && $user->alumni->lokasi)
+                    const userLokasi = "{{ $user->alumni->lokasi }}";
+                    if (userLokasi) {
+                        const [cityName, provinceName] = userLokasi.split(', ').map(item => item.trim());
+
+                        // Cari ID kota berdasarkan nama
+                        const city = citiesData.find(c => c.name === cityName);
+                        if (city) {
+                            citySelect.value = city.id;
+                        }
+                    }
+                @endif
+            } catch (error) {
+                console.error('Error fetching cities:', error);
+            }
+        });
+
+        // Tambahkan validasi sebelum form submit
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const province = document.getElementById('province').value;
+            const city = document.getElementById('city').value;
+
+            if (!province || !city) {
+                e.preventDefault();
+                alert('Silakan pilih Provinsi dan Kota/Kabupaten');
+                return false;
+            }
+        });
+        </script>
+
 
     {{-- Modal untuk Edit dan Tambah Pendidikan Formal --}}
     <div class="modal fade" id="editFormalModal" tabindex="-1" data-bs-backdrop="static"

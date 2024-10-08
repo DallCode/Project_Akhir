@@ -9,6 +9,7 @@ use App\Http\Controllers\DetaillokerController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\LamaranPerusahaanController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\WilayahController;
 
 /*
 |--------------------------------------------------------------------------
@@ -138,3 +139,6 @@ Route::middleware(['auth'])->group(function () {
 
 
 Route::post('/update-kegiatan-sekarang', [App\Http\Controllers\KegiatanController::class, 'updateKegiatan'])->name('updateKegiatanSekarang');
+
+Route::get('/get-provinces', [WilayahController::class, 'getProvinces']);
+Route::get('/get-cities/{provinceId}', [WilayahController::class, 'getCities']);

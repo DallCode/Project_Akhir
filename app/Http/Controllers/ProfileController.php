@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Illuminate\Support\Facades\Http;
 
 class ProfileController extends Controller
 {
@@ -28,33 +29,56 @@ class ProfileController extends Controller
         return view('profile', compact('user', 'formal', 'nonFormal', 'skill', 'kerja', 'alumni'));
     }
 
-    // untuk Profile dasar
     public function update(Request $request)
     {
-
+        // Validasi input
         $request->validate([
             'nama' => 'required|string|max:255',
-            'kontak' => 'required|string|max:15',
-            'alamat' => 'required|string|max:255',
-            'lokasi' => 'required|string|max:225',
+            'kontak' => 'required|string|max:255',
+            'alamat' => 'required|string',
+            'province' => 'required|string',
+            'city' => 'required|string',
         ]);
 
+        // Ambil user yang sedang login
+        $user = auth()->user();
 
-        $user = Alumni::where('nik', Auth::user()->alumni->nik)->first();
-
-
-        if (!$user) {
-            return redirect()->back()->withErrors('Pengguna tidak ditemukan.');
-        }
-
-
+        // Update data user
         $user->nama = $request->nama;
         $user->kontak = $request->kontak;
         $user->alamat = $request->alamat;
-        $user->lokasi = $request->lokasi;
-        $user->save();
 
-        return redirect()->back()->with('success', 'Profil berhasil diperbarui.');
+        try {
+            // Ambil data provinsi dan kota sebelum update
+            $provinceData = Http::get("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json");
+            $citiesData = Http::get("https://www.emsifa.com/api-wilayah-indonesia/api/regencies.json");
+
+            if ($provinceData->successful() && $citiesData->successful()) {
+                // Cari nama provinsi
+                $provinces = collect($provinceData->json());
+                $selectedProvince = $provinces->firstWhere('id', $request->province);
+
+                // Cari nama kota/kabupaten
+                $cities = collect($citiesData->json());
+                $selectedCity = $cities->firstWhere('id', $request->city);
+
+                if ($selectedProvince && $selectedCity) {
+                    $provinceName = $selectedProvince['name'];
+                    $cityName = $selectedCity['name'];
+
+                    // Update lokasi dengan format "Kota, Provinsi"
+                    $user->alumni->lokasi = $cityName . ', ' . $provinceName;
+                    $user->alumni->save();
+
+                    return redirect()->back()->with('success', 'Profil berhasil diperbarui!');
+                }
+            }
+
+            throw new \Exception('Gagal mengambil data lokasi');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Terjadi kesalahan saat memperbarui profil: ' . $e->getMessage());
+        }
     }
 
     // untuk Tentang saya
@@ -427,25 +451,25 @@ class ProfileController extends Controller
 
     // untuk export profile
     public function exportProfile($nik)
-{
-    // Ambil data alumni berdasarkan NIK
-    $alumni = Alumni::with(['pendidikanformal', 'pendidikannonformal', 'kerja'])->where('nik', $nik)->firstOrFail();
+    {
+        // Ambil data alumni berdasarkan NIK
+        $alumni = Alumni::with(['pendidikanformal', 'pendidikannonformal', 'kerja'])->where('nik', $nik)->firstOrFail();
 
-    // Set opsi untuk Dompdf
-    $options = new Options();
-    $options->set('defaultFont', 'Arial');
-    $dompdf = new Dompdf($options);
+        // Set opsi untuk Dompdf
+        $options = new Options();
+        $options->set('defaultFont', 'Arial');
+        $dompdf = new Dompdf($options);
 
-    // Load view ke dalam Dompdf
-    $dompdf->loadHtml(view('profile_pdf', compact('alumni'))->render());
+        // Load view ke dalam Dompdf
+        $dompdf->loadHtml(view('profile_pdf', compact('alumni'))->render());
 
-    // Set ukuran kertas dan orientasi
-    $dompdf->setPaper('A4', 'portrait');
+        // Set ukuran kertas dan orientasi
+        $dompdf->setPaper('A4', 'portrait');
 
-    // Render PDF
-    $dompdf->render();
+        // Render PDF
+        $dompdf->render();
 
-    // Output ke browser
-    return $dompdf->stream('profile_' . $nik . '.pdf');
-}
+        // Output ke browser
+        return $dompdf->stream('profile_' . $nik . '.pdf');
+    }
 }
