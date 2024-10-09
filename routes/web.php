@@ -64,6 +64,9 @@ Route::get('/akunpengguna', [App\Http\Controllers\AkunpenggunaController::class,
 Route::get('/lokeradmin', [App\Http\Controllers\AjuanlokerController::class, 'index'])->name('lokeradmin');
 Route::put('/loker/{id_lowongan_pekerjaan}/update-status', [App\Http\Controllers\AjuanlokerController::class, 'updateStatus'])->name('update.status');
 
+// Route for Lacak ALumni
+Route::get('/kegiatan', [App\Http\Controllers\KegiatanController::class, 'index'])->name('kegiatan');
+
 
 // Route for Dashboard Perusahaan
 Route::get('/dashboardperusahaan', [App\Http\Controllers\DashboardperusahaanController::class, 'index'])->name('dashboardperusahaan');

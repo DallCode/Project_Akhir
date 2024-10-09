@@ -21,6 +21,13 @@
                     </a>
                 </li>
 
+                <li class="sidebar-item ">
+                    <a href="#" class='sidebar-link'>
+                        <i class="bi bi-exclamation-circle-fill"></i>
+                        <span>Laporan</span>
+                    </a>
+                </li>
+
                 <li class="sidebar-item  has-sub">
                     <a href="#" class='sidebar-link'>
                         <i class="bi bi-person-lines-fill"></i>
@@ -65,6 +72,29 @@
                         <span>Ajuan Loker</span>
                     </a>
                 </li>
+
+
+                <li class="sidebar-item ">
+                    <a href="#" class='sidebar-link'>
+                        <i class="bi bi-person-plus-fill"></i>
+                        <span>Tambah Akun Admin</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item ">
+                    <a href="{{ route('kegiatan') }}" class='sidebar-link'>
+                        <i class="bi bi-file-person"></i>
+                        <span>Lacak Alumni</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item ">
+                    <a href="#" class='sidebar-link'>
+                        <i class="bi bi-person-circle"></i>
+                        <span>Profil</span>
+                    </a>
+                </li>
+
 
                 <li class="sidebar-item">
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">

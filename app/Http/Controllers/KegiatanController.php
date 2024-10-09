@@ -8,6 +8,13 @@ use Illuminate\Support\Facades\Auth;
 
 class KegiatanController extends Controller
 {
+
+    public function  index()
+    {
+        $kegiatan = Alumni::all();
+        return  view('kegiatanalumni', compact('kegiatan'));
+    }
+
     public function updateKegiatan(Request $request)
     {
         // Validasi input
