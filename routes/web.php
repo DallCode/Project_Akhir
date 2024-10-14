@@ -78,10 +78,8 @@ Route::get('/lowongan', [DatalokerController::class, 'index'])->name('lowongan.i
 Route::put('/lowongan/{id_lowongan_pekerjaan}', [DatalokerController::class, 'update'])->name('lowongan.update');
 
 Route::get('/lamaran', [LamaranPerusahaanController::class, 'index'])->name('lamaran');
-Route::post('/lamaran/{id}/lolos', [LamaranPerusahaanController::class, 'lolos'])->name('lamaran.lolos');
-Route::post('/lamaran/{id}/diterima', [LamaranPerusahaanController::class, 'diterima'])->name('lamaran.diterima');
-Route::post('/lamaran/{id}/ditolak', [LamaranPerusahaanController::class, 'ditolak'])->name('lamaran.ditolak');
-
+Route::get('/arsiplamaran', [LamaranPerusahaanController::class, 'arsip'])->name('arsiplamaran');
+Route::put('/updatestatus/{id}', [LamaranPerusahaanController::class, 'updateStatus'])->name('updatestatus');
 
 
 

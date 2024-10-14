@@ -13,7 +13,7 @@
         <div class="page-title">
             <div class="row">
                 <div class="col-12 col-md-6 order-md-1 order-last">
-                    <h3>Data Lamaran</h3>
+                    <h3>Arsip Lamaran</h3>
                     <p class="text-subtitle text-muted">For user to check they list</p>
                 </div>
             </div>
@@ -27,20 +27,19 @@
                     <table class="table table-striped" id="table1">
                         <thead>
                             <tr>
-                                <th>Nama Perusahaan</th>
+                                <th>Nama Pelamar</th>
                                 <th>Posisi</th>
                                 <th>Status</th>
-                                <th>Pesan</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($lamarans as $lamaran)
+                            @foreach ($arsip as $a)
                                 <tr>
-                                    <td>{{ $lamaran->loker->perusahaan->nama }}</td>
-                                    <td>{{ $lamaran->loker->jabatan }}</td>
-                                    <td>{{ $lamaran->status }}</td>
-                                    <td>{{ $lamaran->pesan }}</td>
+                                    <td>{{ $a->alumni->nama }}</td>
+                                    <td>{{ $a->loker->jabatan }}</td>
+                                    <td>{{ $a->status }}</td>
                                 </tr>
+
                             @endforeach
                         </tbody>
                     </table>
@@ -48,7 +47,6 @@
             </div>
         </section>
     </div>
-
 
     <script src="{{ asset('bkk/dist/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
     <script src="{{ asset('bkk/dist/assets/js/bootstrap.bundle.min.js') }}"></script>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Alumni;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class KegiatanController extends Controller
 {
@@ -17,20 +18,27 @@ class KegiatanController extends Controller
 
     public function updateKegiatan(Request $request)
     {
-        // Validasi input
-        $request->validate([
-            'kegiatanSekarang' => 'required|in:Bekerja,Tidak Bekerja,Kuliah,Wirausaha',
-        ]);
+       // Validasi input
+       $request->validate([
+        'kegiatanSekarang' => 'required|in:Bekerja,Tidak Bekerja,Kuliah,Wirausaha',
+        'alasan' => 'nullable|string',
+    ]);
 
-        // Ambil user yang sedang login
-        $user = Auth::user();
+    // Ambil user yang sedang login
+    $user = Auth::user();
 
-        // Update kegiatan di model Alumni atau model terkait
-        $alumni = Alumni::where('nik', $user->alumni->nik)->first(); // Sesuaikan dengan relasi model kamu
-        $alumni->status = $request->kegiatanSekarang;
-        $alumni->save();
+    // Update kegiatan di model Alumni
+    $alumni = Alumni::where('nik', $user->alumni->nik)->first();
+    $alumni->status = $request->kegiatanSekarang;
+    $alumni->save();
 
-        // Redirect kembali dengan pesan sukses
-        return redirect()->back()->with('success', 'Status berhasil diperbarui.');
+    // Simpan alasan di storage jika diberikan
+    if ($request->filled('alasan')) {
+        $alasanFileName = 'alasan_' . $alumni->nik . '_' . now()->format('YmdHis') . '.txt';
+        Storage::disk('public')->put('alasan/' . $alasanFileName, $request->alasan);
+    }
+
+    // Redirect kembali dengan pesan sukses
+    return redirect()->back()->with('success', 'Status dan alasan berhasil diperbarui.');
     }
 }

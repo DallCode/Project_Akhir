@@ -36,6 +36,7 @@
                     <tr>
                         <th>Nama Pelamar</th>
                         <th>Posisi</th>
+                        <th>Status</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -44,39 +45,30 @@
                     <tr>
                         <td>{{ $lamar->alumni->nama }}</td>
                         <td>{{ $lamar->loker->jabatan }}</td>
+                        <td>{{ $lamar->status }}</td>
                         <td>
-                            <!-- Tombol Detail -->
-                            <button class="btn btn-info" data-bs-toggle="modal" data-bs-target="#modalDetail{{ $lamar->id_lamaran }}">Detail</button>
-
-                            <!-- Tombol Lolos ke Tahap Selanjutnya -->
+                            <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#modalDetail{{ $lamar->id_lamaran }}">
+                                Detail
+                            </button>
                             @if($lamar->status == 'Terkirim')
-                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalLolos{{ $lamar->id_lamaran }}">Lolos ke Tahap Selanjutnya</button>
-                            @else
-                                <button class="btn btn-primary" disabled>Lolos ke Tahap Selanjutnya</button>
-                            @endif
-
-                            <!-- Tombol Diterima dan Ditolak -->
-                            @if($lamar->status == 'Lolos Ketahap Selanjutnya')
-                                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalDiterima{{ $lamar->id_lamaran }}">Diterima</button>
-                                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalDitolak{{ $lamar->id_lamaran }}">Ditolak</button>
-                            @elseif($lamar->status == 'diterima')
-                                <button class="btn btn-success" disabled>Diterima</button>
-                                <button class="btn btn-danger" disabled>Ditolak</button>
-                            @elseif($lamar->status == 'ditolak')
-                                <button class="btn btn-success" disabled>Diterima</button>
-                                <button class="btn btn-danger" disabled>Ditolak</button>
-                            @else
-                                <button class="btn btn-success" disabled>Diterima</button>
-                                <button class="btn btn-danger" disabled>Ditolak</button>
+                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalLolos{{ $lamar->id_lamaran }}">
+                                    Lolos Ke Tahap Selanjutnya
+                                </button>
+                            @elseif($lamar->status == 'Lolos Ketahap Selanjutnya')
+                                <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalTerima{{ $lamar->id_lamaran }}">
+                                    Terima
+                                </button>
+                                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalTolak{{ $lamar->id_lamaran }}">
+                                    Tolak
+                                </button>
                             @endif
                         </td>
-
                     </tr>
-
                     @endforeach
                 </tbody>
             </table>
 
+            @foreach ($lamaran as $lamar)
             <!-- Modal Detail -->
             <div class="modal fade" id="modalDetail{{ $lamar->id_lamaran }}" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalDetailLabel" aria-hidden="true">
                 <div class="modal-dialog">
@@ -86,7 +78,6 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <!-- Tampilkan detail pelamar -->
                             <p>Nama: {{ $lamar->alumni->nama }}</p>
                             <p>Posisi: {{ $lamar->loker->jabatan }}</p>
                             <p>Deskripsi: {{ $lamar->alumni->deskripsi }}</p>
@@ -99,71 +90,87 @@
                 </div>
             </div>
 
-            <!-- Modal untuk Lolos ke Tahap Selanjutnya -->
-            <div class="modal fade" id="modalLolos{{ $lamar->id_lamaran }}" tabindex="-1" aria-labelledby="modalLolosLabel" aria-hidden="true">
+            <!-- Modal Lolos Ke Tahap Selanjutnya -->
+            <div class="modal fade" id="modalLolos{{ $lamar->id_lamaran }}" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalLolosLabel" aria-hidden="true">
                 <div class="modal-dialog">
-                    <form action="{{ route('lamaran.lolos', $lamar->id_lamaran) }}" method="POST">
-                        @csrf
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalLolosLabel">Lolos ke Tahap Selanjutnya</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalLolosLabel">Lolos Ke Tahap Selanjutnya</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form action="{{ route('updatestatus', $lamar->id_lamaran) }}" method="POST">
+                            @csrf
+                            @method('PUT')
                             <div class="modal-body">
-                                <textarea name="pesan" class="form-control" placeholder="Pesan untuk pelamar"></textarea>
+                                <input type="hidden" name="status" value="Lolos Ketahap Selanjutnya">
+                                <div class="form-group">
+                                    <label for="alasan">Alasan Perubahan Status</label>
+                                    <textarea name="alasan" id="alasan" rows="4" class="form-control" required></textarea>
+                                </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                <button type="submit" class="btn btn-primary">Kirim</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                <button type="submit" class="btn btn-primary">Konfirmasi</button>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
 
-            <!-- Modal untuk Diterima -->
-            <div class="modal fade" id="modalDiterima{{ $lamar->id_lamaran }}" tabindex="-1" aria-labelledby="modalDiterimaLabel" aria-hidden="true">
+            <!-- Modal Terima -->
+            <div class="modal fade" id="modalTerima{{ $lamar->id_lamaran }}" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalTerimaLabel" aria-hidden="true">
                 <div class="modal-dialog">
-                    <form action="{{ route('lamaran.diterima', $lamar->id_lamaran) }}" method="POST">
-                        @csrf
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalDiterimaLabel">Diterima</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalTerimaLabel">Terima Lamaran</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form action="{{ route('updatestatus', $lamar->id_lamaran) }}" method="POST">
+                            @csrf
+                            @method('PUT')
                             <div class="modal-body">
-                                <textarea name="pesan" class="form-control" placeholder="Pesan untuk pelamar"></textarea>
+                                <input type="hidden" name="status" value="Diterima">
+                                <div class="form-group">
+                                    <label for="alasan">Alasan Penerimaan</label>
+                                    <textarea name="alasan" id="alasan" rows="4" class="form-control" required></textarea>
+                                </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                <button type="submit" class="btn btn-success">Kirim</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                <button type="submit" class="btn btn-success">Konfirmasi Terima</button>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
 
-            <!-- Modal untuk Ditolak -->
-            <div class="modal fade" id="modalDitolak{{ $lamar->id_lamaran }}" tabindex="-1" aria-labelledby="modalDitolakLabel" aria-hidden="true">
+            <!-- Modal Tolak -->
+            <div class="modal fade" id="modalTolak{{ $lamar->id_lamaran }}" tabindex="-1" data-bs-backdrop="static" aria-labelledby="modalTolakLabel" aria-hidden="true">
                 <div class="modal-dialog">
-                    <form action="{{ route('lamaran.ditolak', $lamar->id_lamaran) }}" method="POST">
-                        @csrf
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="modalDitolakLabel">Ditolak</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalTolakLabel">Tolak Lamaran</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form action="{{ route('updatestatus', $lamar->id_lamaran) }}" method="POST">
+                            @csrf
+                            @method('PUT')
                             <div class="modal-body">
-                                <textarea name="pesan" class="form-control" placeholder="Pesan untuk pelamar"></textarea>
+                                <input type="hidden" name="status" value="Ditolak">
+                                <div class="form-group">
+                                    <label for="alasan">Alasan Penolakan</label>
+                                    <textarea name="alasan" id="alasan" rows="4" class="form-control" required></textarea>
+                                </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                <button type="submit" class="btn btn-danger">Kirim</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                <button type="submit" class="btn btn-danger">Konfirmasi Tolak</button>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
+            @endforeach
         </div>
     </div>
 </section>

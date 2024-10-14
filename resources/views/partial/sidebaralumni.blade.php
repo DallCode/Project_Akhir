@@ -59,7 +59,7 @@
 
 <!-- Modal Edit Kegiatan Sekarang -->
 <div class="modal fade" id="editKegiatanSekarangModal" tabindex="-1" aria-labelledby="editKegiatanSekarangModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered"> <!-- Tambahkan kelas 'modal-dialog-centered' -->
+    <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="editKegiatanSekarangModalLabel">Edit Kegiatan Sekarang</h5>
@@ -78,13 +78,32 @@
                             <option value="Wirausaha">Wirausaha</option>
                         </select>
                     </div>
+
+                    <!-- Textarea untuk alasan -->
+                    <div class="mb-3 d-none" id="alasanContainer">
+                        <label for="alasan" class="form-label">Alasan</label>
+                        <textarea class="form-control" id="alasan" name="alasan" rows="3"></textarea>
+                    </div>
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                         <button type="submit" class="btn btn-primary">Simpan</button>
                     </div>
                 </form>
-
             </div>
         </div>
     </div>
 </div>
+
+<!-- Script untuk menampilkan textarea saat option dipilih -->
+<script>
+    document.getElementById('kegiatanSekarang').addEventListener('change', function() {
+        const alasanContainer = document.getElementById('alasanContainer');
+        if (this.value !== "") {
+            alasanContainer.classList.remove('d-none');
+        } else {
+            alasanContainer.classList.add('d-none');
+        }
+    });
+</script>
+

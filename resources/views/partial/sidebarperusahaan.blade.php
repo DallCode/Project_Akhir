@@ -38,7 +38,7 @@
                             <a href="{{ route('lamaran') }}" class="sidebar-link">Lamaran</a>
                         </li>
                         <li class="sidebar-item">
-                            <a href="#" class="sidebar-link">Arsip</a>
+                            <a href="{{ route('arsiplamaran')}}" class="sidebar-link">Arsip</a>
                         </li>
                     </ul>
                 </li>

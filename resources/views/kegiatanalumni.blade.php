@@ -71,6 +71,7 @@
                                 <th>Jurusan</th>
                                 <th>Tahun Lulus</th>
                                 <th>Status</th>
+                                <th>pesan</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -80,6 +81,7 @@
                                 <td>{{ $item->nama }}</td>
                                 <td>{{ $item->jurusan }}</td>
                                 <td>{{ $item->tahun_lulus }}</td>
+                                <td>{{ $item->status }}</td>
                                 <td>{{ $item->status }}</td>
                             </tr>
                             @endforeach
