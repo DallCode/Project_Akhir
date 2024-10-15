@@ -16,8 +16,8 @@
                     @csrf
 
                     <div class="mb-3">
-                        <label for="logo" class="form-label">Logo Perusahaan</label>
-                        <input type="image" class="filepond" name="logo" accept="image/*" required>
+                        <label for="image" class="form-label">Logo Perusahaan</label>
+                        <input type="file" id="image" class="filepond" name="image" accept="image/*" required>
                     </div>
 
                     <div class="mb-3">
@@ -61,8 +61,28 @@
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
     <script>
+        // Register the image preview plugin
         FilePond.registerPlugin(FilePondPluginImagePreview);
-        FilePond.create(document.querySelector('input[type="image"]'));
+
+        // Create a FilePond instance
+        FilePond.create(document.querySelector('input[id="image"]'), {
+            server: {
+                process: {
+                    url: '{{ route('upload.image') }}', // Pastikan route ini sudah dibuat
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                },
+                revert: null,
+                restore: null,
+                load: null,
+                fetch: null,
+            },
+            allowImagePreview: true,
+            imagePreviewHeight: 170,
+            credits: false
+        });
 
         @if (session('success') || session('error'))
             Toastify({

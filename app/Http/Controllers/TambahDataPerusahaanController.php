@@ -16,6 +16,8 @@ class TambahDataPerusahaanController extends Controller
 
     public function store(Request $request)
     {
+        
+        // Validasi input
         $request->validate([
             'nama' => 'required|string|max:255',
             'bidang_usaha' => 'required|string|max:255',
@@ -23,18 +25,13 @@ class TambahDataPerusahaanController extends Controller
             'alamat' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users',
             'password' => 'required|string|min:6',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Max 2MB
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,pnq|max:2048', // Max 2MB
         ]);
 
-        // Handle logo upload
-        $logoPath = null;
-        if ($request->hasFile('logo')) {
-            $logo = $request->file('logo');
-            $logoName = time() . '_' . $logo->getClientOriginalName();
-            $logoPath = $logo->storeAs('public/logos', $logoName);
-            $logoPath = str_replace('public/', 'storage/', $logoPath);
-        }
+        // Menangani upload logo
+        $logoPath = $this->uploadImage($request);
 
+        // Menyimpan pengguna baru
         $pengguna = User::create([
             'username' => $request->input('username'),
             'password' => Hash::make($request->input('password')),
@@ -42,16 +39,36 @@ class TambahDataPerusahaanController extends Controller
         ]);
 
         if ($pengguna) {
+            // Menyimpan data perusahaan
             Perusahaan::create([
                 'username' => $pengguna->username,
                 'nama' => $request->input('nama'),
                 'bidang_usaha' => $request->input('bidang_usaha'),
                 'no_telepon' => $request->input('no_telepon'),
                 'alamat' => $request->input('alamat'),
-                'logo' => $logoPath,
+                'logo' => $logoPath, // Simpan logoPath ke database
             ]);
             return redirect('/dataperusahaan')->with('success', 'Data perusahaan berhasil ditambahkan');
         }
+
         return redirect()->back()->with('error', 'Gagal menambahkan data perusahaan');
     }
+
+    public function uploadImage(Request $request)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,pnq|max:2048',
+        ]);
+
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $fileName = uniqid(true) . '-' . $file->getClientOriginalName();
+            $file->storeAs('images/', $fileName, 'public');
+
+            return $fileName;
+        }
+
+        return '';
+    }
+
 }

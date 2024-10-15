@@ -58,6 +58,7 @@ Route::put('/perusahaan/update/{id_data_perusahaan}', [App\Http\Controllers\Data
 // Route for Tambah Data Perusahaan
 Route::get('/tambahdataperusahaan', [TambahDataPerusahaanController::class, 'index'])->name('tambahdataperusahaan.index');
 Route::post('/tambahdataperusahaan', [TambahDataPerusahaanController::class, 'store'])->name('tambahdataperusahaan.store');
+Route::post('/upload-image', [TambahDataPerusahaanController::class, 'uploadImage'])->name('upload.image');
 // Route for Akun Pengguna
 Route::get('/akunpengguna', [App\Http\Controllers\AkunpenggunaController::class, 'index'])->name('akunpengguna');
 // Rute for Loker in Admin

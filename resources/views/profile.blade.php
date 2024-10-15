@@ -5,140 +5,244 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css" />
     <!-- Croppie CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css" />
+    <style>
+        .profile-card {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .profile-header {
+            background: linear-gradient(45deg, #3a7bd5, #00d2ff);
+            color: white;
+            padding: 30px;
+        }
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border: 4px solid #fff;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+            color: #333;
+        }
+        .info-item {
+            margin-bottom: 10px;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #555;
+        }
+        .info-value {
+            color: #333;
+        }
+        .education-item, .experience-item {
+            border-left: 2px solid #3a7bd5;
+            padding-left: 20px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .education-item:before, .experience-item:before {
+            content: '';
+            position: absolute;
+            left: -7px;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #3a7bd5;
+        }
+        .action-buttons {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .education-item:hover .action-buttons,
+        .experience-item:hover .action-buttons {
+            opacity: 1;
+        }
+        .skill-tag {
+            display: inline-block;
+            background-color: #f0f0f0;
+            color: #333;
+            padding: 5px 10px;
+            border-radius: 20px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+    </style>
 
     <!-- Croppie JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
 
 
 
-    {{-- Untuk menampilkan data Profile --}}
-    <div class="card">
-        <div class="card-header">
-            <h5 class="card-title">Profile</h5>
-            <div class="container mt-5">
+    <div class="container mt-5">
+        <div class="profile-card">
+            <div class="profile-header">
                 <div class="row">
-                    <div class="col-md-2 text-center">
+                    <div class="col-md-3 text-center">
                         <img src="{{ Auth::user()->alumni->foto
                             ? asset('storage/foto/' . Auth::user()->alumni->foto)
                             : (Auth::user()->alumni->jenis_kelamin == 'Laki Laki'
                                 ? asset('bkk/dist/assets/images/faces/4.jpg')
                                 : asset('bkk/dist/assets/images/faces/3.jpg')) }}"
-                            class="rounded-circle" alt="Profile Image"
-                            style="width: 200px; height: 200px; object-fit: cover;">
-                        <div class="mt-2">
-                            {{-- Tombol untuk mengubah foto --}}
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editPhotoModal">
+                            class="profile-img rounded-circle" alt="Profile Image">
+                        <div class="mt-3">
+                            <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#editPhotoModal">
                                 <i class="bi bi-pencil-fill"></i> Ganti Foto
                             </button>
-
-
-
-
-                            {{-- Tombol untuk menghapus foto
-                            @if (Auth::user()->alumni->foto)
-                                <form action="{{ route('profile.deletePhoto', Auth::user()->alumni->nik) }}" method="POST"
-                                    class="d-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">
-                                        <i class="bi bi-trash"></i> Hapus Foto
-                                    </button>
-                                </form>
-                            @endif --}}
                         </div>
                     </div>
-
-                    <div class="col-md-8 position-relative">
-                        <h2>
+                    <div class="col-md-9">
+                        <h2 class="mb-3">
                             <strong>{{ Auth::user()->alumni->nama }}</strong>
-                            <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#editModal">
+                            <a href="#" class="text-light ms-2" data-bs-toggle="modal" data-bs-target="#editModal">
                                 <i class="bi bi-pencil-fill"></i>
                             </a>
                         </h2>
-
-                        <!-- Button Export PDF di pojok kanan atas -->
-                        <a href="{{ route('alumni.exportProfile', Auth::user()->alumni->nik) }}"
-                            class="btn btn-primary position-absolute top-0 end-0">
-                            Export PDF
-                        </a>
-
                         <div class="row">
                             <div class="col-md-6">
-                                <p><strong>KONTAK</strong></p>
-                                <p class="text-muted">{{ Auth::user()->alumni->kontak }}</p>
-
-                                <p><strong>LOKASI</strong></p>
-                                <p class="text-muted">{{ Auth::user()->alumni->lokasi }}</p>
-                                <!-- Perbaikan typo pada 'Lokasi' menjadi 'lokasi' -->
-
-                                <p><strong>JENIS KELAMIN</strong></p>
-                                <p class="text-muted">{{ Auth::user()->alumni->jenis_kelamin }}</p>
+                                <p class="mb-1"><strong>Kontak:</strong> {{ Auth::user()->alumni->kontak }}</p>
+                                <p class="mb-1"><strong>Lokasi:</strong> {{ Auth::user()->alumni->lokasi }}</p>
+                                <p class="mb-1"><strong>Jenis Kelamin:</strong> {{ Auth::user()->alumni->jenis_kelamin }}</p>
                             </div>
                             <div class="col-md-6">
-                                <p><strong>USERNAME</strong></p>
-                                <p class="text-muted">{{ Auth::user()->username }}</p>
-                                <!-- Mengambil username langsung dari model 'User' -->
-
-                                <p><strong>ALAMAT LENGKAP</strong></p>
-                                <p class="text-muted">{{ Auth::user()->alumni->alamat }}</p>
-
-                                <p><strong>STATUS</strong></p>
-                                <p class="text-muted">{{ Auth::user()->alumni->status }}</p>
+                                <p class="mb-1"><strong>Username:</strong> {{ Auth::user()->username }}</p>
+                                <p class="mb-1"><strong>Alamat:</strong> {{ Auth::user()->alumni->alamat }}</p>
+                                <p class="mb-1"><strong>Status:</strong> {{ Auth::user()->alumni->status }}</p>
                             </div>
                         </div>
+                        <a href="{{ route('alumni.exportProfile', Auth::user()->alumni->nik) }}" class="btn btn-light mt-3">
+                            Export PDF
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    {{-- Untuk menampilkan About --}}
-    <div class="card">
-        <div class="card-header">
-            <h5 class="card-title">Tentang Saya
-                <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#editAboutModal">
-                    <i class="bi bi-pencil-fill"></i>
-                </a>
-            </h5>
-            <p>{{ $user->deskripsi }}</p>
+        <div class="profile-card">
+            <div class="card-body">
+                <h5 class="section-title">
+                    Tentang Saya
+                    <a href="#" class="text-primary float-end" data-bs-toggle="modal" data-bs-target="#editAboutModal">
+                        <i class="bi bi-pencil-fill"></i>
+                    </a>
+                </h5>
+                <p>{{ $user->deskripsi }}</p>
+            </div>
         </div>
-    </div>
 
-    {{-- Untuk menampilkan Pendidikan Formal --}}
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="card-title mb-0">Pendidikan Formal</h5>
-            <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#editFormalModal">
-                <i class="bi bi-plus-circle-fill"></i> Tambah Pendidikan Formal
-            </a>
-        </div>
-        <div class="card-body">
-            @foreach ($formal as $f)
-                <div class="education-item position-relative mb-3">
-                    <h6 class="mb-1">{{ $f->nama_sekolah }}</h6>
-                    <p class="mb-1"><strong>{{ $f->bidang_studi }}</strong></p>
-                    <p class="mb-1">{{ $f->tahun_awal }} - {{ $f->tahun_akhir }}</p>
-                    <p class="mb-1">{{ $f->deskripsi }}</p>
-                    <div class="education-actions position-absolute top-0 end-0 d-none">
-                        <a href="#" class="text-primary me-2" data-bs-toggle="modal" data-bs-target="#editFormalModal"
-                            data-id="{{ $f->id_riwayat_pendidikan_formal }}">
-                            <i class="bi bi-pencil-fill">Edit</i>
-                        </a>
-                        <a href="#" class="text-danger"
-                            onclick="deleteFormal({{ $f->id_riwayat_pendidikan_formal }})">
-                            <i class="bi bi-trash-fill"> Hapus</i>
-                        </a>
+        <div class="profile-card">
+            <div class="card-body">
+                <h5 class="section-title d-flex justify-content-between align-items-center">
+                    Pendidikan Formal
+                    <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#editFormalModal">
+                        <i class="bi bi-plus-circle-fill"></i> Tambah
+                    </a>
+                </h5>
+                @foreach ($formal as $f)
+                    <div class="education-item">
+                        <h6 class="mb-1">{{ $f->nama_sekolah }}</h6>
+                        <p class="mb-1"><strong>{{ $f->bidang_studi }}</strong></p>
+                        <p class="mb-1">{{ $f->tahun_awal }} - {{ $f->tahun_akhir }}</p>
+                        <p class="mb-1">{{ $f->deskripsi }}</p>
+                        <div class="action-buttons">
+                            <a href="#" class="btn btn-sm btn-primary me-2" data-bs-toggle="modal" data-bs-target="#editFormalModal" data-id="{{ $f->id_riwayat_pendidikan_formal }}">
+                                <i class="bi bi-pencil-fill"></i>
+                            </a>
+                            <a href="#" class="btn btn-sm btn-danger" onclick="deleteFormal({{ $f->id_riwayat_pendidikan_formal }})">
+                                <i class="bi bi-trash-fill"></i>
+                            </a>
+                        </div>
                     </div>
-                </div>
-            @endforeach
+                @endforeach
+            </div>
+        </div>
+
+        <div class="profile-card">
+            <div class="card-body">
+                <h5 class="section-title d-flex justify-content-between align-items-center">
+                    Pendidikan Non-Formal
+                    <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#editNonFormalModal">
+                        <i class="bi bi-plus-circle-fill"></i> Tambah
+                    </a>
+                </h5>
+                @foreach ($nonFormal as $nf)
+                    <div class="education-item">
+                        <h6 class="mb-1">{{ $nf->nama_lembaga }}</h6>
+                        <p class="mb-1"><strong>{{ $nf->kursus }}</strong></p>
+                        <p class="mb-1">{{ $nf->tanggal }}</p>
+                        <div class="action-buttons">
+                            <a href="#" class="btn btn-sm btn-primary me-2" data-bs-toggle="modal" data-bs-target="#editNonFormalModal" data-id="{{ $nf->id_riwayat_pendidikan_non_formal }}">
+                                <i class="bi bi-pencil-fill"></i>
+                            </a>
+                            <a href="#" class="btn btn-sm btn-danger" onclick="deleteNonFormal({{ $nf->id_riwayat_pendidikan_non_formal }})">
+                                <i class="bi bi-trash-fill"></i>
+                            </a>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+
+        <div class="profile-card">
+            <div class="card-body">
+                <h5 class="section-title d-flex justify-content-between align-items-center">
+                    Keahlian
+                    <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#editSkillModal">
+                        <i class="bi bi-plus-circle-fill"></i> Tambah
+                    </a>
+                </h5>
+                @foreach ($skill as $s)
+                    <span class="skill-tag">
+                        {{ $s->keahlian }}
+                        <a href="#" class="text-primary ms-2" data-bs-toggle="modal" data-bs-target="#editSkillModal" data-id="{{ $s->nik }}">
+                            <i class="bi bi-pencil-fill"></i>
+                        </a>
+                        <a href="#" class="text-danger ms-1" onclick="deleteSkill({{ $s->nik }})">
+                            <i class="bi bi-x-circle-fill"></i>
+                        </a>
+                    </span>
+                @endforeach
+            </div>
+        </div>
+
+        <div class="profile-card">
+            <div class="card-body">
+                <h5 class="section-title d-flex justify-content-between align-items-center">
+                    Pengalaman Kerja
+                    <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#editPengalamanModal">
+                        <i class="bi bi-plus-circle-fill"></i> Tambah
+                    </a>
+                </h5>
+                @foreach ($kerja as $k)
+                    <div class="experience-item">
+                        <h6 class="mb-1">{{ $k->nama_perusahaan }}</h6>
+                        <p class="mb-1"><strong>{{ $k->jabatan }}</strong></p>
+                        <p class="mb-1">{{ $k->tahun_awal }} - {{ $k->tahun_akhir }}</p>
+                        <div class="action-buttons">
+                            <a href="#" class="btn btn-sm btn-primary me-2" data-bs-toggle="modal" data-bs-target="#editkModal" data-id="{{ $k->id_pengalaman_kerja }}">
+                                <i class="bi bi-pencil-fill"></i>
+                            </a>
+                            <a href="#" class="btn btn-sm btn-danger" onclick="deleteExperience({{ $k->id_pengalaman_kerja }})">
+                                <i class="bi bi-trash-fill"></i>
+                            </a>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
         </div>
     </div>
-
-    <style>
-        .education-item:hover .education-actions {
-            display: block !important;
-        }
-    </style>
 
     <script>
         function deleteFormal(id) {
@@ -159,86 +263,13 @@
                 });
             }
         }
-    </script>
 
-
-    {{-- Untuk menampilkan Pendidikan Non Formal --}}
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="card-title mb-0">Pendidikan Non-Formal</h5>
-            <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#editNonFormalModal">
-                <i class="bi bi-plus-circle-fill"></i> Tambah Pendidikan Non Formal
-            </a>
-        </div>
-        <div class="card-body">
-            @foreach ($nonFormal as $nf)
-                <div class="education-item position-relative mb-3">
-                    <h6 class="mb-1">{{ $nf->nama_lembaga }}</h6>
-                    <p class="mb-1"><strong>{{ $nf->kursus }}</strong></p>
-                    <p class="mb-1">{{ $nf->tanggal }}</p>
-
-                    <div class="education-actions position-absolute top-0 end-0 d-none">
-                        <a href="#" class="text-primary me-2" data-bs-toggle="modal"
-                            data-bs-target="#editNonFormalModal" data-id="{{ $nf->id_riwayat_pendidikan_non_formal }}">
-                            <i class="bi bi-pencil-fill">Edit</i>
-                        </a>
-                        <a href="#" class="text-danger"
-                            onclick="deleteNonFormal({{ $nf->id_riwayat_pendidikan_non_formal }})">
-                            <i class="bi bi-trash-fill"> Hapus</i>
-                        </a>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-    </div>
-
-    <style>
-        .education-item:hover .education-actions {
-            display: block !important;
-        }
-    </style>
-
-    <script>
         function deleteNonFormal(id) {
             if (confirm('Are you sure you want to delete this education record?')) {
                 // Implement delete functionality here
             }
         }
-    </script>
 
-    {{-- Section untuk Menampilkan Keahlian --}}
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="card-title mb-0">Keahlian</h5>
-            <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#editSkillModal">
-                <i class="bi bi-plus-circle-fill"></i> Tambah Keahlian
-            </a>
-        </div>
-        <div class="card-body">
-            @foreach ($skill as $s)
-                <div class="education-item position-relative mb-3">
-                    <h6 class="mb-1">{{ $s->keahlian }}</h6>
-                    <div class="education-actions position-absolute top-0 end-0 d-none">
-                        <a href="#" class="text-primary me-2" data-bs-toggle="modal"
-                            data-bs-target="#editSkillModal" data-id="{{ $s->nik }}">
-                            <i class="bi bi-pencil-fill">Edit</i>
-                        </a>
-                        <a href="#" class="text-danger" onclick="deleteSkill({{ $s->nik }})">
-                            <i class="bi bi-trash-fill"> Hapus</i>
-                        </a>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-    </div>
-
-    <style>
-        .education-item:hover .education-actions {
-            display: block !important;
-        }
-    </style>
-
-    <script>
         function deleteSkill(id) {
             if (confirm('Are you sure you want to delete this skill?')) {
                 fetch(`/delete-skill/${id}`, {
@@ -253,43 +284,7 @@
                 });
             }
         }
-    </script>
 
-    {{-- Untuk menampilkan Pengalaman Kerja --}}
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="card-title mb-0">Pengalaman Kerja</h5>
-            <a href="#" class="text-primary" data-bs-toggle="modal" data-bs-target="#editPengalamanModal">
-                <i class="bi bi-plus-circle-fill"></i> Tambah Pengalaman Kerja
-            </a>
-        </div>
-        <div class="card-body">
-            @foreach ($kerja as $k)
-                <div class="experience-item position-relative mb-3">
-                    <h6 class="mb-1">{{ $k->nama_perusahaan }}</h6>
-                    <p class="mb-1"><strong>{{ $k->jabatan }}</strong></p>
-                    <p class="mb-1">{{ $k->tahun_awal }} - {{ $k->tahun_akhir }}</p>
-                    <div class="k-actions position-absolute top-0 end-0 d-none">
-                        <a href="#" class="text-primary me-2" data-bs-toggle="modal" data-bs-target="#editkModal"
-                            data-id="{{ $k->id_pengalaman_kerja }}">
-                            <i class="bi bi-pencil-fill">Edit</i>
-                        </a>
-                        <a href="#" class="text-danger" onclick="deleteExperience({{ $k->id_pengalaman_kerja }})">
-                            <i class="bi bi-trash-fill"> Hapus</i>
-                        </a>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-    </div>
-
-    <style>
-        .education-item:hover .education-actions {
-            display: block !important;
-        }
-    </style>
-
-    <script>
         function deleteExperience(id) {
             if (confirm('Are you sure you want to delete this work experience record?')) {
                 // Implement delete functionality here
