@@ -32,9 +32,10 @@
         </div>
         <section class="section">
             <div class="card">
-                <div class="card-header">
-                    Simple Datatable
-                </div>
+                <div class="card-header d-flex justify-content-center">
+                    <a href="#" class="btn btn-outline-primary btn-lg me-4 w-50"><i class="bi bi-person-plus"></i> Tambah Akun Perusahaan</a>
+                    <a href="{{ route('tambahadmin') }}" class="btn btn-outline-success btn-lg w-50"><i class="bi bi-person-plus"></i> Tambah Akun Admin</a>
+                </div>                
                 <div class="card-body">
                     <table class="table table-striped" id="table1">
                         <thead>
@@ -46,55 +47,56 @@
                         </thead>
                         <tbody>
                             @foreach ($users as $us)
-                                <tr>
-                                    <td>{{ $us->username }}</td>
-                                    <td>{{ $us->role }}</td>
-                                    <td>
-                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#aktivitasPenggunaModal{{ $us->username }}">
-                                            Pemantauan
-                                        </button>
-
-                                        <!-- Modal -->
-                                        <div class="modal fade" id="aktivitasPenggunaModal{{ $us->username }}" tabindex="-1" data-bs-backdrop="false" aria-labelledby="aktivitasPenggunaModalLabel{{ $us->usernmae }}" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title" id="aktivitasPenggunaModalLabel{{ $us->username }}">Aktivitas Pengguna: {{ $us->username }}</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <tr>
+                                <td>{{ $us->username }}</td>
+                                <td>{{ $us->role }}</td>
+                                <td>
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#aktivitasPenggunaModal{{ $us->username }}">
+                                        Pemantauan
+                                    </button>
+            
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="aktivitasPenggunaModal{{ $us->username }}" tabindex="-1" data-bs-backdrop="false" aria-labelledby="aktivitasPenggunaModalLabel{{ $us->username }}" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="aktivitasPenggunaModalLabel{{ $us->username }}">Aktivitas Pengguna: {{ $us->username }}</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-striped">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th scope="col">Waktu</th>
+                                                                    <th scope="col">Keterangan</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @foreach ($aktivitas->where('username', $us->username) as $ak)
+                                                                <tr>
+                                                                    <td>{{ $ak->tanggal }}</td>
+                                                                    <td>{{ $ak->keterangan }}</td>
+                                                                </tr>
+                                                                @endforeach
+                                                            </tbody>
+                                                        </table>
                                                     </div>
-                                                    <div class="modal-body">
-                                                        <div class="table-responsive">
-                                                            <table class="table table-striped">
-                                                                <thead>
-                                                                    <tr>
-                                                                        <th scope="col">Waktu</th>
-                                                                        <th scope="col">Keterangan</th>
-                                                                    </tr>
-                                                                </thead>
-                                                                <tbody>
-                                                                    @foreach ($aktivitas->where('username', $us->username) as $ak)
-                                                                    <tr>
-                                                                        <td>{{ $ak->tanggal }}</td>
-                                                                        <td>{{ $ak->keterangan }}</td>
-                                                                    </tr>
-                                                                    @endforeach
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                                                 </div>
                                             </div>
                                         </div>
-                                    </td>
-                                </tr>
+                                    </div>
+                                </td>
+                            </tr>
                             @endforeach
                         </tbody>
                     </table>
                 </div>
             </div>
+            
         </section>
     </div>
 

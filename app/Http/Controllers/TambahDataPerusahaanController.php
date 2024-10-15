@@ -16,7 +16,7 @@ class TambahDataPerusahaanController extends Controller
 
     public function store(Request $request)
     {
-        
+        return $request;
         // Validasi input
         $request->validate([
             'nama' => 'required|string|max:255',
@@ -25,7 +25,7 @@ class TambahDataPerusahaanController extends Controller
             'alamat' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users',
             'password' => 'required|string|min:6',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,pnq|max:2048', // Max 2MB
+            'logo' => 'required|image|mimes:jpeg,png,jpg,gif,pnq|max:2048', // Max 2MB
         ]);
 
         // Menangani upload logo
@@ -57,11 +57,11 @@ class TambahDataPerusahaanController extends Controller
     public function uploadImage(Request $request)
     {
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,pnq|max:2048',
+            'logo' => 'required|image|mimes:jpeg,png,jpg,gif,pnq|max:2048',
         ]);
 
-        if ($request->hasFile('image')) {
-            $file = $request->file('image');
+        if ($request->hasFile('logo')) {
+            $file = $request->file('logo');
             $fileName = uniqid(true) . '-' . $file->getClientOriginalName();
             $file->storeAs('images/', $fileName, 'public');
 

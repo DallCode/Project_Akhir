@@ -16,8 +16,8 @@
                     @csrf
 
                     <div class="mb-3">
-                        <label for="image" class="form-label">Logo Perusahaan</label>
-                        <input type="file" id="image" class="filepond" name="image" accept="image/*" required>
+                        <label for="logo" class="form-label">Logo Perusahaan</label>
+                        <input type="file" id="logo" class="filepond" name="logo" accept="logo/*" required>
                     </div>
 
                     <div class="mb-3">
@@ -65,7 +65,7 @@
         FilePond.registerPlugin(FilePondPluginImagePreview);
 
         // Create a FilePond instance
-        FilePond.create(document.querySelector('input[id="image"]'), {
+        FilePond.create(document.querySelector('input[id="logo"]'), {
             server: {
                 process: {
                     url: '{{ route('upload.image') }}', // Pastikan route ini sudah dibuat

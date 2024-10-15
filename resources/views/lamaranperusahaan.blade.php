@@ -264,6 +264,21 @@
                                             <h6 class="section-title">Deskripsi</h6>
                                             <p>{{ $lamar->alumni->deskripsi }}</p>
                                         </div>
+
+                                        <!-- Bagian File Tambahan -->
+                                        <div class="mb-4">
+                                            <h6 class="section-title">File Tambahan</h6>
+                                            @if ($lamar->filelamar)
+                                                <ul>
+                                                    @foreach ($lamar->filelamar as $file)
+                                                        <li><a href="{{ asset('storage/lamaran/' . $file->file_name) }}"
+                                                                target="_blank">{{ $file->file_name }}</a></li>
+                                                    @endforeach
+                                                </ul>
+                                            @else
+                                                <p>Tidak ada file tambahan yang diunggah.</p>
+                                            @endif
+                                        </div>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary"
@@ -272,6 +287,7 @@
                                 </div>
                             </div>
                         </div>
+
 
 
                         <!-- Modal Lolos Ke Tahap Selanjutnya -->
