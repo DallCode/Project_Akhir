@@ -271,7 +271,7 @@
                                             @if ($lamar->filelamar)
                                                 <ul>
                                                     @foreach ($lamar->filelamar as $file)
-                                                        <li><a href="{{ asset('storage/lamaran/' . $file->file_name) }}"
+                                                        <li><a href="{{ asset('storage/lamaran' . $file->file_name) }}"
                                                                 target="_blank">{{ $file->file_name }}</a></li>
                                                     @endforeach
                                                 </ul>

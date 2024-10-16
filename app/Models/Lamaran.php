@@ -27,6 +27,10 @@ class Lamaran extends Model
         return $this->belongsTo(Alumni::class, 'nik', 'nik');
     }
 
+    public function filelamaran () : BelongsTo {
+        return $this->belongsTo(FileLamaran::class, 'nama_file');
+    }
+
     public static function generateKodeUnik()
     {
         $prefix = 'L-'; // Bisa disesuaikan sesuai kebutuhan

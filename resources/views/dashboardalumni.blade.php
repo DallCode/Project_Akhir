@@ -1,8 +1,8 @@
 @extends('layout.main')
 
 @section('content')
-    <link rel="stylesheet" href="https://unpkg.com/filepond/dist/filepond.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.css">
+    <link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet">
     <script src="https://unpkg.com/filepond/dist/filepond.js"></script>
 
     <div class="container mt-4">
@@ -55,17 +55,19 @@
                                 <p>Jika Anda tidak menambahkan file tambahan, maka kami akan mengambil informasi dari profil
                                     Anda.</p>
                                 <div id="alert-container"></div>
-                                <form action="{{ route('lamar.store') }}" method="POST" id="importForm"
+                                <form action="{{ route('lamar.store') }}" method="POST" id="applicationForm"
                                     enctype="multipart/form-data">
                                     @csrf
                                     <input type="hidden" name="id_lowongan_pekerjaan"
                                         value="{{ $item->id_lowongan_pekerjaan }}">
 
-                                    <!-- Input FilePond -->
-                                    <input type="file" name="filelamar[]" id="file_{{ $item->id_lowongan_pekerjaan }}"
-                                        multiple class="filepond" />
+                                    <!-- FilePond file input -->
+                                    <div class="form-group">
+                                        <input type="file" name="file[]"
+                                            id="file-{{ $item->id_lowongan_pekerjaan }}" class="filepond" multiple>
+                                    </div>
 
-                                    <button type="submit" class="btn btn-primary mt-3">Lamar</button>
+                                    <button type="submit" class="btn btn-primary mt-3">Apply</button>
                                 </form>
                             </div>
                         </div>
@@ -130,29 +132,29 @@
         }
     </style>
 
-    <script src="{{ asset('bkk/dist/assets/vendors/toastify/toastify.js') }}"></script>
-    <script src="{{ asset('bkk/dist/assets/js/main.js') }}"></script>
-
     <script>
         // Inisialisasi FilePond untuk setiap elemen input file dengan kelas filepond
-        document.querySelectorAll('input[class="filepond"]').forEach(inputElement => {
+        document.querySelectorAll('input.filepond').forEach(inputElement => {
             FilePond.create(inputElement);
         });
-    
+
         // Konfigurasi FilePond agar bisa mengunggah file ke server Laravel
         FilePond.setOptions({
             server: {
                 process: {
-                    url: '/upload-file',  // Endpoint untuk mengunggah file
+                    url: '/upload-temp', // Endpoint untuk mengunggah file
                     method: 'POST',
                     headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    }
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}' // Token CSRF untuk keamanan
+                    },
                 },
-                revert: '/revert-file',  // Endpoint jika ingin menghapus file setelah diunggah
+                revert: '/revert-file', // Endpoint untuk menghapus file jika perlu
             },
-            allowMultiple: true,  // Mengizinkan unggahan banyak file
-            maxFiles: 5  // Batas maksimal file yang bisa diunggah
+            allowMultiple: true, // Mengizinkan unggahan banyak file
+            maxFiles: 5 // Batas maksimal file yang bisa diunggah
         });
     </script>
+
+    <script src="{{ asset('bkk/dist/assets/vendors/toastify/toastify.js') }}"></script>
+    <script src="{{ asset('bkk/dist/assets/js/main.js') }}"></script>
 @endsection

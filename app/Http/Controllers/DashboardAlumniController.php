@@ -8,6 +8,7 @@ use App\Models\FileLamaran;
 use App\Models\Lamaran;
 use App\Models\Loker;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -40,83 +41,98 @@ class DashboardalumniController extends Controller
             ->with(['pendidikanformal', 'pendidikannonformal', 'kerja'])
             ->first();
 
-        // Validasi kelengkapan profil
-        if (
-            !$alumniLogin || !$alumniLogin->nama || !$alumniLogin->jenis_kelamin || !$alumniLogin->lokasi ||
-            !$alumniLogin->alamat || !$alumniLogin->kontak || !$alumniLogin->keahlian ||
-            !$alumniLogin->foto || !$alumniLogin->deskripsi ||
-            $alumniLogin->pendidikanformal->isEmpty() || $alumniLogin->kerja->isEmpty()
-        ) {
-            return redirect()->back()->with('error', 'Profil Anda belum lengkap. Harap lengkapi profil sebelum melamar.');
+        // Cek kelengkapan profil
+        $incompleteFields = $this->checkProfileCompleteness($alumniLogin);
+        if (!empty($incompleteFields)) {
+            session(['incomplete_profile' => $incompleteFields]);
+            return redirect()->back()->with('error', 'Please complete your profile before applying.');
         }
 
-        // Ambil loker berdasarkan id_lowongan_pekerjaan dari request
-        $loker = Loker::where('id_lowongan_pekerjaan', $request->id_lowongan_pekerjaan)->first();
-
+        // Ambil lowongan pekerjaan
+        $loker = Loker::find($request->id_lowongan_pekerjaan);
         if (!$loker) {
-            return redirect()->back()->with('error', 'Lowongan pekerjaan tidak ditemukan');
+            return redirect()->back()->with('error', 'Job posting not found');
         }
 
-        // Simpan data lamaran
-        $lamaran = new Lamaran();
-        $lamaran->id_lamaran = Lamaran::generateKodeUnik();
-        $lamaran->id_lowongan_pekerjaan = $loker->id_lowongan_pekerjaan;
-        $lamaran->nik = $alumniLogin->nik;
-        $lamaran->status = 'terkirim';
-        $lamaran->save();
+        // Membuat dan menyimpan data lamaran
+        $lamaran = Lamaran::create([
+            'id_lamaran' => Lamaran::generateKodeUnik(),
+            'id_lowongan_pekerjaan' => $request->id_lowongan_pekerjaan,
+            'nik' => $alumniLogin->nik,
+            'status' => 'terkirim',
+        ]);
 
-        // Simpan file lamaran jika ada
-        if ($request->hasFile('file')) {
-            $file = $request->file('file');
-            $filename = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
-            $filePath = $file->storeAs('public/files', $filename); // Simpan ke direktori storage
-
-            $fileLamaran = new FileLamaran();
-            $fileLamaran->id_lamaran = $lamaran->id_lamaran;
-            $fileLamaran->nama_file = $filename;
-            $fileLamaran->file_path = $filePath;
-            $fileLamaran->save();
+        // Proses penyimpanan file
+        foreach ($request->file as $fileJson) {
+            // Decode JSON string menjadi array
+            $fileData = json_decode($fileJson, true);
+            FileLamaran::create([
+                'id_lamaran' => $lamaran->id_lamaran, // ID lamaran yang baru dibuat
+                'nama_file' => $fileData['fileName'], // Menyimpan nama file
+            ]);
         }
 
-        return redirect()->back()->with('success', 'Lamaran berhasil dikirim');
+        return redirect()->back()->with('success', 'Lamaran Berhasil Dikirim');
     }
 
-    public function uploadLamaran(Request $request)
+
+    private function checkProfileCompleteness($alumni)
     {
-        if (!$request->hasFile('filelamar')) {
-            return response()->json(['message' => 'Tidak ada file yang diunggah.', 'type' => 'danger'], 400);
+        $incompleteFields = [];
+        $requiredFields = ['nama', 'jenis_kelamin', 'lokasi', 'alamat', 'kontak', 'keahlian', 'foto', 'deskripsi'];
+
+        foreach ($requiredFields as $field) {
+            if (empty($alumni->$field)) {
+                $incompleteFields[] = $field;
+            }
         }
 
-        $filelamars = $request->file('filelamar');
-        $filePaths = [];
-
-        // Proses setiap file yang diunggah
-        foreach ($filelamars as $file) {
-            $fileName = Str::uuid() . '.' . $file->getClientOriginalExtension();
-            $filePath = $file->storeAs('public/lamaran', $fileName);
-            $filePaths[] = ['fileName' => $fileName, 'filePath' => $filePath];
-
-            // Simpan ke database
-            $fileLamaran = new FileLamaran();
-            $fileLamaran->id_lamaran = $request->id_lamaran; // Pastikan id_lamaran dikirimkan di request
-            $fileLamaran->nama_file = $fileName;
-            $fileLamaran->file_path = $filePath;
-            $fileLamaran->save();
+        if ($alumni->pendidikanformal->isEmpty()) {
+            $incompleteFields[] = 'pendidikan_formal';
         }
 
-        return response()->json(['filePaths' => $filePaths, 'message' => 'File berhasil diunggah.']);
+        return $incompleteFields;
     }
 
-    public function import(Request $request)
+    public function uploadTemp(Request $request)
     {
-        $fileNames = $request->input('files');
+        try {
+            $request->validate([
+                'file' => 'required|max:10240', // Maksimal 10MB
+            ]);
 
-        if (empty($fileNames)) {
-            return response()->json(['message' => 'Tidak ada file yang diimpor.', 'type' => 'danger'], 400);
+            if ($request->hasFile('file')) {
+                foreach ($request->file as $file) {
+                    $fileName = time() . '-' . $file->getClientOriginalName();
+                    $file->storeAs('uploads', $fileName, 'public');
+
+                    return response()->json(['fileName' => $fileName]);
+                }
+            }
+
+            return response()->json(['error' => 'No file uploaded'], 400);
+        } catch (\Exception $e) {
+            Log::error('File upload error: ' . $e->getMessage());
+            return response()->json(['error' =>  $e->getMessage()], 500);
         }
+        // // Memastikan bahwa ada file yang diunggah
+        // if ($request->hasFile('file')) {
+        //     // Menyimpan semua file yang diunggah
+        //     $files = $request->file('file');
+        //     $filenames = [];
 
-        // Implementasikan logika import disini (misal menggunakan Maatwebsite Excel package)
+        //     foreach ($files as $file) {
+        //         // Membuat nama file unik
+        //         $filename = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
+        //         $file->storeAs('public/lamaran', $filename);
+        //         $filenames[] = $filename;  // Menyimpan nama file dalam array
+        //     }
 
-        return response()->json(['message' => 'File berhasil diimpor.', 'type' => 'success']);
+        //     // Mengembalikan respons JSON dengan nama file
+        //     return response()->json(['filenames' => $filenames]);
+        // }
+
+        // // Mengembalikan respons error jika tidak ada file yang diunggah
+        // return response()->json(['error' => 'No file uploaded'], 400);
     }
 }

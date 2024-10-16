@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DashboardalumniController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ImportController;
@@ -96,8 +97,9 @@ Route::get('/dashboardalumni', [App\Http\Controllers\DashboardalumniController::
 Route::get('/search', [App\Http\Controllers\DashboardalumniController::class, 'index'])->name('job.search');
 //Route for Lamar
 Route::post('/lamar', [App\Http\Controllers\DashboardalumniController::class, 'store'])->name('lamar.store');
-Route::post('/upload-lamaran', [App\Http\Controllers\DashboardalumniController::class, 'uploadLamaran'])->name('upload.lamaran');
-// Route::post('/import', [App\Http\Controllers\DashboardalumniController::class, 'import'])->name('import');
+Route::post('/upload-temp', [DashboardalumniController::class, 'uploadTemp'])->name('upload.temp');
+
+
 //Route for Lamaran Saya
 Route::get('/lamaransaya', [App\Http\Controllers\LamaranSayaController::class, 'index'])->name('lamaransaya');
 //Route for Detail Job
