@@ -63,6 +63,9 @@ Route::post('/upload-image', [TambahDataPerusahaanController::class, 'uploadImag
 // Route for Akun Pengguna
 Route::get('/akunpengguna', [App\Http\Controllers\AkunpenggunaController::class, 'index'])->name('akunpengguna');
 Route::get('/tambahadmin', [App\Http\Controllers\TambahAdminController::class, 'index'])->name('tambahadmin');
+Route::get('/admin/add', [App\Http\Controllers\TambahAdminController::class, 'create'])->name('admin.create');
+Route::post('/admin/add', [App\Http\Controllers\TambahAdminController::class, 'store'])->name('admin.store');
+Route::post('/upload-foto', [App\Http\Controllers\TambahAdminController::class, 'uploadFoto'])->name('upload.foto');
 // Rute for Loker in Admin
 Route::get('/lokeradmin', [App\Http\Controllers\AjuanlokerController::class, 'index'])->name('lokeradmin');
 Route::put('/loker/{id_lowongan_pekerjaan}/update-status', [App\Http\Controllers\AjuanlokerController::class, 'updateStatus'])->name('update.status');

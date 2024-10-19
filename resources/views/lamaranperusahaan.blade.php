@@ -268,11 +268,15 @@
                                         <!-- Bagian File Tambahan -->
                                         <div class="mb-4">
                                             <h6 class="section-title">File Tambahan</h6>
-                                            @if ($lamar->filelamar)
+                                            @if ($lamar->filelamar && $lamar->filelamar->count() > 0)
                                                 <ul>
                                                     @foreach ($lamar->filelamar as $file)
-                                                        <li><a href="{{ asset('storage/lamaran' . $file->file_name) }}"
-                                                                target="_blank">{{ $file->file_name }}</a></li>
+                                                        <li>
+                                                            <a href="{{ asset('storage/lamaran/' . $file->nama_file) }}"
+                                                                target="_blank">
+                                                                {{ $file->nama_file }}
+                                                            </a>
+                                                        </li>
                                                     @endforeach
                                                 </ul>
                                             @else

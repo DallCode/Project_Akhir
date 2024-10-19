@@ -54,7 +54,16 @@ class DashboardalumniController extends Controller
             return redirect()->back()->with('error', 'Job posting not found');
         }
 
-        // Membuat dan menyimpan data lamaran
+        // Cek apakah lamaran sudah pernah dikirim untuk lowongan ini oleh alumni
+        $existingLamaran = Lamaran::where('id_lowongan_pekerjaan', $request->id_lowongan_pekerjaan)
+            ->where('nik', $alumniLogin->nik)
+            ->first();
+
+        if ($existingLamaran) {
+            return redirect()->back()->with('error', 'You have already applied for this job.');
+        }
+
+        // Membuat dan menyimpan data lamaran baru
         $lamaran = Lamaran::create([
             'id_lamaran' => Lamaran::generateKodeUnik(),
             'id_lowongan_pekerjaan' => $request->id_lowongan_pekerjaan,
@@ -62,18 +71,22 @@ class DashboardalumniController extends Controller
             'status' => 'terkirim',
         ]);
 
-        // Proses penyimpanan file
-        foreach ($request->file as $fileJson) {
-            // Decode JSON string menjadi array
-            $fileData = json_decode($fileJson, true);
-            FileLamaran::create([
-                'id_lamaran' => $lamaran->id_lamaran, // ID lamaran yang baru dibuat
-                'nama_file' => $fileData['fileName'], // Menyimpan nama file
-            ]);
+        // Proses penyimpanan file jika ada
+        if ($request->has('file') && is_array($request->file)) {
+            foreach ($request->file as $fileJson) {
+                $fileData = json_decode($fileJson, true);
+                if ($fileData && isset($fileData['fileName'])) {
+                    FileLamaran::create([
+                        'id_lamaran' => $lamaran->id_lamaran,
+                        'nama_file' => $fileData['fileName'],
+                    ]);
+                }
+            }
         }
 
         return redirect()->back()->with('success', 'Lamaran Berhasil Dikirim');
     }
+
 
 
     private function checkProfileCompleteness($alumni)
@@ -104,7 +117,7 @@ class DashboardalumniController extends Controller
             if ($request->hasFile('file')) {
                 foreach ($request->file as $file) {
                     $fileName = time() . '-' . $file->getClientOriginalName();
-                    $file->storeAs('uploads', $fileName, 'public');
+                    $file->storeAs('lamaran', $fileName, 'public');
 
                     return response()->json(['fileName' => $fileName]);
                 }

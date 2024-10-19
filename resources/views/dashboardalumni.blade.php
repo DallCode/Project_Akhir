@@ -35,8 +35,18 @@
                             <a href="{{ route('detailloker', $item->id_lowongan_pekerjaan) }}" class="btn btn-primary">Lihat
                                 Detail</a>
 
-                            <button class="btn btn-outline-primary ml-2" data-bs-toggle="modal"
-                                data-bs-target="#lamarModal{{ $item->id_lowongan_pekerjaan }}">Lamar</button>
+                                @php
+                                $hasApplied = \App\Models\Lamaran::where('id_lowongan_pekerjaan', $item->id_lowongan_pekerjaan)
+                                    ->where('nik', $alumniLogin->nik)
+                                    ->exists();
+                            @endphp
+
+                            @if (!$hasApplied)
+                                <button class="btn btn-outline-primary ml-2" data-bs-toggle="modal"
+                                    data-bs-target="#lamarModal{{ $item->id_lowongan_pekerjaan }}">Lamar</button>
+                            @else
+                                <button class="btn btn-secondary ml-2" disabled>Lamaran Sudah Dikirim</button>
+                            @endif
                         </div>
                     </div>
                 </div>
