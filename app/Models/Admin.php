@@ -10,12 +10,11 @@ class Admin extends Model
 {
     use HasFactory;
 
-    protected $table = 'data_admin'; // Nama tabel
-    protected $primaryKey = 'nip'; // Kolom primary key
-    public $incrementing = false; // Primary key tidak auto increment
-    public $timestamps = false; // Tidak menggunakan timestamps
+    protected $table = 'data_admin';
+    protected $primaryKey = 'nip';
+    public $incrementing = false;
+    public $timestamps = false;
 
-    // Kolom yang dapat diisi (mass assignable)
     protected $fillable = [
         'nip',
         'username',
@@ -27,8 +26,8 @@ class Admin extends Model
         'status',
     ];
 
-    public function pengguna(): BelongsTo
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'username', 'username');
     }
 }

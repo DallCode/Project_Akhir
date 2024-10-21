@@ -21,6 +21,7 @@ class TambahAdminController extends Controller
 
     public function store(Request $request)
     {
+        
         $validated = $request->validate([
             'nip' => 'required|string|max:20|unique:data_admin,nip',
             'username' => 'required|string|unique:data_admin,username',
@@ -28,18 +29,15 @@ class TambahAdminController extends Controller
             'jenis_kelamin' => 'required|in:Laki Laki,Perempuan',
             'alamat' => 'required|string',
             'kontak' => 'required|string',
-            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'foto' => 'nullable|string|max:2048',
             'password' => 'required|string|min:8|confirmed',
         ]);
-
-        // Handle file upload
-        $fotoPath = $this->uploadFoto($request);
 
         // Save new user
         $pengguna = User::create([
             'username' => $request->input('username'),
             'password' => Hash::make($request->input('password')),
-            'role' => 'Admin',
+            'role' => 'Admin BKK',
         ]);
 
         if ($pengguna) {
@@ -51,10 +49,10 @@ class TambahAdminController extends Controller
                 'jenis_kelamin' => $request->input('jenis_kelamin'),
                 'alamat' => $request->input('alamat'),
                 'kontak' => $request->input('kontak'),
-                'foto' => $fotoPath,
+                'foto' => $request->input('foto'),
             ]);
 
-            return redirect('/akunpengguna')->with('success', 'Data perusahaan berhasil ditambahkan');
+            return redirect('/akunpengguna')->with('success', 'Data admin` berhasil ditambahkan');
         }
 
         return redirect()->back()->with('error', 'Gagal menambahkan akun Admin. Silakan coba lagi.');
@@ -63,7 +61,7 @@ class TambahAdminController extends Controller
     public function uploadFoto(Request $request)
     {
         $request->validate([
-            'foto' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'foto' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         if ($request->hasFile('foto')) {

@@ -76,14 +76,6 @@
                     </a>
                 </li>
 
-
-                <li class="sidebar-item ">
-                    <a href="#" class='sidebar-link'>
-                        <i class="bi bi-person-plus-fill"></i>
-                        <span>Tambah Akun Admin</span>
-                    </a>
-                </li>
-
                 <li class="sidebar-item ">
                     <a href="{{ route('kegiatan') }}" class='sidebar-link'>
                         <i class="bi bi-file-person"></i>
@@ -92,7 +84,7 @@
                 </li>
 
                 <li class="sidebar-item ">
-                    <a href="#" class='sidebar-link'>
+                    <a href="{{ route('profileadmin') }}" class='sidebar-link'>
                         <i class="bi bi-person-circle"></i>
                         <span>Profil</span>
                     </a>

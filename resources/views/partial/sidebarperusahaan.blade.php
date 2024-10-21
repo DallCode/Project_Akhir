@@ -43,6 +43,13 @@
                     </ul>
                 </li>
 
+                <li class="sidebar-item ">
+                    <a href="{{ route('profileperusahaan') }}" class='sidebar-link'>
+                        <i class="bi bi-person-circle"></i>
+                        <span>Profil</span>
+                    </a>
+                </li>
+
 
                 <li class="sidebar-item">
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">

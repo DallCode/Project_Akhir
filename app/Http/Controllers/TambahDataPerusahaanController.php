@@ -16,7 +16,7 @@ class TambahDataPerusahaanController extends Controller
 
     public function store(Request $request)
     {
-        return $request;
+
         // Validasi input
         $request->validate([
             'nama' => 'required|string|max:255',
@@ -25,11 +25,8 @@ class TambahDataPerusahaanController extends Controller
             'alamat' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users',
             'password' => 'required|string|min:6',
-            'logo' => 'required|image|mimes:jpeg,png,jpg,gif,pnq|max:2048', // Max 2MB
+            'logo' => 'required|string|max:2048', // Max 2MB
         ]);
-
-        // Menangani upload logo
-        $logoPath = $this->uploadImage($request);
 
         // Menyimpan pengguna baru
         $pengguna = User::create([
@@ -46,7 +43,7 @@ class TambahDataPerusahaanController extends Controller
                 'bidang_usaha' => $request->input('bidang_usaha'),
                 'no_telepon' => $request->input('no_telepon'),
                 'alamat' => $request->input('alamat'),
-                'logo' => $logoPath, // Simpan logoPath ke database
+                'logo' => $request->input('logo'), // Simpan logoPath ke database
             ]);
             return redirect('/dataperusahaan')->with('success', 'Data perusahaan berhasil ditambahkan');
         }
@@ -57,7 +54,7 @@ class TambahDataPerusahaanController extends Controller
     public function uploadImage(Request $request)
     {
         $request->validate([
-            'logo' => 'required|image|mimes:jpeg,png,jpg,gif,pnq|max:2048',
+            'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         if ($request->hasFile('logo')) {

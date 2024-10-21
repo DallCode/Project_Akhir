@@ -10,6 +10,7 @@ use App\Http\Controllers\DetaillokerController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\LamaranPerusahaanController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProfilePerusahaanController;
 use App\Http\Controllers\WilayahController;
 
 /*
@@ -62,6 +63,7 @@ Route::post('/tambahdataperusahaan', [TambahDataPerusahaanController::class, 'st
 Route::post('/upload-image', [TambahDataPerusahaanController::class, 'uploadImage'])->name('upload.image');
 // Route for Akun Pengguna
 Route::get('/akunpengguna', [App\Http\Controllers\AkunpenggunaController::class, 'index'])->name('akunpengguna');
+Route::put('/akunpengguna/{id}/password', [App\Http\Controllers\AkunpenggunaController::class, 'updatePassword'])->name('updatePassword');
 Route::get('/tambahadmin', [App\Http\Controllers\TambahAdminController::class, 'index'])->name('tambahadmin');
 Route::get('/admin/add', [App\Http\Controllers\TambahAdminController::class, 'create'])->name('admin.create');
 Route::post('/admin/add', [App\Http\Controllers\TambahAdminController::class, 'store'])->name('admin.store');
@@ -69,9 +71,12 @@ Route::post('/upload-foto', [App\Http\Controllers\TambahAdminController::class, 
 // Rute for Loker in Admin
 Route::get('/lokeradmin', [App\Http\Controllers\AjuanlokerController::class, 'index'])->name('lokeradmin');
 Route::put('/loker/{id_lowongan_pekerjaan}/update-status', [App\Http\Controllers\AjuanlokerController::class, 'updateStatus'])->name('update.status');
-
 // Route for Lacak ALumni
 Route::get('/kegiatan', [App\Http\Controllers\KegiatanController::class, 'index'])->name('kegiatan');
+// Route Profile Admin
+Route::get('/profileadmin', [App\Http\Controllers\ProfileAdminController::class, 'index'])->name('profileadmin');
+Route::put('/profileadmin/{nip}', [App\Http\Controllers\ProfileAdminController::class, 'update'])->name('profileadmin.update');
+Route::post('/profile/{nip}/update-photo', [App\Http\Controllers\ProfileAdminController::class, 'adminupdatePhoto'])->name('profileadmin.updatePhoto');
 
 
 // Route for Dashboard Perusahaan
@@ -86,6 +91,12 @@ Route::put('/lowongan/{id_lowongan_pekerjaan}', [DatalokerController::class, 'up
 Route::get('/lamaran', [LamaranPerusahaanController::class, 'index'])->name('lamaran');
 Route::get('/arsiplamaran', [LamaranPerusahaanController::class, 'arsip'])->name('arsiplamaran');
 Route::put('/updatestatus/{id}', [LamaranPerusahaanController::class, 'updateStatus'])->name('updatestatus');
+
+Route::get('/profileperusahaan', [ProfilePerusahaanController::class, 'index'])->name('profileperusahaan');
+Route::put('/profileperusahaan/{id_data_perusahaan}', [ProfilePerusahaanController::class, 'update'])->name('profileperusahaan.update');
+Route::post('/profile/{id_data_perusahaan}/update-photo', [ProfilePerusahaanController::class, 'perusahaanupdatePhoto'])->name('profileperusahaan.updatePhoto');
+
+
 
 
 
