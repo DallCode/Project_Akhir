@@ -20,6 +20,7 @@
     <section class="row">
         <div class="col-12 col-lg-9">
             <div class="row">
+                <!-- Total Alumni -->
                 <div class="col-6 col-lg-3 col-md-6">
                     <div class="card">
                         <div class="card-body px-3 py-4-5">
@@ -37,6 +38,8 @@
                         </div>
                     </div>
                 </div>
+            
+                <!-- Total Perusahaan -->
                 <div class="col-6 col-lg-3 col-md-6">
                     <div class="card">
                         <div class="card-body px-3 py-4-5">
@@ -54,6 +57,8 @@
                         </div>
                     </div>
                 </div>
+            
+                <!-- Alumni Bekerja -->
                 <div class="col-6 col-lg-3 col-md-6">
                     <div class="card">
                         <div class="card-body px-3 py-4-5">
@@ -65,12 +70,14 @@
                                 </div>
                                 <div class="col-md-8">
                                     <h6 class="text-muted font-semibold">Bekerja</h6>
-                                    <h6 class="font-extrabold mb-0">{{$alumniBekerja}}</h6>
+                                    <h6 class="font-extrabold mb-0">{{ $alumniBekerja }}</h6>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            
+                <!-- Alumni Belum Bekerja -->
                 <div class="col-6 col-lg-3 col-md-6">
                     <div class="card">
                         <div class="card-body px-3 py-4-5">
@@ -82,13 +89,71 @@
                                 </div>
                                 <div class="col-md-8">
                                     <h6 class="text-muted font-semibold">Belum Bekerja</h6>
-                                    <h6 class="font-extrabold mb-0">{{$alumniBelumBekerja}}</h6>
+                                    <h6 class="font-extrabold mb-0">{{ $alumniBelumBekerja }}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Alumni Kuliah -->
+                <div class="col-6 col-lg-3 col-md-6">
+                    <div class="card">
+                        <div class="card-body px-3 py-4-5">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="stats-icon yellow">
+                                        <i class="iconly-boldStudy"></i>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <h6 class="text-muted font-semibold">Kuliah</h6>
+                                    <h6 class="font-extrabold mb-0">{{ $alumniKuliah }}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Alumni Wirausaha -->
+                <div class="col-6 col-lg-3 col-md-6">
+                    <div class="card">
+                        <div class="card-body px-3 py-4-5">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="stats-icon orange">
+                                        <i class="iconly-boldWork"></i>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <h6 class="text-muted font-semibold">Wirausaha</h6>
+                                    <h6 class="font-extrabold mb-0">{{ $alumniWirausaha }}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Ajuan Loker -->
+                <div class="col-6 col-lg-3 col-md-6">
+                    <div class="card">
+                        <div class="card-body px-3 py-4-5">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="stats-icon teal">
+                                        <i class="iconly-boldWork"></i>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <h6 class="text-muted font-semibold">Ajuan Loker</h6>
+                                    <h6 class="font-extrabold mb-0">{{ $ajuanLoker }}</h6>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            
             <div class="row">
                 <div class="col-12">
                     <div class="card">

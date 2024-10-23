@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ChartAlumniController;
 use App\Http\Controllers\DashboardalumniController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -161,6 +162,11 @@ Route::middleware(['auth'])->group(function () {
 
 
 Route::post('/update-kegiatan-sekarang', [App\Http\Controllers\KegiatanController::class, 'updateKegiatan'])->name('updateKegiatanSekarang');
+
+Route::get('/chartalumni', [ChartAlumniController::class, 'index'])->name('chartalumni');
+Route::get('/path-to-get-user-lamaran-data', [ChartAlumniController::class, 'getUserLamaranData']);
+
+
 
 Route::get('/get-provinces', [WilayahController::class, 'getProvinces']);
 Route::get('/get-cities/{provinceId}', [WilayahController::class, 'getCities']);

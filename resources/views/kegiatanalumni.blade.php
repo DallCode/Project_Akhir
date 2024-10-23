@@ -71,20 +71,53 @@
                                 <th>Jurusan</th>
                                 <th>Tahun Lulus</th>
                                 <th>Status</th>
-                                <th>pesan</th>
+                                <th>Pesan</th>
                             </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($kegiatan as $item)
-                            <tr>
-                                <td>{{ $item->nik }}</td>
-                                <td>{{ $item->nama }}</td>
-                                <td>{{ $item->jurusan }}</td>
-                                <td>{{ $item->tahun_lulus }}</td>
-                                <td>{{ $item->status }}</td>
-                                <td>{{ $item->status }}</td>
-                            </tr>
-                            @endforeach
+                            </thead>
+                            <tbody>
+                                @foreach ($kegiatan as $item)
+                                <tr>
+                                    <td>{{ $item->nik }}</td>
+                                    <td>{{ $item->nama }}</td>
+                                    <td>{{ $item->jurusan }}</td>
+                                    <td>{{ $item->tahun_lulus }}</td>
+                                    <td>{{ $item->status }}</td>
+                                    <td>
+                                        <!-- Button trigger modal -->
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#pesanModal{{ $item->nik }}">
+                                            <i class="fa fa-envelope"></i>
+                                        </button>
+                            
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="pesanModal{{ $item->nik }}" tabindex="-1" aria-labelledby="pesanModalLabel{{ $item->nik }}" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="pesanModalLabel{{ $item->nik }}">Pesan dari {{ $item->nama }}</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        @php
+                                                            $filePath = "public/alasan/".$item->nik.".txt"; // Path file pesan di storage
+                                                            if (Storage::exists($filePath)) {
+                                                                $pesan = Storage::get($filePath);
+                                                            } else {
+                                                                $pesan = "Tidak ada pesan.";
+                                                            }
+                                                        @endphp
+                                                        <p>{{ $pesan }}</p>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                            
                         </tbody>
                     </table>
                 </div>

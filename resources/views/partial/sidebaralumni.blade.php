@@ -15,6 +15,13 @@
                 <li class="sidebar-title">Menu</li>
 
                 <li class="sidebar-item ">
+                    <a href="{{ route('chartalumni') }}" class='sidebar-link'>
+                        <i class="bi bi-search"></i>
+                        <span>dashboard</span>
+                    </a>
+                </li>
+
+                <li class="sidebar-item ">
                     <a href="{{ route('dashboardalumni') }}" class='sidebar-link'>
                         <i class="bi bi-search"></i>
                         <span>Cari lowongan</span>

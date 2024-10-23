@@ -7,6 +7,7 @@ use App\Models\Alumni;
 use App\Models\FileLamaran;
 use App\Models\Lamaran;
 use App\Models\Loker;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -69,6 +70,7 @@ class DashboardalumniController extends Controller
             'id_lowongan_pekerjaan' => $request->id_lowongan_pekerjaan,
             'nik' => $alumniLogin->nik,
             'status' => 'terkirim',
+            'waktu' => Carbon::now(),
         ]);
 
         // Proses penyimpanan file jika ada

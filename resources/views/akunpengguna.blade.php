@@ -39,6 +39,23 @@
                             class="bi bi-person-plus"></i> Tambah Akun Admin</a>
                 </div>
                 <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <h5>Filter Data</h5>
+                        </div>
+                        <div class="col-md-12 mb-3">
+                            <label>Role</label>
+                            <select class="form-select" id="roleFilter">
+                                <option value="">Semua Role</option>
+                                @php
+                                    $roles = $users->pluck('role')->unique();
+                                @endphp
+                                @foreach ($roles as $role)
+                                    <option value="{{ $role }}">{{ $role }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                     <table class="table table-striped" id="table1">
                         <thead>
                             <tr>
@@ -145,6 +162,22 @@
         // Simple Datatable
         let table1 = document.querySelector('#table1');
         let dataTable = new simpleDatatables.DataTable(table1);
+
+        document.getElementById('roleFilter').addEventListener('change', filterData);
+
+        function filterData() {
+            const role = document.getElementById('roleFilter').value;
+            let searchQuery = [];
+
+            if (role) searchQuery.push(role);
+
+            // Filter based on the values
+            if (searchQuery.length > 0) {
+                dataTable.search(searchQuery.join(' ')).draw();
+            } else {
+                dataTable.search('').draw(); // Clear the search if no filters are applied
+            }
+        }
     </script>
 
     <script src="{{ asset('bkk/dist/assets/js/main.js') }}"></script>

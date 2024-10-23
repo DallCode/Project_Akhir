@@ -32,7 +32,7 @@ class DashboardPerusahaanController extends Controller
         $totalLamaran = $lamaran->count();
 
         // Menghitung jumlah lamaran terbaru (misalnya dalam 7 hari terakhir)
-        $lamaranTerbaru = $lamaran->where('created_at', '>=', now()->subDays(7))->count();
+        $lamaranTerbaru = $lamaran->where('waktu', '>=', now()->subDays(7))->count();
 
         // Mengembalikan tampilan dashboardPerusahaan dengan data yang dibutuhkan
         return view('dashboardPerusahaan', compact('perusahaanLogin', 'totalLoker', 'lokerDipublikasi', 'totalLamaran', 'lamaranTerbaru'));

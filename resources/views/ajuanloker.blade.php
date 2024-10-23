@@ -26,12 +26,54 @@
         <section class="section">
             <div class="card">
                 <div class="card-header">
+                    <div class="row">
+                        <div class="col-12">
+                            <h5>Filter Data</h5>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Nama Perusahaan</label>
+                            <select class="form-select" id="perusahaanFilter">
+                                <option value="">Semua Perusahaan</option>
+                                @php
+                                    $perusahaans = $loker->pluck('nama')->unique();
+                                @endphp
+                                @foreach ($perusahaans as $perusahaan)
+                                    <option value="{{ $perusahaan }}">{{ $perusahaan }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Posisi</label>
+                            <select class="form-select" id="posisiFilter">
+                                <option value="">Semua Posisi</option>
+                                @php
+                                    $posisi = $loker->pluck('jabatan')->unique();
+                                @endphp
+                                @foreach ($posisi as $p)
+                                    <option value="{{ $p }}">{{ $p }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Status Publikasi</label>
+                            <select class="form-select" id="statuspublikasiFilter">
+                                <option value="">Semua Status Publikasi</option>
+                                @php
+                                    $status = $loker->pluck('status')->unique()->sort();
+                                @endphp
+                                @foreach ($status as $stat)
+                                    <option value="{{ $stat }}">{{ $stat }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                     Simple Datatable
                 </div>
                 <div class="card-body">
                     <table class="table table-striped" id="table1">
                         <thead>
                             <tr>
+                                <th>Nama Perusahaan</th>
                                 <th>Jabatan</th>
                                 <th>status</th>
                                 <th>Aksi</th>
@@ -40,6 +82,7 @@
                         <tbody>
                             @foreach ($loker as $lowongan)
                                 <tr data-status="{{ $lowongan->status }}">
+                                    <td>{{ $lowongan->perusahaan->nama }}</td>
                                     <td>{{ $lowongan->jabatan }}</td>
                                     <td>{{ $lowongan->status }}</td>
                                     <td>
@@ -166,6 +209,29 @@
             var statusSelect = document.getElementById('status{{ $lowongan->id_lowongan_pekerjaan }}');
             toggleTextarea(statusSelect);
         });
+
+        document.getElementById('perusahaanFilter').addEventListener('change', filterData);
+        document.getElementById('posisiFilter').addEventListener('change', filterData);
+        document.getElementById('statusFilter').addEventListener('change', filterData);
+
+        function filterData() {
+            const perusahaan = document.getElementById('perusahaanFilter').value;
+            const posisi = document.getElementById('posisi').value;
+            const status = document.getElementById('status').value;
+
+            let searchQuery = [];
+
+            if (perusahaan) searchQuery.push(perusahaan);
+            if (posisi) searchQuery.push(posisi);
+            if (status) searchQuery.push(status);
+
+            // Filter based on the values
+            if (searchQuery.length > 0) {
+                dataTable.search(searchQuery.join(' ')).draw();
+            } else {
+                dataTable.search('').draw(); // Clear the search if no filters are applied
+            }
+        }
     </script>
 
     <script src="{{ asset('bkk/dist/assets/js/main.js') }}"></script>

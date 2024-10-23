@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{{ asset('bkk/dist/assets/vendors/bootstrap-icons/bootstrap-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('bkk/dist/assets/css/app.css') }}">
     <link rel="shortcut icon" href="{{ asset('bkk/dist/assets/images/favicon.svg') }}" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.css">
 
 
@@ -29,11 +30,54 @@
                     Simple Datatable
                 </div>
                 <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <h5>Filter Data</h5>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Jenis Kelamin</label>
+                            <select class="form-select" id="jenisKelaminFilter">
+                                <option value="">Semua Jenis Kelamin</option>
+                                @php
+                                    $jeniskelamin = $alumni->pluck('jenis_kelamin')->unique();
+                                @endphp
+                                @foreach ($jeniskelamin as $jkl)
+                                    <option value="{{ $jkl }}">{{ $jkl }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Jurusan</label>
+                            <select class="form-select" id="jurusanFilter">
+                                <option value="">Semua Jurusan</option>
+                                @php
+                                    $jurusans = $alumni->pluck('jurusan')->unique();
+                                @endphp
+                                @foreach ($jurusans as $jurusan)
+                                    <option value="{{ $jurusan }}">{{ $jurusan }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label>Tahun Lulus</label>
+                            <select class="form-select" id="tahunFilter">
+                                <option value="">Semua Tahun</option>
+                                @php
+                                    $tahuns = $alumni->pluck('tahun_lulus')->unique()->sort();
+                                @endphp
+                                @foreach ($tahuns as $tahun)
+                                    <option value="{{ $tahun }}">{{ $tahun }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
                     <table class="table table-striped" id="table1">
                         <thead>
                             <tr>
                                 <th>NIK</th>
                                 <th>Nama Lengkap</th>
+                                <th>Jenis Kelamin</th>
                                 <th>Jurusan</th>
                                 <th>Tahun Lulus</th>
                                 <th>Aksi</th>
@@ -44,6 +88,7 @@
                                 <tr>
                                     <td>{{ $all->nik }}</td>
                                     <td>{{ $all->nama }}</td>
+                                    <td>{{ $all->jenis_kelamin }}</td>
                                     <td>{{ $all->jurusan }}</td>
                                     <td>{{ $all->tahun_lulus }}</td>
                                     <td>
@@ -188,6 +233,7 @@
     <script src="{{ asset('bkk/dist/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
     <script src="{{ asset('bkk/dist/assets/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('bkk/dist/assets/vendors/simple-datatables/simple-datatables.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script>
         @if (session('success') || session('error'))
@@ -208,6 +254,29 @@
         // Simple Datatable
         let table1 = document.querySelector('#table1');
         let dataTable = new simpleDatatables.DataTable(table1);
+
+        document.getElementById('jenisKelaminFilter').addEventListener('change', filterData);
+        document.getElementById('jurusanFilter').addEventListener('change', filterData);
+        document.getElementById('tahunFilter').addEventListener('change', filterData);
+
+        function filterData() {
+            const jenisKelamin = document.getElementById('jenisKelaminFilter').value;
+            const jurusan = document.getElementById('jurusanFilter').value;
+            const tahun = document.getElementById('tahunFilter').value;
+
+            let searchQuery = [];
+
+            if (jenisKelamin) searchQuery.push(jenisKelamin);
+            if (jurusan) searchQuery.push(jurusan);
+            if (tahun) searchQuery.push(tahun);
+
+            // Filter based on the values
+            if (searchQuery.length > 0) {
+                dataTable.search(searchQuery.join(' ')).draw();
+            } else {
+                dataTable.search('').draw(); // Clear the search if no filters are applied
+            }
+        }
     </script>
 
     <script src="{{ asset('bkk/dist/assets/js/main.js') }}"></script>

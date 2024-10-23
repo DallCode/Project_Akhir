@@ -28,6 +28,48 @@
                 Simple Datatable
             </div>
             <div class="card-body">
+                <div class="row">
+                    <div class="col-12">
+                        <h5>Filter Data</h5>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label>Bidang Usaha</label>
+                        <select class="form-select" id="bidangusahaFilter">
+                            <option value="">Semua Bidang Usaha</option>
+                            @php
+                                $bidangusaha = $perusahaan->pluck('bidang_usaha')->unique();
+                            @endphp
+                            @foreach ($bidangusaha as $bu)
+                                <option value="{{ $bu }}">{{ $bu }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label>No Telepon</label>
+                        <select class="form-select" id="noteleponFilter">
+                            <option value="">Semua No Telepon</option>
+                            @php
+                                $notelepon = $perusahaan->pluck('no_telepon')->unique();
+                            @endphp
+                            @foreach ($notelepon as $nt)
+                                <option value="{{ $nt }}">{{ $nt }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label>Status</label>
+                        <select class="form-select" id="statusFilter">
+                            <option value="">Semua Status</option>
+                            @php
+                                $status = $perusahaan->pluck('status')->unique()->sort();
+                            @endphp
+                            @foreach ($status as $stat)
+                                <option value="{{ $stat }}">{{ $stat }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+
                 <table class="table table-striped" id="table1">
                     <thead>
                         <tr>
@@ -130,6 +172,29 @@
     // Simple Datatable
     let table1 = document.querySelector('#table1');
     let dataTable = new simpleDatatables.DataTable(table1);
+
+    document.getElementById('bidangusahaFilter').addEventListener('change', filterData);
+        document.getElementById('noteleponFilter').addEventListener('change', filterData);
+        document.getElementById('statusFilter').addEventListener('change', filterData);
+
+        function filterData() {
+            const bidangUsaha = document.getElementById('bidangusahaFilter').value;
+            const noTelepon = document.getElementById('noteleponFilter').value;
+            const status = document.getElementById('statusFilter').value;
+
+            let searchQuery = [];
+
+            if (bidangUsaha) searchQuery.push(bidangUsaha);
+            if (noTelepon) searchQuery.push(noTelepon);
+            if (status) searchQuery.push(status);
+
+            // Filter based on the values
+            if (searchQuery.length > 0) {
+                dataTable.search(searchQuery.join(' ')).draw();
+            } else {
+                dataTable.search('').draw(); // Clear the search if no filters are applied
+            }
+        }
 </script>
 
 <script src="{{ asset('bkk/dist/assets/js/main.js') }}"></script>
