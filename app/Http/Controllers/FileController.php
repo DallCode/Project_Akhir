@@ -12,4 +12,10 @@ class FileController extends Controller
         $filePath = public_path('filetemplate/data_siswa.xlsx');
         return response()->download($filePath, 'data_siswa.xlsx');
     }
+
+    public function Template()
+    {
+        $filePath = public_path('filetemplate/Format.xlsx');
+        return response()->download($filePath, 'Format.xlsx');
+    }
 }

@@ -30,8 +30,8 @@
                                     </div>
                                 </div>
                                 <div class="col-md-8">
-                                    <h6 class="text-muted font-semibold">Alumni</h6>
-                                    <h6 class="font-extrabold mb-0">1</h6>
+                                    <h6 class="text-muted font-semibold">Total Lowongan</h6>
+                                    <h6 class="font-extrabold mb-0">{{ $totalLoker }}</h6>
                                 </div>
                             </div>
                         </div>
@@ -47,8 +47,8 @@
                                     </div>
                                 </div>
                                 <div class="col-md-8">
-                                    <h6 class="text-muted font-semibold">Perusahaan</h6>
-                                    <h6 class="font-extrabold mb-0">1</h6>
+                                    <h6 class="text-muted font-semibold">Lowongan Yang Dipublikasi</h6>
+                                    <h6 class="font-extrabold mb-0">{{ $lokerDipublikasi }}</h6>
                                 </div>
                             </div>
                         </div>
@@ -64,8 +64,8 @@
                                     </div>
                                 </div>
                                 <div class="col-md-8">
-                                    <h6 class="text-muted font-semibold">Bekerja</h6>
-                                    <h6 class="font-extrabold mb-0">1</h6>
+                                    <h6 class="text-muted font-semibold">Total Lamaran</h6>
+                                    <h6 class="font-extrabold mb-0">{{ $totalLamaran }}</h6>
                                 </div>
                             </div>
                         </div>
@@ -81,8 +81,8 @@
                                     </div>
                                 </div>
                                 <div class="col-md-8">
-                                    <h6 class="text-muted font-semibold">Belum Bekerja</h6>
-                                    <h6 class="font-extrabold mb-0">1</h6>
+                                    <h6 class="text-muted font-semibold">Lamaran Terbaru</h6>
+                                    <h6 class="font-extrabold mb-0">{{ $lamaranTerbaru }}</h6>
                                 </div>
                             </div>
                         </div>

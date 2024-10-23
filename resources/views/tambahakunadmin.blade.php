@@ -16,19 +16,29 @@
                     @csrf
                     <div id="step1">
                         <div class="row">
+                            <div class="mb-3">
+                                <label for="foto" class="form-label">Foto</label>
+                                <input type="file" name="foto" id="foto" />
+                            </div>
                             <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="foto" class="form-label">Foto</label>
-                                    <input type="file" name="foto" id="foto" />
-                                </div>
                                 <div class="mb-3">
                                     <label for="nip" class="form-label">NIP</label>
                                     <input type="text" class="form-control" id="nip" name="nip" required>
                                 </div>
                                 <div class="mb-3">
                                     <label for="nama_lengkap" class="form-label">Nama Lengkap</label>
-                                    <input type="text" class="form-control" id="nama_lengkap" name="nama_lengkap" required>
+                                    <input type="text" class="form-control" id="nama_lengkap" name="nama_lengkap"
+                                        required>
                                 </div>
+                                <div class="mb-3">
+                                    <div class="mb-3">
+                                        <label for="alamat" class="form-label">Alamat</label>
+                                        <textarea class="form-control" id="alamat" name="alamat" rows="3" required></textarea>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="jenis_kelamin" class="form-label">Jenis Kelamin</label>
                                     <select class="form-select" id="jenis_kelamin" name="jenis_kelamin" required>
@@ -37,12 +47,7 @@
                                         <option value="Perempuan">Perempuan</option>
                                     </select>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="alamat" class="form-label">Alamat</label>
-                                    <textarea class="form-control" id="alamat" name="alamat" rows="3" required></textarea>
-                                </div>
+
                                 <div class="mb-3">
                                     <label for="kontak" class="form-label">Kontak</label>
                                     <input type="text" class="form-control" id="kontak" name="kontak" required>
@@ -67,7 +72,8 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
-                                    <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
+                                    <input type="password" class="form-control" id="password_confirmation"
+                                        name="password_confirmation" required>
                                 </div>
                             </div>
                         </div>

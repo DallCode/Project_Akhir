@@ -4,39 +4,49 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Perusahaan extends Model
 {
     use HasFactory;
+
     protected $table = 'data_perusahaan';
     protected $primaryKey = 'id_data_perusahaan';
     protected $keyType = 'string';
     public $incrementing = false;
     public $timestamps = false;
+
     protected $fillable = [
+        'id_data_perusahaan',
         'username',
         'nama',
         'bidang_usaha',
         'no_telepon',
         'alamat',
+        'provinsi',
+        'kota',
+        'kecamatan',
+        'kelurahan',
         'logo',
         'status'
     ];
 
-    public static function boot()
+    protected static function boot()
     {
         parent::boot();
 
         static::creating(function ($model) {
-            $model->id_data_perusahaan = self::generateKodeUnik();
+            if (empty($model->id_data_perusahaan)) {
+                $model->id_data_perusahaan = self::generateKodeUnik();
+            }
+            if (empty($model->status)) {
+                $model->status = 'Aktif';
+            }
         });
     }
 
-    private static function generateKodeUnik()
+    public static function generateKodeUnik()
     {
-        $prefix = 'P'; // Bisa disesuaikan sesuai kebutuhan
+        $prefix = 'P';
         $lastRecord = self::orderBy('id_data_perusahaan', 'desc')->first();
         $lastNumber = $lastRecord ? intval(substr($lastRecord->id_data_perusahaan, strlen($prefix))) : 0;
         $newNumber = $lastNumber + 1;
@@ -44,8 +54,8 @@ class Perusahaan extends Model
         return $prefix . str_pad($newNumber, 6, '0', STR_PAD_LEFT);
     }
 
-    public function users()
+    public function user()
     {
-        return $this->hasMany(User::class, 'username');
+        return $this->belongsTo(User::class, 'username', 'username');
     }
 }

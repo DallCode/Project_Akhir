@@ -61,6 +61,9 @@ Route::put('/perusahaan/update/{id_data_perusahaan}', [App\Http\Controllers\Data
 Route::get('/tambahdataperusahaan', [TambahDataPerusahaanController::class, 'index'])->name('tambahdataperusahaan.index');
 Route::post('/tambahdataperusahaan', [TambahDataPerusahaanController::class, 'store'])->name('tambahdataperusahaan.store');
 Route::post('/upload-image', [TambahDataPerusahaanController::class, 'uploadImage'])->name('upload.image');
+Route::post('/upload-excel', [TambahDataPerusahaanController::class, 'uploadFilePerusahaan'])->name('upload.file');
+Route::post('/file-excel', [TambahDataPerusahaanController::class, 'importperusahaan'])->name('importdata.perusahaan');
+
 // Route for Akun Pengguna
 Route::get('/akunpengguna', [App\Http\Controllers\AkunpenggunaController::class, 'index'])->name('akunpengguna');
 Route::put('/akunpengguna/{id}/password', [App\Http\Controllers\AkunpenggunaController::class, 'updatePassword'])->name('updatePassword');
