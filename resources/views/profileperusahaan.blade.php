@@ -102,9 +102,7 @@
             <div class="profile-header">
                 <div class="row">
                     <div class="col-md-3 text-center">
-                        <img src="{{ $perusahaan->logo
-                            ? asset('storage/images/' . $perusahaan->logo)
-                            : asset('bkk/dist/assets/images/default-company-logo.jpg') }}"
+                        <img src="{{ $perusahaan->logo ? asset('storage/images/' . $perusahaan->logo) : asset('bkk/dist/assets/images/default-company-logo.jpg') }}"
                             class="profile-img rounded-circle" alt="Profile Image">
                         <div class="mt-3">
                             <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#editPhotoModal">
@@ -291,11 +289,10 @@
         const cropButton = document.getElementById('crop-button');
         const previewContainer = document.querySelector('.preview-container');
 
-        // Ketika file dipilih
         fileInput.addEventListener('change', function() {
             const file = this.files[0];
             if (file) {
-                if (file.size > 2 * 1024 * 1024) { // 2MB dalam bytes
+                if (file.size > 2 * 1024 * 1024) {
                     alert('Ukuran file terlalu besar. Maksimal 2MB.');
                     this.value = '';
                     return;
@@ -306,96 +303,34 @@
                     imagePreview.src = event.target.result;
                     previewContainer.style.display = 'block';
 
-                    // Inisialisasi Croppie
-                    if (croppieInstance) {
-                        croppieInstance.destroy();
-                    }
+                    if (croppieInstance) croppieInstance.destroy();
 
                     croppieInstance = new Croppie(imagePreview, {
-                        viewport: {
-                            width: 200,
-                            height: 200,
-                            type: 'circle'
-                        },
-                        boundary: {
-                            width: 300,
-                            height: 300
-                        },
-                        enableExif: true,
-                        enableOrientation: true
+                        viewport: { width: 200, height: 200, type: 'circle' },
+                        boundary: { width: 300, height: 300 },
+                        enableExif: true
                     });
-                }
+                };
                 reader.readAsDataURL(file);
             }
         });
 
-        // Drag and drop functionality
-        const uploadContainer = document.querySelector('.upload-container');
-
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            uploadContainer.addEventListener(eventName, preventDefaults, false);
-        });
-
-        function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-
-        ['dragenter', 'dragover'].forEach(eventName => {
-            uploadContainer.addEventListener(eventName, highlight, false);
-        });
-
-        ['dragleave', 'drop'].forEach(eventName => {
-            uploadContainer.addEventListener(eventName, unhighlight, false);
-        });
-
-        function highlight(e) {
-            uploadContainer.classList.add('border-primary');
-        }
-
-        function unhighlight(e) {
-            uploadContainer.classList.remove('border-primary');
-        }
-
-        uploadContainer.addEventListener('drop', handleDrop, false);
-
-        function handleDrop(e) {
-            const dt = e.dataTransfer;
-            const files = dt.files;
-            fileInput.files = files;
-            fileInput.dispatchEvent(new Event('change'));
-        }
-
-        // Ketika tombol "Simpan" ditekan
         cropButton.addEventListener('click', function() {
             if (croppieInstance) {
                 cropButton.disabled = true;
-                cropButton.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Menyimpan...';
+                cropButton.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Menyimpan...';
 
-                croppieInstance.result({
-                    type: 'blob',
-                    size: {
-                        width: 200,
-                        height: 200
-                    },
-                    format: 'jpeg'
-                }).then(function(blob) {
-                    const formData = new FormData();
-                    formData.append('logo', blob, 'logo.jpg');
+                croppieInstance.result({ type: 'blob', size: { width: 200, height: 200 }, format: 'jpeg' })
+                    .then(blob => {
+                        const formData = new FormData();
+                        formData.append('logo', blob, 'logo.jpg');
 
-                    fetch("{{ route('profileperusahaan.updatePhoto', Auth::user()->perusahaan->id_data_perusahaan) }}", {
+                        fetch("{{ route('profileperusahaan.updatePhoto', $perusahaan->id_data_perusahaan) }}", {
                             method: 'POST',
                             body: formData,
-                            headers: {
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            }
+                            headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' }
                         })
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Gagal memperbarui logo.');
-                            }
-                            return response.json();
-                        })
+                        .then(response => response.json())
                         .then(data => {
                             if (data.success) {
                                 $('#editPhotoModal').modal('hide');
@@ -404,15 +339,12 @@
                                 alert('Gagal memperbarui logo.');
                             }
                         })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert(error.message);
-                        })
+                        .catch(error => alert(error.message))
                         .finally(() => {
                             cropButton.disabled = false;
-                            cropButton.innerHTML = '<i class="fas fa-save me-1"></i>Simpan';
+                            cropButton.innerHTML = '<i class="fas fa-save me-1"></i> Simpan';
                         });
-                });
+                    });
             }
         });
     </script>

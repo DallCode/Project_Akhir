@@ -70,6 +70,9 @@
                                     <td>{{ $us->username }}</td>
                                     <td>{{ $us->role }}</td>
                                     <td>
+                                        
+                                    </td>
+                                    <td>
                                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                             data-bs-target="#editPasswordModal{{ $us->username }}">
                                             Edit

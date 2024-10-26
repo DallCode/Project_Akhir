@@ -46,31 +46,25 @@ class ProfilePerusahaanController extends Controller
     {
         $perusahaan = Perusahaan::findOrFail($id_data_perusahaan);
 
-        // Validasi input
         $request->validate([
             'logo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        // Hapus foto lama jika ada
         if ($perusahaan->logo && Storage::exists('public/images/' . $perusahaan->logo)) {
             Storage::delete('public/images/' . $perusahaan->logo);
         }
 
-        // Simpan foto baru
         if ($request->hasFile('logo')) {
             $file = $request->file('logo');
             $filename = time() . '_' . $file->getClientOriginalName();
             $file->storeAs('public/images', $filename);
 
-            // Update kolom foto di database
             $perusahaan->logo = $filename;
             $perusahaan->save();
 
-            session()->flash('success', 'Logo berhasil diperbarui.');
             return response()->json(['success' => true]);
         }
 
         return response()->json(['success' => false], 400);
     }
-
 }

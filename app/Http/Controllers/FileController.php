@@ -18,4 +18,16 @@ class FileController extends Controller
         $filePath = public_path('filetemplate/Format.xlsx');
         return response()->download($filePath, 'Format.xlsx');
     }
+
+    public function downloadFormat()
+    {
+        $filePath = public_path('fileformat/data_perusahaan.xlsx');
+        return response()->download($filePath, 'data_perusahaan.xlsx');
+    }
+
+    public function Format()
+    {
+        $filePath = public_path('fileformat/Format.xlsx');
+        return response()->download($filePath, 'Format.xlsx');
+    }
 }

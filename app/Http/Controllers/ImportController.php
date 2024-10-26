@@ -31,7 +31,7 @@ class ImportController extends Controller
                 return response()->json(['fileName' => $fileName]);
             }
 
-            return response()->json(['error' => 'No file uploaded'], 400);
+            return response()->json(['error' => 'Tidak ada file yang di Upload'], 400);
         } catch (\Exception $e) {
             Log::error('File upload error: ' . $e->getMessage());
             return response()->json(['error' =>  $e->getMessage()], 500);
@@ -62,13 +62,13 @@ class ImportController extends Controller
                 'alert_type' => 'success'
             ]);
         } catch (ValidationException $e) {
-            Log::error('Validation error during import: ' . json_encode($e->errors()));
+            Log::error('Kesalahan validasi saat import: ' . json_encode($e->errors()));
             return response()->json([
-                'alert' => 'Validation error: ' . json_encode($e->errors()),
+                'alert' => 'Kesalahan Validasi: ' . json_encode($e->errors()),
                 'alert_type' => 'danger'
             ], 422);
         } catch (\Exception $e) {
-            Log::error('Error during import: ' . $e->getMessage());
+            Log::error('Terjadi kesalahan saat import file: ' . $e->getMessage());
             return response()->json([
                 'alert' => 'Terjadi kesalahan saat mengimpor file: ' . $e->getMessage(),
                 'alert_type' => 'danger'

@@ -154,13 +154,13 @@ class TambahDataPerusahaanController extends Controller
                 'alert_type' => 'success'
             ]);
         } catch (ValidationException $e) {
-            Log::error('Validation error during import: ' . json_encode($e->errors()));
+            Log::error('Kesalahan validasi selama impor: ' . json_encode($e->errors()));
             return response()->json([
-                'alert' => 'Validation error: ' . json_encode($e->errors()),
+                'alert' => 'Kesalahan validasi: ' . json_encode($e->errors()),
                 'alert_type' => 'danger'
             ], 422);
         } catch (\Exception $e) {
-            Log::error('Error during import: ' . $e->getMessage());
+            Log::error('Kesalahan saat mengimpor: ' . $e->getMessage());
             return response()->json([
                 'alert' => 'Terjadi kesalahan saat mengimpor file: ' . $e->getMessage(),
                 'alert_type' => 'danger'

@@ -87,7 +87,7 @@
                                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#pesanModal{{ $item->nik }}">
                                             <i class="fa fa-envelope"></i>
                                         </button>
-                            
+
                                         <!-- Modal -->
                                         <div class="modal fade" id="pesanModal{{ $item->nik }}" tabindex="-1" aria-labelledby="pesanModalLabel{{ $item->nik }}" aria-hidden="true">
                                             <div class="modal-dialog">
@@ -98,7 +98,7 @@
                                                     </div>
                                                     <div class="modal-body">
                                                         @php
-                                                            $filePath = "public/alasan/".$item->nik.".txt"; // Path file pesan di storage
+                                                            $filePath = "public/alasan/alasan_" . $item->nik . ".txt";                                                            // Path file pesan di storage
                                                             if (Storage::exists($filePath)) {
                                                                 $pesan = Storage::get($filePath);
                                                             } else {
@@ -117,7 +117,7 @@
                                 </tr>
                                 @endforeach
                             </tbody>
-                            
+
                         </tbody>
                     </table>
                 </div>

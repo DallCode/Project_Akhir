@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ChartAlumniController;
+use App\Http\Controllers\DashboardadminController;
 use App\Http\Controllers\DashboardalumniController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -45,6 +46,8 @@ Auth::routes();
 
 // Dashboard Admin Route
 Route::get('/dashboardadmin', [App\Http\Controllers\DashboardadminController::class, 'index'])->name('dashboardadmin');
+Route::get('/alumni-stats', [DashboardadminController::class, 'showAlumniStats'])->name('alumni.stats');
+
 /// Route untuk menampilkan form upload
 Route::get('/importdata', [ImportController::class, 'index'])->name('importdata');
 Route::post('/upload-file', [ImportController::class, 'uploadFile'])->name('upload.excel');
@@ -64,6 +67,7 @@ Route::post('/tambahdataperusahaan', [TambahDataPerusahaanController::class, 'st
 Route::post('/upload-image', [TambahDataPerusahaanController::class, 'uploadImage'])->name('upload.image');
 Route::post('/upload-excel', [TambahDataPerusahaanController::class, 'uploadFilePerusahaan'])->name('upload.file');
 Route::post('/file-excel', [TambahDataPerusahaanController::class, 'importperusahaan'])->name('importdata.perusahaan');
+Route::get('/download-format', [FileController::class, 'downloadFormat'])->name('download.format');
 
 // Route for Akun Pengguna
 Route::get('/akunpengguna', [App\Http\Controllers\AkunpenggunaController::class, 'index'])->name('akunpengguna');
@@ -98,7 +102,8 @@ Route::put('/updatestatus/{id}', [LamaranPerusahaanController::class, 'updateSta
 
 Route::get('/profileperusahaan', [ProfilePerusahaanController::class, 'index'])->name('profileperusahaan');
 Route::put('/profileperusahaan/{id_data_perusahaan}', [ProfilePerusahaanController::class, 'update'])->name('profileperusahaan.update');
-Route::post('/profile/{id_data_perusahaan}/update-photo', [ProfilePerusahaanController::class, 'perusahaanupdatePhoto'])->name('profileperusahaan.updatePhoto');
+Route::post('/profile/{id_data_perusahaan}/update-logo', [App\Http\Controllers\ProfilePerusahaanController::class, 'perusahaanupdatePhoto'])->name('profileperusahaan.updatePhoto');
+
 
 
 

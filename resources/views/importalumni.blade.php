@@ -76,7 +76,7 @@
                 onerror: (response) => {
                     // This function will be called when there's an error during upload
                     const error = JSON.parse(response);
-                    showAlert(error.error || 'An error occurred during file upload', 'danger');
+                    showAlert(error.error || 'Terjadi kesalahan saat mengunggah file', 'danger');
                 }
             },
             revert: null,
@@ -118,7 +118,7 @@
         })
         .catch(error => {
             console.error('Error:', error);
-            showAlert('An error occurred during import. Please check the console for more details.', 'danger');
+            showAlert('Terjadi kesalahan saat mengimpor. Silakan periksa konsol untuk keterangan lebih lanjut.', 'danger');
         });
     });
 

@@ -11,9 +11,6 @@
                         <div class="row align-items-center mb-5">
                             <div class="col-lg-8 mb-4 mb-lg-0">
                                 <div class="d-flex align-items-center">
-                                    <div class="border p-2 d-inline-block mr-3 rounded">
-                                        <img src="{{ asset('BKK3/images/logo-kabayan-group.png') }}" alt="Logo" style="height: 100px; width:auto">
-                                    </div>
                                     <div>
                                         <h2>{{ $loker->jabatan }}</h2>
                                         <div>

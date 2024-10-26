@@ -23,60 +23,70 @@
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="nama" class="form-label">Nama Perusahaan</label>
-                            <input type="text" class="form-control" id="nama" name="nama" placeholder="Masukkan nama perusahaan" required>
+                            <input type="text" class="form-control" id="nama" name="nama"
+                                placeholder="Masukkan nama perusahaan" required>
                         </div>
 
                         <div class="col-md-6">
                             <label for="no_telepon" class="form-label">Nomor Telepon</label>
-                            <input type="text" class="form-control" id="no_telepon" name="no_telepon" placeholder="Masukkan nomor telepon" required>
+                            <input type="text" class="form-control" id="no_telepon" name="no_telepon"
+                                placeholder="Masukkan nomor telepon" required>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="bidang_usaha" class="form-label">Bidang Usaha</label>
-                            <input type="text" class="form-control" id="bidang_usaha" name="bidang_usaha" placeholder="Masukkan bidang usaha" required>
+                            <input type="text" class="form-control" id="bidang_usaha" name="bidang_usaha"
+                                placeholder="Masukkan bidang usaha" required>
                         </div>
 
                         <div class="col-md-6">
                             <label for="alamat" class="form-label">Alamat</label>
-                            <input type="text" class="form-control" id="alamat" name="alamat" placeholder="Masukkan alamat" required>
+                            <input type="text" class="form-control" id="alamat" name="alamat"
+                                placeholder="Masukkan alamat" required>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="provinsi" class="form-label">Provinsi</label>
-                            <input type="text" class="form-control" id="provinsi" name="provinsi" placeholder="Masukkan provinsi" required>
+                            <input type="text" class="form-control" id="provinsi" name="provinsi"
+                                placeholder="Masukkan provinsi" required>
                         </div>
 
                         <div class="col-md-6">
                             <label for="kota" class="form-label">Kota</label>
-                            <input type="text" class="form-control" id="kota" name="kota" placeholder="Masukkan kota" required>
+                            <input type="text" class="form-control" id="kota" name="kota"
+                                placeholder="Masukkan kota" required>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="kecamatan" class="form-label">Kecamatan</label>
-                            <input type="text" class="form-control" id="kecamatan" name="kecamatan" placeholder="Masukkan kecamatan" required>
+                            <input type="text" class="form-control" id="kecamatan" name="kecamatan"
+                                placeholder="Masukkan kecamatan" required>
                         </div>
 
                         <div class="col-md-6">
                             <label for="kelurahan" class="form-label">Kelurahan</label>
-                            <input type="text" class="form-control" id="kelurahan" name="kelurahan" placeholder="Masukkan kelurahan" required>
+                            <input type="text" class="form-control" id="kelurahan" name="kelurahan"
+                                placeholder="Masukkan kelurahan" required>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label for="username" class="form-label">Username</label>
-                            <input type="text" class="form-control" id="username" name="username" placeholder="Masukkan username" required>
+                            <input type="text" class="form-control" id="username" name="username"
+                                placeholder="Masukkan username" required>
                         </div>
 
                         <div class="col-md-6">
                             <label for="password" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="password" name="password" placeholder="Masukkan password" required>
+                            <input type="password" class="form-control" id="password" name="password"
+                                placeholder="Masukkan password" required>
                         </div>
                     </div>
 
@@ -100,6 +110,26 @@
                             <input type="file" name="file" id="file" class="filepond" />
                             <button type="submit" class="btn btn-primary mt-3">Upload and Import</button>
                         </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title">Petunjuk Penggunaan</h5>
+                </div>
+                <div class="card-content">
+                    <div class="card-body">
+                        <div ></div>
+                        <h6>
+                            1. File yang diimpor bertipe <strong>xlsx</strong>
+                            <br>2. Gunakan template format file yang sudah disediakan
+                            <br>3. File harus diisi sesuai format yang ada
+                            <br>4. Tunggu hingga notifikasi "File berhasil diimpor"
+                            <br>5. Download template: <a href="{{ route('download.format') }}" class="text-primary">data_perusahaan.xlsx</a>
+                        </h6>
                     </div>
                 </div>
             </div>

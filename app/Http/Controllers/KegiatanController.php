@@ -32,11 +32,11 @@ class KegiatanController extends Controller
     $alumni->status = $request->kegiatanSekarang;
     $alumni->save();
 
-    // Simpan alasan di storage jika diberikan
     if ($request->filled('alasan')) {
-        $alasanFileName = 'alasan_' . $alumni->nik . '_' . now()->format('YmdHis') . '.txt';
+        $alasanFileName = 'alasan_' . $alumni->nik . '.txt';
         Storage::disk('public')->put('alasan/' . $alasanFileName, $request->alasan);
     }
+
 
     // Redirect kembali dengan pesan sukses
     return redirect()->back()->with('success', 'Status dan alasan berhasil diperbarui.');
