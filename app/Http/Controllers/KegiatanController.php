@@ -20,7 +20,7 @@ class KegiatanController extends Controller
     {
        // Validasi input
        $request->validate([
-        'kegiatanSekarang' => 'required|in:Bekerja,Tidak Bekerja,Kuliah,Wirausaha',
+        'kegiatanSekarang' => 'required|in:Bekerja,Belum Bekerja,Kuliah,Wirausaha',
         'alasan' => 'nullable|string',
     ]);
 

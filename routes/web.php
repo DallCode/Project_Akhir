@@ -46,7 +46,8 @@ Auth::routes();
 
 // Dashboard Admin Route
 Route::get('/dashboardadmin', [App\Http\Controllers\DashboardadminController::class, 'index'])->name('dashboardadmin');
-Route::get('/alumni-stats', [DashboardadminController::class, 'showAlumniStats'])->name('alumni.stats');
+Route::get('/get-accepted-stats/{year}', [DashboardAdminController::class, 'getAcceptedStats']);
+
 
 /// Route untuk menampilkan form upload
 Route::get('/importdata', [ImportController::class, 'index'])->name('importdata');

@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Akaunting\Apexcharts\Chart;
 use App\Models\Alumni;
 use App\Models\Perusahaan;
 use App\Models\Lamaran;
 use App\Models\Loker;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DashboardadminController extends Controller
 {
@@ -23,31 +25,19 @@ class DashboardadminController extends Controller
 
         // Menghitung jumlah alumni berdasarkan status
         $alumniBekerja = Alumni::where('status', 'Bekerja')->count();
-        $alumniBelumBekerja = Alumni::where('status', 'Tidak Bekerja')->count();
+        $alumniBelumBekerja = Alumni::where('status', 'Belum Bekerja')->count();
         $alumniKuliah = Alumni::where('status', 'kuliah')->count();
         $alumniWirausaha = Alumni::where('status', 'wirausaha')->count();
 
         // Menghitung jumlah loker dengan status 'Tertunda'
         $ajuanLoker = Loker::where('status', 'Tertunda')->count();
 
-        // // Data untuk bar chart perusahaan
-        // $currentYear = date('Y');
-        // $companies = Perusahaan::all();
-        // $data = [];
+        $currentYear = request('year', date('Y'));
 
-        // foreach ($companies as $company) {
-        //     // Hitung jumlah alumni unik yang melamar ke perusahaan tertentu
-        //     $count = Lamaran::whereHas('loker', function ($query) use ($company) {
-        //         $query->where('id_data_perusahaan', $company->id_data_perusahaan);
-        //     })
-        //         ->groupBy('nik')
-        //         ->count();
+        // Get initial data for the current year
+        $stats = $this->getAcceptedStats($currentYear);
 
-        //     $data[$company->nama] = $count;
-        // }
 
-        // $labels = array_keys($data);
-        // $values = array_values($data);
 
         // Data untuk pie chart status per jurusan
         $departments = ['AK', 'BR', 'DKV', 'MLOG', 'MP', 'RPL', 'TKJ'];
@@ -88,41 +78,40 @@ class DashboardadminController extends Controller
             'ajuanLoker' => $ajuanLoker,
             'perusahaanLogin' => $perusahaanLogin,
             'alumniLogin' => $alumniLogin,
-            // 'labels' => $labels,
-            // 'values' => $values,
-            // 'currentYear' => $currentYear,
             'statusCounts' => $statusCounts,
             'statusCounts' => $statusCounts,
             'totalStatusCounts' => $totalStatusCounts,
+            'currentYear' => $currentYear,
+            'labels' => $stats['labels'],
+            'values' => $stats['values']
         ]);
     }
 
-    public function getAlumniStats($year)
+    public function getAcceptedStats($year = null)
     {
-        $companies = Perusahaan::all();
+        $year = $year ?? date('Y');
+
+        // Query untuk mendapatkan top 10 perusahaan dengan lamaran yang diterima
+        $topCompanies = Perusahaan::select('data_perusahaan.*')
+            ->join('lowongan_pekerjaan', 'data_perusahaan.id_data_perusahaan', '=', 'lowongan_pekerjaan.id_data_perusahaan')
+            ->join('lamaran', 'lowongan_pekerjaan.id_lowongan_pekerjaan', '=', 'lamaran.id_lowongan_pekerjaan')
+            ->where('lamaran.status', 'Diterima')
+            ->whereYear('lamaran.waktu', $year)
+            ->groupBy('data_perusahaan.id_data_perusahaan', 'data_perusahaan.nama')
+            ->selectRaw('COUNT(DISTINCT lamaran.nik) as accepted_count')
+            ->orderByDesc('accepted_count')
+            ->limit(10)
+            ->get();
+
         $data = [];
-
-        foreach ($companies as $company) {
-            // Hitung jumlah alumni yang diterima di perusahaan tertentu untuk tahun yang dipilih
-            $count = Lamaran::whereHas('loker', function ($query) use ($company) {
-                $query->where('id_data_perusahaan', $company->id_data_perusahaan);
-            })
-                ->where('status', 'Diterima')
-                ->whereYear('waktu', $year)
-                ->groupBy('nik')
-                ->count();
-
-            if ($count > 0) {  // Hanya tampilkan perusahaan yang memiliki alumni diterima
-                $data[$company->nama] = $count;
-            }
+        foreach ($topCompanies as $company) {
+            $data[$company->nama] = $company->accepted_count;
         }
 
-        // Urutkan data berdasarkan jumlah alumni terbanyak
-        arsort($data);
-
-        return response()->json([
+        return [
             'labels' => array_keys($data),
             'values' => array_values($data)
-        ]);
+        ];
     }
 }
+

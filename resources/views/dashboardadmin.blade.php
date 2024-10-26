@@ -140,6 +140,7 @@
                             </div>
                         </div>
 
+                        
                         <!-- Total Perusahaan -->
                         <div class="col-6 col-lg-4">
                             <div class="card h-100 shadow-sm">
@@ -158,23 +159,38 @@
                         </div>
                     </div>
 
+                    
                     <!-- Chart Section -->
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="card shadow-sm">
-                                <div class="card-header bg-white py-3">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <h5 class="card-title mb-0">Alumni Diterima di Perusahaan</h5>
-                                        <select id="yearSelect" class="form-select form-select-sm" style="width: auto;">
-                                            <option value="">Pilih Tahun</option>
-                                        </select>
-                                    </div>
+                    <div class="card card-round">
+                        <div class="card-header">
+                            <div class="card-head-row">
+                                <div class="card-title">Top 10 Perusahaan - Statistik Alumni Diterima</div>
+                                <div class="card-tools">
+                                    <a href="#" class="btn btn-label-success btn-round btn-sm me-2">
+                                        <span class="btn-label"><i class="fa fa-pencil"></i></span>
+                                        Export
+                                    </a>
+                                    <a href="#" class="btn btn-label-info btn-round btn-sm">
+                                        <span class="btn-label"><i class="fa fa-print"></i></span>
+                                        Print
+                                    </a>
                                 </div>
-                                <div class="card-body">
-                                    <div style="height: 300px;">
-                                        <canvas id="barChart"></canvas>
-                                    </div>
-                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <!-- Dropdown Tahun -->
+                            <div class="form-group col-md-2">
+                                <label for="yearSelect">Pilih Tahun:</label>
+                                <select id="yearSelect" class="form-select">
+                                    @for ($year = date('Y'); $year >= date('Y') - 4; $year--)
+                                        <option value="{{ $year }}" {{ $currentYear == $year ? 'selected' : '' }}>
+                                            {{ $year }}</option>
+                                    @endfor
+                                </select>
+                            </div>
+                            <!-- Chart Container -->
+                            <div class="chart-container" style="height: 400px;">
+                                <canvas id="barChart"></canvas>
                             </div>
                         </div>
                     </div>
@@ -217,6 +233,7 @@
         </div>
 
         <!-- Scripts -->
+        <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
         {{-- Tracer chart seluruh jurusan --}}
@@ -415,33 +432,17 @@
             @endif
 
             document.addEventListener('DOMContentLoaded', function() {
-                // Populate year select with fixed range from 2026 to current year
-                const yearSelect = document.getElementById('yearSelect');
-                const startYear = 2026;
-                const endYear = new Date().getFullYear();
-
-                for (let year = startYear; year >= endYear; year--) {
-                    const option = document.createElement('option');
-                    option.value = year;
-                    option.textContent = year;
-                    yearSelect.appendChild(option);
-                }
-
-                // Set default year as current year
-                yearSelect.value = endYear;
-
-                // Initialize chart
-                const ctx = document.getElementById('barChart').getContext('2d');
-                const barChart = new Chart(ctx, {
+                var ctx = document.getElementById('barChart').getContext('2d');
+                var myBarChart = new Chart(ctx, {
                     type: 'bar',
                     data: {
-                        labels: [],
+                        labels: @json($labels),
                         datasets: [{
                             label: 'Alumni Diterima',
-                            backgroundColor: 'rgba(23, 125, 255, 0.7)',
-                            borderColor: 'rgb(23, 125, 255)',
+                            backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                            borderColor: 'rgb(54, 162, 235)',
                             borderWidth: 2,
-                            data: []
+                            data: @json($values)
                         }]
                     },
                     options: {
@@ -462,55 +463,38 @@
                         },
                         plugins: {
                             legend: {
+                                display: true,
                                 position: 'top'
                             },
                             tooltip: {
                                 callbacks: {
                                     label: function(context) {
-                                        return `Diterima: ${context.raw} alumni`;
+                                        return `Jumlah Diterima: ${context.raw} Alumni`;
                                     }
                                 }
                             }
-                        },
-                        animation: {
-                            duration: 500,
-                            easing: 'linear'
                         }
                     }
                 });
 
-                // Function to update chart data
-                function updateChartData(year) {
-                    // Show loading state if needed
-                    // barChart.data.labels = [];
-                    // barChart.data.datasets[0].data = [];
-                    // barChart.update();
+                // Fungsi untuk memperbarui data grafik berdasarkan tahun
+                async function updateChartData(year) {
+                    try {
+                        const response = await fetch(`/get-accepted-stats/${year}`);
+                        const data = await response.json();
 
-                    fetch(`/api/alumni-stats/${year}`)
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Network response was not ok');
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            barChart.data.labels = data.labels;
-                            barChart.data.datasets[0].data = data.values;
-                            barChart.update();
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            // Handle error - maybe show message to user
-                        });
+                        myBarChart.data.labels = data.labels;
+                        myBarChart.data.datasets[0].data = data.values;
+                        myBarChart.update();
+                    } catch (error) {
+                        console.error('Error fetching data:', error);
+                    }
                 }
 
-                // Update chart data when year changes
-                yearSelect.addEventListener('change', function(event) {
+                // Event listener untuk dropdown tahun
+                document.getElementById('yearSelect').addEventListener('change', function(event) {
                     updateChartData(event.target.value);
                 });
-
-                // Load initial data
-                updateChartData(endYear);
             });
         </script>
     @endsection

@@ -80,7 +80,7 @@
                         <select class="form-select" id="kegiatanSekarang" name="kegiatanSekarang" required>
                             <option value="" disabled selected>Pilih kegiatan</option>
                             <option value="Bekerja">Bekerja</option>
-                            <option value="Tidak Bekerja">Tidak Bekerja</option>
+                            <option value="Belum Bekerja">Tidak Bekerja</option>
                             <option value="Kuliah">Kuliah</option>
                             <option value="Wirausaha">Wirausaha</option>
                         </select>

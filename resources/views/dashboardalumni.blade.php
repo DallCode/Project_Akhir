@@ -19,9 +19,11 @@
 
         <div class="row">
             @forelse($Loker as $item)
-                <div class="col-md-6 mb-4">
-                    <div class="card hover-card">
-                        <div class="card-body">
+            <div class="col-md-6 mb-4">
+                <div class="card hover-card">
+                    <div class="card-body d-flex align-items-start">
+                        <img src="{{ asset('storage/images/' . $item->perusahaan->logo) }}" alt="Logo Perusahaan" class="me-3" style="width: 50px; height: 50px; object-fit: cover; border-radius: 5px;">
+                        <div>
                             <h5 class="card-title">{{ $item->jabatan }}</h5>
                             <h6 class="card-subtitle mb-2 text-muted">{{ $item->perusahaan->nama }}</h6>
                             <p class="card-text">
@@ -32,15 +34,14 @@
                                 {{ $item->tanggal_akhir }}<br>
                             </p>
                             <p class="card-text">{{ $item->deskripsi }}</p>
-                            <a href="{{ route('detailloker', $item->id_lowongan_pekerjaan) }}" class="btn btn-primary">Lihat
-                                Detail</a>
-
-                                @php
+                            <a href="{{ route('detailloker', $item->id_lowongan_pekerjaan) }}" class="btn btn-primary">Lihat Detail</a>
+            
+                            @php
                                 $hasApplied = \App\Models\Lamaran::where('id_lowongan_pekerjaan', $item->id_lowongan_pekerjaan)
                                     ->where('nik', $alumniLogin->nik)
                                     ->exists();
                             @endphp
-
+            
                             @if (!$hasApplied)
                                 <button class="btn btn-outline-primary ml-2" data-bs-toggle="modal"
                                     data-bs-target="#lamarModal{{ $item->id_lowongan_pekerjaan }}">Lamar</button>
@@ -50,6 +51,7 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
                 <!-- Lamar Modal -->
                 <div class="modal fade" id="lamarModal{{ $item->id_lowongan_pekerjaan }}" tabindex="-1"
