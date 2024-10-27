@@ -19,17 +19,23 @@ class Lamaran extends Model
     public $incrementing = false;
     protected $fillable = ['id_lamaran', 'id_lowongan_pekerjaan', 'nik', 'status'];
 
-    public function loker(): BelongsTo {
+    public function loker(): BelongsTo
+    {
         return $this->belongsTo(Loker::class, 'id_lowongan_pekerjaan');
     }
 
-    public function alumni(): BelongsTo {
+    public function alumni(): BelongsTo
+    {
         return $this->belongsTo(Alumni::class, 'nik', 'nik');
     }
+    
 
-    public function filelamaran () : BelongsTo {
-        return $this->belongsTo(FileLamaran::class, 'nama_file');
+    public function filelamar()
+    {
+        return $this->hasMany(FileLamaran::class, 'id_lamaran', 'id_lamaran');
     }
+
+
 
     public static function generateKodeUnik()
     {

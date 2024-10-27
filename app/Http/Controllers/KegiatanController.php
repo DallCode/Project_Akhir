@@ -30,6 +30,7 @@ class KegiatanController extends Controller
     // Update kegiatan di model Alumni
     $alumni = Alumni::where('nik', $user->alumni->nik)->first();
     $alumni->status = $request->kegiatanSekarang;
+    $alumni->keterangan = $request->alasan;
     $alumni->save();
 
     if ($request->filled('alasan')) {

@@ -170,7 +170,7 @@ Route::middleware(['auth'])->group(function () {
 Route::post('/update-kegiatan-sekarang', [App\Http\Controllers\KegiatanController::class, 'updateKegiatan'])->name('updateKegiatanSekarang');
 
 Route::get('/chartalumni', [ChartAlumniController::class, 'index'])->name('chartalumni');
-Route::get('/path-to-get-user-lamaran-data', [ChartAlumniController::class, 'getUserLamaranData']);
+Route::get('/path-to-get-user-lamaran-data', [ChartAlumniController::class, 'getUserLamaranData'])->name('getUserLamaranData');
 
 
 

@@ -52,7 +52,7 @@ class DashboardalumniController extends Controller
         // Ambil lowongan pekerjaan
         $loker = Loker::find($request->id_lowongan_pekerjaan);
         if (!$loker) {
-            return redirect()->back()->with('error', 'Job posting not found');
+            return redirect()->back()->with('error', 'Belum ada lamaran yang diposting');
         }
 
         // Cek apakah lamaran sudah pernah dikirim untuk lowongan ini oleh alumni
@@ -61,7 +61,7 @@ class DashboardalumniController extends Controller
             ->first();
 
         if ($existingLamaran) {
-            return redirect()->back()->with('error', 'You have already applied for this job.');
+            return redirect()->back()->with('error', 'Anda sudah melamar pekerjaan ini.');
         }
 
         // Membuat dan menyimpan data lamaran baru
@@ -130,24 +130,24 @@ class DashboardalumniController extends Controller
             Log::error('File upload error: ' . $e->getMessage());
             return response()->json(['error' =>  $e->getMessage()], 500);
         }
-        // // Memastikan bahwa ada file yang diunggah
-        // if ($request->hasFile('file')) {
-        //     // Menyimpan semua file yang diunggah
-        //     $files = $request->file('file');
-        //     $filenames = [];
-
-        //     foreach ($files as $file) {
-        //         // Membuat nama file unik
-        //         $filename = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
-        //         $file->storeAs('public/lamaran', $filename);
-        //         $filenames[] = $filename;  // Menyimpan nama file dalam array
-        //     }
-
-        //     // Mengembalikan respons JSON dengan nama file
-        //     return response()->json(['filenames' => $filenames]);
-        // }
-
-        // // Mengembalikan respons error jika tidak ada file yang diunggah
-        // return response()->json(['error' => 'No file uploaded'], 400);
     }
+    // // Memastikan bahwa ada file yang diunggah
+    // if ($request->hasFile('file')) {
+    //     // Menyimpan semua file yang diunggah
+    //     $files = $request->file('file');
+    //     $filenames = [];
+
+    //     foreach ($files as $file) {
+    //         // Membuat nama file unik
+    //         $filename = time() . '_' . Str::random(10) . '.' . $file->getClientOriginalExtension();
+    //         $file->storeAs('public/lamaran', $filename);
+    //         $filenames[] = $filename;  // Menyimpan nama file dalam array
+    //     }
+
+    //     // Mengembalikan respons JSON dengan nama file
+    //     return response()->json(['filenames' => $filenames]);
+    // }
+
+    // // Mengembalikan respons error jika tidak ada file yang diunggah
+    // return response()->json(['error' => 'No file uploaded'], 400);
 }

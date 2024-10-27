@@ -16,7 +16,7 @@
 
                 <li class="sidebar-item ">
                     <a href="{{ route('chartalumni') }}" class='sidebar-link'>
-                        <i class="bi bi-search"></i>
+                        <i class="bi bi-grid-fill"></i>
                         <span>dashboard</span>
                     </a>
                 </li>
