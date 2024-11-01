@@ -26,9 +26,9 @@ class User extends Authenticatable
         'role',
     ];
 
-    public function aktivitas(): HasMany
+    public function aktivitas()
     {
-        return $this->hasMany(Aktivitas::class, 'username');
+        return $this->hasMany(Aktivitas::class, 'username', 'username');
     }
 
     public function perusahaan(): HasOne

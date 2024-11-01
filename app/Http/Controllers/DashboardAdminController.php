@@ -25,7 +25,7 @@ class DashboardadminController extends Controller
 
         // Menghitung jumlah alumni berdasarkan status
         $alumniBekerja = Alumni::where('status', 'Bekerja')->count();
-        $alumniBelumBekerja = Alumni::where('status', 'Belum Bekerja')->count();
+        $alumniBelumBekerja = Alumni::where('status', 'Tidak Bekerja')->count();
         $alumniKuliah = Alumni::where('status', 'kuliah')->count();
         $alumniWirausaha = Alumni::where('status', 'wirausaha')->count();
 
@@ -45,7 +45,7 @@ class DashboardadminController extends Controller
         // Data untuk total status pie chart (semua jurusan)
         $totalStatusCounts = [
             'Bekerja' => Alumni::where('status', 'Bekerja')->count(),
-            'Belum Bekerja' => Alumni::where('status', 'Belum Bekerja')->count(),
+            'Belum Bekerja' => Alumni::where('status', 'Tidak Bekerja')->count(),
             'Kuliah' => Alumni::where('status', 'kuliah')->count(),
             'Wirausaha' => Alumni::where('status', 'wirausaha')->count(),
         ];
@@ -56,7 +56,7 @@ class DashboardadminController extends Controller
                     ->where('status', 'Bekerja')
                     ->count(),
                 'Belum Bekerja' => Alumni::where('jurusan', $dept)
-                    ->where('status', 'Belum Bekerja')
+                    ->where('status', 'Tidak Bekerja')
                     ->count(),
                 'Kuliah' => Alumni::where('jurusan', $dept)
                     ->where('status', 'kuliah')

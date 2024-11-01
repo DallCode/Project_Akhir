@@ -33,8 +33,6 @@
         <section class="section">
             <div class="card">
                 <div class="card-header d-flex justify-content-center">
-                    {{-- <a href="#" class="btn btn-outline-primary btn-lg me-4 w-50"><i class="bi bi-person-plus"></i>
-                        Tambah Akun Perusahaan</a> --}}
                     <a href="{{ route('tambahadmin') }}" class="btn btn-outline-success btn-lg w-50"><i
                             class="bi bi-person-plus"></i> Tambah Akun Admin</a>
                 </div>
@@ -66,25 +64,37 @@
                         </thead>
                         <tbody>
                             @foreach ($users as $us)
+                                @php
+                                    // Membuat ID yang aman dari karakter tidak valid
+                                    $modalId = str_replace(['@', '.'], '_', $us->username);
+                                @endphp
                                 <tr>
                                     <td>{{ $us->username }}</td>
                                     <td>{{ $us->role }}</td>
                                     <td>
+                                        <!-- Button Edit Password -->
                                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                            data-bs-target="#editPasswordModal{{ $us->username }}">
+                                            data-bs-target="#editPasswordModal{{ $modalId }}">
                                             Edit
                                         </button>
 
+                                        <!-- Button Pemantauan Aktivitas -->
+                                        <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                                            data-bs-target="#activityModal{{ $modalId }}">
+                                            Pemantauan
+                                        </button>
+
                                         <!-- Modal for password change -->
-                                        <div class="modal fade" id="editPasswordModal{{ $us->username }}" tabindex="-1"
-                                            data-bs-backdrop="false"
-                                            aria-labelledby="editPasswordModalLabel{{ $us->username }}" aria-hidden="true">
+                                        <div class="modal fade" id="editPasswordModal{{ $modalId }}" tabindex="-1"
+                                            data-bs-backdrop="true"
+                                            aria-labelledby="editPasswordModalLabel{{ $modalId }}" aria-hidden="true">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
                                                         <h5 class="modal-title"
-                                                            id="editPasswordModalLabel{{ $us->username }}">
-                                                            Edit Password: {{ $us->username }}</h5>
+                                                            id="editPasswordModalLabel{{ $modalId }}">
+                                                            Edit Password: {{ $us->username }}
+                                                        </h5>
                                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                             aria-label="Close"></button>
                                                     </div>
@@ -94,18 +104,19 @@
                                                             @csrf
                                                             @method('PUT')
                                                             <div class="mb-3">
-                                                                <label for="password{{ $us->username }}"
+                                                                <label for="password{{ $modalId }}"
                                                                     class="form-label">New Password</label>
                                                                 <input type="password" class="form-control"
-                                                                    id="password{{ $us->username }}" name="password"
-                                                                    required>
+                                                                    id="password{{ $modalId }}" name="password"
+                                                                    required autocomplete="new-password">
                                                             </div>
                                                             <div class="mb-3">
-                                                                <label for="password_confirmation{{ $us->username }}"
+                                                                <label for="password_confirmation{{ $modalId }}"
                                                                     class="form-label">Confirm Password</label>
                                                                 <input type="password" class="form-control"
-                                                                    id="password_confirmation{{ $us->username }}"
-                                                                    name="password_confirmation" required>
+                                                                    id="password_confirmation{{ $modalId }}"
+                                                                    name="password_confirmation" required
+                                                                    autocomplete="new-password">
                                                             </div>
                                                             <div class="modal-footer">
                                                                 <button type="button" class="btn btn-secondary"
@@ -114,6 +125,33 @@
                                                                     changes</button>
                                                             </div>
                                                         </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Modal for Activity Monitoring -->
+                                        <div class="modal fade" id="activityModal{{ $modalId }}" tabindex="-1"
+                                            data-bs-backdrop="true"
+                                            aria-labelledby="activityModalLabel{{ $modalId }}" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title"
+                                                            id="activityModalLabel{{ $modalId }}">
+                                                            Aktivitas User: {{ $us->username }}
+                                                        </h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <ul>
+                                                            @foreach ($us->aktivitas as $activity)
+                                                                <li>{{ $activity->keterangan }}
+                                                                    ({{ $activity->created_at->format('d M Y, H:i') }})
+                                                                </li>
+                                                            @endforeach
+                                                        </ul>
                                                     </div>
                                                 </div>
                                             </div>

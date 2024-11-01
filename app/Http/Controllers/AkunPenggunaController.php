@@ -10,8 +10,8 @@ class AkunpenggunaController extends Controller
 {
     public function index()
     {
-        $users = User::all(); // Mengambil semua data pengguna
-        return view('Akunpengguna', compact('users')); // Mengirimkan data ke view
+        $users = User::with('aktivitas')->get(); // Mengambil data pengguna beserta aktivitas
+        return view('Akunpengguna', compact('users'));
     }
 
     public function updatePassword(Request $request, $username)
@@ -20,11 +20,10 @@ class AkunpenggunaController extends Controller
             'password' => 'required|confirmed|min:8',  // Validasi confirm password
         ]);
 
-        $user = User::findOrFail($username);
+        $user = User::where('username', $username)->firstOrFail();
         $user->password = Hash::make($request->password);
         $user->save();
 
         return redirect()->route('akunpengguna')->with('success', 'Password berhasil diperbarui.');
     }
 }
-
