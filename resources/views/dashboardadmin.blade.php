@@ -140,7 +140,7 @@
                             </div>
                         </div>
 
-                        
+
                         <!-- Total Perusahaan -->
                         <div class="col-6 col-lg-4">
                             <div class="card h-100 shadow-sm">
@@ -159,7 +159,24 @@
                         </div>
                     </div>
 
-                    
+                    <!-- Total Loker Tertunda -->
+                    <div class="col-6 col-lg-12">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body p-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="stats-icon sky-blue p-3 me-3">
+                                        <i class="iconly-boldWork text-white"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="text-muted mb-1">Loker Tertunda</h6>
+                                        <h5 class="fw-bold mb-0">{{ $ajuanLoker }}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
                     <!-- Chart Section -->
                     <div class="card card-round">
                         <div class="card-header">

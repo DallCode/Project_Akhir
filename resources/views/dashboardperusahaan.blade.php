@@ -1,10 +1,7 @@
 @extends('layout.main')
 
 @section('content')
-
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.css">
-
-
 <div class="page-heading">
     <h3>Selamat Datang, <span class="text-blue">
         @if (Auth::user()->role == 'Alumni')
@@ -89,55 +86,35 @@
                     </div>
                 </div>
             </div>
+            </div>
+
             <div class="row">
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4>Profile Visit</h4>
+                            <h4>Lowongan & Lamaran Perbulan</h4>
+                            <select id="yearSelector" class="form-select mt-2">
+                                <!-- Option years can be dynamically added from backend -->
+                                <option value="2024">2024</option>
+                                <option value="2023">2023</option>
+                            </select>
                         </div>
                         <div class="card-body">
-                            <div id="chart-profile-visit"></div>
+                            <canvas id="jobApplicationsChart"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-12 col-lg-3">
-            <div class="card">
-                <div class="card-header">
-                    <h4>Laporan</h4>
-                </div>
-                <div class="card-content pb-4">
-                    <div class="recent-message d-flex px-4 py-3">
-                        <div class="avatar avatar-lg">
-                            <img src="assets/images/faces/4.jpg">
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Status Lamaran Per Lowongan</h4>
                         </div>
-                        <div class="name ms-4">
-                            <h5 class="mb-1">Hank Schrader</h5>
-                            <h6 class="text-muted mb-0">@johnducky</h6>
+                        <div class="card-body">
+                            <canvas id="applicationStatusChart"></canvas>
                         </div>
-                    </div>
-                    <div class="recent-message d-flex px-4 py-3">
-                        <div class="avatar avatar-lg">
-                            <img src="assets/images/faces/5.jpg">
-                        </div>
-                        <div class="name ms-4">
-                            <h5 class="mb-1">Dean Winchester</h5>
-                            <h6 class="text-muted mb-0">@imdean</h6>
-                        </div>
-                    </div>
-                    <div class="recent-message d-flex px-4 py-3">
-                        <div class="avatar avatar-lg">
-                            <img src="assets/images/faces/1.jpg">
-                        </div>
-                        <div class="name ms-4">
-                            <h5 class="mb-1">John Dodol</h5>
-                            <h6 class="text-muted mb-0">@dodoljohn</h6>
-                        </div>
-                    </div>
-                    <div class="px-4">
-                        <button class='btn btn-block btn-xl btn-light-primary font-bold mt-3'>Lihat Detail</button>
                     </div>
                 </div>
             </div>
@@ -145,19 +122,88 @@
     </section>
 </div>
 
+<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    @if (session('success') || session('error'))
-        Toastify({
-            text: "{{ session('success') ? session('success') : session('error') }}",
-            duration: 3000,
-            close: true,
-            gravity: "top", // 'top' or 'bottom'
-            position: 'right', // 'left', 'center' or 'right'
-            backgroundColor: "{{ session('success') ? '#4CAF50' : '#F44336' }}", // Hijau untuk success, Merah untuk error
-            stopOnFocus: true, // Prevents dismissing of toast on hover
-        }).showToast();
-    @endif
-</script>
+    const lokerData = @json($lokerPerBulan);
+    const lamaranData = @json($lamaranPerBulan);
+    const statusData = @json($statusLamaran);
 
+    // Chart for Job Postings and Applications per Month
+    const jobApplicationsChartCtx = document.getElementById('jobApplicationsChart').getContext('2d');
+    const jobApplicationsChart = new Chart(jobApplicationsChartCtx, {
+        type: 'bar',
+        data: {
+            labels: lokerData.map(item => `Bulan ${item.month}`),
+            datasets: [
+                {
+                    label: 'Jumlah Lowongan',
+                    data: lokerData.map(item => item.count),
+                    backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                },
+                {
+                    label: 'Jumlah Lamaran',
+                    data: lamaranData.map(item => item.count),
+                    backgroundColor: 'rgba(153, 102, 255, 0.5)',
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Jumlah Lowongan & Lamaran Perbulan'
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true
+                },
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Chart for Application Status per Job Posting
+    const applicationStatusChartCtx = document.getElementById('applicationStatusChart').getContext('2d');
+    const applicationStatusChart = new Chart(applicationStatusChartCtx, {
+        type: 'bar',
+        data: {
+            labels: statusData.map(item => `Lowongan ID ${item.id_lowongan_pekerjaan}`),
+            datasets: [
+                {
+                    label: 'Total Lamaran',
+                    data: statusData.map(item => item.total),
+                    backgroundColor: 'rgba(255, 159, 64, 0.5)',
+                },
+                {
+                    label: 'Diterima',
+                    data: statusData.map(item => item.accepted),
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Status Lamaran per Lowongan'
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true
+                },
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
 @endsection

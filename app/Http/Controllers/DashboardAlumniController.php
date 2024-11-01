@@ -39,7 +39,7 @@ class DashboardalumniController extends Controller
     public function store(Request $request)
     {
         $alumniLogin = Alumni::where('username', Auth::user()->username)
-            ->with(['pendidikanformal', 'pendidikannonformal', 'kerja'])
+            ->with(['pendidikanformal', 'pendidikannonformal', 'kerja',])
             ->first();
 
         // Cek kelengkapan profil
@@ -94,7 +94,7 @@ class DashboardalumniController extends Controller
     private function checkProfileCompleteness($alumni)
     {
         $incompleteFields = [];
-        $requiredFields = ['nama', 'jenis_kelamin', 'lokasi', 'alamat', 'kontak', 'keahlian', 'foto', 'deskripsi'];
+        $requiredFields = ['nama', 'jenis_kelamin', 'lokasi', 'alamat', 'kontak', 'keahlian', 'deskripsi'];
 
         foreach ($requiredFields as $field) {
             if (empty($alumni->$field)) {

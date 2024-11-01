@@ -21,9 +21,46 @@
         <section class="section">
             <div class="card">
                 <div class="card-header">
-                    Simple Datatable
                 </div>
                 <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <h5>Filter Data</h5>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <select class="form-select" id="jabatanFilter">
+                                <option value="">Jabatan
+                                @php
+                                    $jabat = $arsip->pluck('jabatan')->unique();
+                                @endphp
+                                @foreach($jabat as $j)
+                                    <option value="{{ $j }}">{{ $j }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <select class="form-select" id="jenisFilter">
+                                <option value="">Jenis Pekerjaan</option>
+                                @php
+                                    $jenis = $arsip->pluck('Jenis_waktu_pekerjaan')->unique();
+                                @endphp
+                                @foreach($jenis as $jwp )
+                                    <option value="{{ $jwp }}">{{ $jwp }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <select class="form-select" id="statusFilter">
+                                <option value="">Status</option>
+                                @php
+                                    $statuses = $arsip->pluck('status')->unique();
+                                @endphp
+                                @foreach($statuses as $status )
+                                    <option value="{{ $status }}">{{ $status }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                     <table class="table table-striped" id="table1">
                         <thead>
                             <tr>

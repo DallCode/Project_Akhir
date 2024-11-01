@@ -92,67 +92,134 @@
                                         </button>
 
                                         <!-- The Modal -->
-                                        <div class="modal fade" id="detailModal{{ $lowongan->id_lowongan_pekerjaan }}"
-                                            tabindex="-1" data-bs-backdrop="false"
-                                            aria-labelledby="detailModalLabel{{ $lowongan->id_lowongan_pekerjaan }}"
-                                            aria-hidden="true">
-                                            <div class="modal-dialog">
+                                        <div class="modal fade" id="detailModal{{ $lowongan->id_lowongan_pekerjaan }}" tabindex="-1" data-bs-backdrop="false"
+                                            aria-labelledby="detailModalLabel{{ $lowongan->id_lowongan_pekerjaan }}" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg">
                                                 <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title"
-                                                            id="detailModalLabel{{ $lowongan->id_lowongan_pekerjaan }}">
-                                                            Detail Lowongan : {{ $lowongan->jabatan }}</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                            aria-label="Close"></button>
+                                                    <!-- Modal Header -->
+                                                    <div class="modal-header bg-light">
+                                                        <h5 class="modal-title" id="detailModalLabel{{ $lowongan->id_lowongan_pekerjaan }}">
+                                                            Detail Lowongan: {{ $lowongan->jabatan }}
+                                                        </h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
+                                        
+                                                    <!-- Modal Body -->
                                                     <div class="modal-body">
-                                                        <p><strong>Perusahaan:</strong>
-                                                            {{ $lowongan->perusahaan->nama }}</p>
-                                                        <p><strong>Jenis Waktu Pekerjaan:</strong>
-                                                            {{ $lowongan->jenis_waktu_pekerjaan }}</p>
-                                                        <p><strong>Deskripsi:</strong>
-                                                            {{ $lowongan->deskripsi }}</p>
-                                                        <p><strong>Tanggal Akhir:</strong>
-                                                            {{ $lowongan->tanggal_akhir }}</p>
-                                                        <p><strong>Status:</strong> {{ $lowongan->status }}</p>
-
-                                                        <!-- Dropdown to change status -->
-                                                        <form
-                                                            action="{{ route('update.status', $lowongan->id_lowongan_pekerjaan) }}"
-                                                            method="POST">
+                                                        <!-- Job Details Section -->
+                                                        <div class="card mb-4">
+                                                            <div class="card-body">
+                                                                <h6 class="card-title mb-3">Informasi Lowongan</h6>
+                                                                <div class="row">
+                                                                    <div class="col-md-6">
+                                                                        <p class="mb-2">
+                                                                            <i class="fas fa-building me-2"></i>
+                                                                            <strong>Perusahaan:</strong> {{ $lowongan->perusahaan->nama }}
+                                                                        </p>
+                                                                        <p class="mb-2">
+                                                                            <i class="fas fa-clock me-2"></i>
+                                                                            <strong>Jenis Waktu:</strong> {{ $lowongan->jenis_waktu_pekerjaan }}
+                                                                        </p>
+                                                                        <p class="mb-2">
+                                                                            <i class="fas fa-calendar-alt me-2"></i>
+                                                                            <strong>Tanggal Akhir:</strong> {{ $lowongan->tanggal_akhir }}
+                                                                        </p>
+                                                                        <p class="mb-2">
+                                                                            <i class="fas fa-info-circle me-2"></i>
+                                                                            <strong>Status:</strong> 
+                                                                            <span class="badge {{ $lowongan->status == 'Dipublikasi' ? 'bg-success' : 'bg-danger' }}">
+                                                                                {{ $lowongan->status }}
+                                                                            </span>
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="mt-3">
+                                                                    <p class="mb-2">
+                                                                        <i class="fas fa-align-left me-2"></i>
+                                                                        <strong>Deskripsi:</strong>
+                                                                    </p>
+                                                                    <p class="ms-4">{{ $lowongan->deskripsi }}</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                        
+                                                        <!-- Status Update Form -->
+                                                        <form action="{{ route('update.status', $lowongan->id_lowongan_pekerjaan) }}" method="POST">
                                                             @csrf
                                                             @method('PUT')
-                                                            <div class="mb-3">
-                                                                <label for="status{{ $lowongan->id_lowongan_pekerjaan }}"
-                                                                    class="form-label"><strong>Ubah
-                                                                        Status:</strong></label>
-                                                                <select class="form-select"
-                                                                    id="status{{ $lowongan->id_lowongan_pekerjaan }}"
-                                                                    name="status" onchange="toggleTextarea(this)">
-                                                                    <option value="Dipublikasi"
-                                                                        {{ $lowongan->status == 'Dipublikasi' ? 'selected' : '' }}>
-                                                                        Dipublikasi</option>
-                                                                    <option value="Tidak Dipublikasi"
-                                                                        {{ $lowongan->status == 'Tidak Dipublikasi' ? 'selected' : '' }}>
-                                                                        Tidak Dipublikasi</option>
-                                                                </select>
+                                                            <div class="card">
+                                                                <div class="card-body">
+                                                                    <h6 class="card-title mb-3">Update Status Lowongan</h6>
+                                                                    <div class="mb-3">
+                                                                        <label for="status{{ $lowongan->id_lowongan_pekerjaan }}" class="form-label">
+                                                                            <strong>Status Publikasi:</strong>
+                                                                        </label>
+                                                                        <select class="form-select" id="status{{ $lowongan->id_lowongan_pekerjaan }}" 
+                                                                                name="status" onchange="toggleTextarea(this)">
+                                                                            <option value="Dipublikasi" {{ $lowongan->status == 'Dipublikasi' ? 'selected' : '' }}>
+                                                                                Dipublikasi
+                                                                            </option>
+                                                                            <option value="Tidak Dipublikasi" {{ $lowongan->status == 'Tidak Dipublikasi' ? 'selected' : '' }}>
+                                                                                Tidak Dipublikasi
+                                                                            </option>
+                                                                        </select>
+                                                                    </div>
+                                        
+                                                                    <div class="mb-3" id="alasanContainer{{ $lowongan->id_lowongan_pekerjaan }}" 
+                                                                         style="display: none;">
+                                                                        <label for="alasan{{ $lowongan->id_lowongan_pekerjaan }}" class="form-label">
+                                                                            <strong>Alasan Tidak Dipublikasi:</strong>
+                                                                        </label>
+                                                                        <textarea class="form-control" id="alasan{{ $lowongan->id_lowongan_pekerjaan }}" 
+                                                                                  name="alasan" rows="3"></textarea>
+                                                                    </div>
+                                                                </div>
                                                             </div>
 
-                                                            <!-- Textarea for alasan -->
-                                                            <div class="mb-3"
-                                                                id="alasanContainer{{ $lowongan->id_lowongan_pekerjaan }}"
-                                                                style="display: none;">
-                                                                <label for="alasan{{ $lowongan->id_lowongan_pekerjaan }}"
-                                                                    class="form-label"><strong>Alasan Tidak
-                                                                        Dipublikasi:</strong></label>
-                                                                <textarea class="form-control" id="alasan{{ $lowongan->id_lowongan_pekerjaan }}" name="alasan" rows="3"></textarea>
+                                                            <!-- Statistics Cards -->
+                                                        <div class="row mb-4">
+                                                            <div class="col-md-4">
+                                                                <div class="card bg-light">
+                                                                    <div class="card-body text-center">
+                                                                        <h6 class="card-title">
+                                                                            <i class="fas fa-users mb-2"></i>
+                                                                            <br>Pelamar
+                                                                        </h6>
+                                                                        <h4 class="card-text">{{ $lowongan->lamaran->count() }}</h4>
+                                                                    </div>
+                                                                </div>
                                                             </div>
-
-                                                            <div class="modal-footer">
-                                                                <button type="submit" class="btn btn-success">Simpan
-                                                                    Perubahan</button>
-                                                                <button type="button" class="btn btn-secondary"
-                                                                    data-bs-dismiss="modal">Close</button>
+                                                            <div class="col-md-4">
+                                                                <div class="card bg-light">
+                                                                    <div class="card-body text-center">
+                                                                        <h6 class="card-title">
+                                                                            <i class="fas fa-check-circle mb-2"></i>
+                                                                            <br>Diterima
+                                                                        </h6>
+                                                                        <h4 class="card-text text-success">{{ $lowongan->lamaran->where('status', 'Diterima')->count() }}</h4>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <div class="card bg-light">
+                                                                    <div class="card-body text-center">
+                                                                        <h6 class="card-title">
+                                                                            <i class="fas fa-times-circle mb-2"></i>
+                                                                            <br>Ditolak
+                                                                        </h6>
+                                                                        <h4 class="card-text text-danger">{{ $lowongan->lamaran->where('status', 'Ditolak')->count() }}</h4>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                        
+                                                            <div class="modal-footer mt-4">
+                                                                <button type="submit" class="btn btn-success">
+                                                                    <i class="fas fa-save me-1"></i> Simpan Perubahan
+                                                                </button>
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                                    <i class="fas fa-times me-1"></i> Tutup
+                                                                </button>
                                                             </div>
                                                         </form>
                                                     </div>

@@ -17,7 +17,7 @@
 
 <div class="page-heading">
     <div class="page-title">
-        <div class="row">
+        <div class="row">   
             <div class="col-12 col-md-6 order-md-1 order-last">
                 <h3>Data Loker</h3>
                 <p class="text-subtitle text-muted">For users to check their list</p>
@@ -28,11 +28,37 @@
     <section class="section">
         <div class="card">
             <div class="card-header">
-                Simple Datatable
+                <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addJobModal">Tambah Data Loker</button>
+                <div class="row">
+                    <div class="col-12">
+                        <h5>Filter Data</h5>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <select class="form-select" id="bataslowonganFilter">
+                            <option value="">Semua Batas Lowongan</option>
+                            @php
+                                $batas = $loker->pluck('tanggal_akhir')->unique();
+                            @endphp
+                            @foreach($batas as $b)
+                                <option value="{{ $b }}">{{ $b }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <select class="form-select" id="statusFilter">
+                            <option value="">Semua Status</option>
+                            @php
+                                $statuses = $loker->pluck('status')->unique();
+                            @endphp
+                            @foreach($statuses as $status)
+                                <option value="{{ $status }}">{{ $status }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
             </div>
             <div class="card-body">
                 <table class="table table-striped" id="table1">
-                    <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addJobModal">Tambah Data Loker</button>
                     <thead>
                         <tr>
                             <th>Jabatan</th>

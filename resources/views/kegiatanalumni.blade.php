@@ -85,7 +85,7 @@
                                     <td>
                                         <!-- Button trigger modal -->
                                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#pesanModal{{ $item->nik }}">
-                                            <i class="fa fa-envelope"></i>
+                                            <i class="bi bi-envelope"></i>
                                         </button>
 
                                         <!-- Modal -->

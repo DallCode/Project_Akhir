@@ -56,7 +56,7 @@
         </div>
     </div>
 
-    <!-- Card untuk menampilkan total lamaran -->
+    {{-- <!-- Card untuk menampilkan total lamaran -->
     <div class="row mt-4">
         <div class="col-md-4">
             <div class="card">
@@ -109,7 +109,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

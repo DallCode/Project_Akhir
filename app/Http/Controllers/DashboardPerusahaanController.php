@@ -34,8 +34,33 @@ class DashboardPerusahaanController extends Controller
         // Menghitung jumlah lamaran terbaru (misalnya dalam 7 hari terakhir)
         $lamaranTerbaru = $lamaran->where('waktu', '>=', now()->subDays(7))->count();
 
+        // Data per tahun dan per bulan
+        $lokerPerBulan = Loker::where('id_data_perusahaan', $perusahaanLogin->id_data_perusahaan)
+            ->selectRaw('YEAR(waktu) as year, MONTH(waktu) as month, COUNT(*) as count')
+            ->groupBy('year', 'month')
+            ->get();
+
+        $lamaranPerBulan = Lamaran::whereIn('id_lowongan_pekerjaan', $loker->pluck('id_lowongan_pekerjaan'))
+            ->selectRaw('YEAR(waktu) as year, MONTH(waktu) as month, COUNT(*) as count')
+            ->groupBy('year', 'month')
+            ->get();
+
+        $statusLamaran = Lamaran::whereIn('id_lowongan_pekerjaan', $loker->pluck('id_lowongan_pekerjaan'))
+            ->selectRaw('YEAR(waktu) as year, id_lowongan_pekerjaan, COUNT(*) as total, SUM(status = "Diterima") as accepted')
+            ->groupBy('year', 'id_lowongan_pekerjaan')
+            ->get();
+
+
         // Mengembalikan tampilan dashboardPerusahaan dengan data yang dibutuhkan
-        return view('dashboardPerusahaan', compact('perusahaanLogin', 'totalLoker', 'lokerDipublikasi', 'totalLamaran', 'lamaranTerbaru'));
+        return view('dashboardPerusahaan', compact(
+            'perusahaanLogin',
+            'totalLoker',
+            'lokerDipublikasi',
+            'totalLamaran',
+            'lamaranTerbaru',
+            'lokerPerBulan',
+            'lamaranPerBulan',
+            'statusLamaran'
+        ));
     }
 }
-

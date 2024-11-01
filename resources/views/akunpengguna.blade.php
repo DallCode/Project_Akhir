@@ -33,8 +33,8 @@
         <section class="section">
             <div class="card">
                 <div class="card-header d-flex justify-content-center">
-                    <a href="#" class="btn btn-outline-primary btn-lg me-4 w-50"><i class="bi bi-person-plus"></i>
-                        Tambah Akun Perusahaan</a>
+                    {{-- <a href="#" class="btn btn-outline-primary btn-lg me-4 w-50"><i class="bi bi-person-plus"></i>
+                        Tambah Akun Perusahaan</a> --}}
                     <a href="{{ route('tambahadmin') }}" class="btn btn-outline-success btn-lg w-50"><i
                             class="bi bi-person-plus"></i> Tambah Akun Admin</a>
                 </div>
@@ -69,9 +69,6 @@
                                 <tr>
                                     <td>{{ $us->username }}</td>
                                     <td>{{ $us->role }}</td>
-                                    <td>
-                                        
-                                    </td>
                                     <td>
                                         <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                                             data-bs-target="#editPasswordModal{{ $us->username }}">
