@@ -11,6 +11,7 @@ use App\Http\Controllers\DatalokerController;
 use App\Http\Controllers\DetaillokerController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\LamaranPerusahaanController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProfilePerusahaanController;
 use App\Http\Controllers\WilayahController;
@@ -176,3 +177,7 @@ Route::get('/path-to-get-user-lamaran-data', [ChartAlumniController::class, 'get
 
 Route::get('/get-provinces', [WilayahController::class, 'getProvinces']);
 Route::get('/get-cities/{provinceId}', [WilayahController::class, 'getCities']);
+
+Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
+Route::get('/laporan/preview', [LaporanController::class, 'preview'])->name('laporan.preview');
+Route::get('/laporan/export', [LaporanController::class, 'export'])->name('laporan.export');

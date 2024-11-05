@@ -16,6 +16,9 @@ class Alumni extends Model
     public $incrementing = false;
     protected $fillable = ['nik', 'username', 'nama', 'jurusan', 'jenis_kelamin', 'tahun_lulus', 'lokasi' , 'alamat', 'keahlian', 'foto', 'deskripsi', 'status', 'keterangan'];
     public $timestamps = false;
+
+    
+
     public function pengguna(): BelongsTo
     {
         return $this->belongsTo(User::class);

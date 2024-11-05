@@ -23,6 +23,47 @@
                 <div class="card-header">
                     Simple Datatable
                 </div>
+                <div class="row">
+                    <div class="col-12">
+                        <h5>Filter Data</h5>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label>Nama Perusahaan</label>
+                        <select class="form-select" id="namaFilter">
+                            <option value="">Semua Perusahaan</option>
+                            @php
+                                $perusahaans = $lamarans->loker->perusahaan->pluck('nama')->unique();
+                            @endphp
+                            @foreach($perusahaans as $nama)
+                                <option value="{{ $nama }}">{{ $nama }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label>Posisi</label>
+                        <select class="form-select" id="posisiFilter">
+                            <option value="">Semua Posisi</option>
+                            @php
+                                $jabatan = $lamarans->loker->pluck('jabatan')->unique()->sort();
+                            @endphp
+                            @foreach($jabatan as $p)
+                                <option value="{{ $p }}">{{ $p }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label>Status</label>
+                        <select class="form-select" id="statusFilter">
+                            <option value="">Semua Status</option>
+                            @php
+                                $statuses = $lamarans->pluck('status')->unique();
+                            @endphp
+                            @foreach($statuses as $status)
+                                <option value="{{ $status }}">{{ $status }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
                 <div class="card-body">
                     <table class="table table-striped" id="table1">
                         <thead>
